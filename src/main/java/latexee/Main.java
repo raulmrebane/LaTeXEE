@@ -1,14 +1,15 @@
-package mainPackage;
+package latexee;
 
 import java.util.ArrayList;
 
+import antlrgen.GrammarParser.*;
+
 import org.antlr.v4.runtime.tree.ParseTree;
-//import org.antlr.runtime.tree.ParseTree;
 
 public class Main {
 
 	public static void main(String[] args) {
-		
+		System.out.println("Test");
 	}
 	
 	//NB: characterLocationis vaja 0 asemele midagi muud panna.
@@ -50,5 +51,6 @@ public class Main {
 		//TODO
 		return null;
 	}
+    
 	
 }

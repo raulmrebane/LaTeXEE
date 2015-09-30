@@ -4,3 +4,7 @@
 .classpath
 .project
 .settings/
+/build
+/.gradle
+/.git
+/src/generated-sources

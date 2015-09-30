@@ -1,12 +1,12 @@
-package mainPackage;
+package latexee;
 
 import java.util.ArrayList;
 
-public class ProofStatement extends ParsedStatement {
+public class LemmaStatement extends ParsedStatement {
 	
 	private ArrayList<ParsedStatement> children;
 
-	public ProofStatement(String content, int characterLocation,
+	public LemmaStatement(String content, int characterLocation,
 			ArrayList<ParsedStatement> children) {
 		super(content, characterLocation);
 		this.children = children;
