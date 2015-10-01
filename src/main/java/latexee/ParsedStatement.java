@@ -6,11 +6,17 @@ public class ParsedStatement {
 	
 	private String content;
 	private int characterLocation;
+	protected ArrayList<ParsedStatement> children;
 
 	public ParsedStatement(String content, int characterLocation) {
-		super();
 		this.content = content;
 		this.characterLocation = characterLocation;
+		this.children = new ArrayList<ParsedStatement>();
+	}
+	public ParsedStatement(String content, int characterLocation, ArrayList<ParsedStatement> children) {
+		this.content = content;
+		this.characterLocation = characterLocation;
+		this.children = children;
 	}
 
 	public String getContent() {
@@ -29,5 +35,12 @@ public class ParsedStatement {
 		this.characterLocation = characterLocation;
 	}
 	
+	public ArrayList<ParsedStatement> getChildren() {
+		return children;
+	}
+	
+	public void addChild(ParsedStatement child){
+		children.add(child);
+	}
 
 }
