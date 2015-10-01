@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import antlrgen.main.antlr.GrammarParser.*;
+import antlrgen.GrammarParser.*;
 
 
 
