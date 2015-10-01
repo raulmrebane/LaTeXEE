@@ -1,10 +1,12 @@
-package latexee;
+package main.java.latexee;
 
 import java.util.ArrayList;
 
-import antlrgen.GrammarParser.*;
-
 import org.antlr.v4.runtime.tree.ParseTree;
+
+import antlrgen.main.antlr.GrammarParser.*;
+
+
 
 public class Main {
 

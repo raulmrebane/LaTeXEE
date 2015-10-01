@@ -1,8 +1,11 @@
-package latexee;
+package test.java;
 
 import java.util.ArrayList;
 
+import main.java.latexee.ParsedStatement;
+
 import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 
 /* This class is just an example. Remove in production. */

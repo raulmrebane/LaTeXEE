@@ -1,4 +1,4 @@
-package latexee;
+package main.java.latexee;
 
 import java.util.ArrayList;
 

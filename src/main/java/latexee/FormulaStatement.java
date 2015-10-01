@@ -1,4 +1,4 @@
-package latexee;
+package main.java.latexee;
 
 public class FormulaStatement extends ParsedStatement {
 
