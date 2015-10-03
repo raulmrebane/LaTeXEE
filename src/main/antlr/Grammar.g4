@@ -1,7 +1,7 @@
 grammar Grammar;
 
 document
-	:	 ( TEXT? (proof | theorem | declaration | lemma | fileInclusion | formula)*) TEXT?
+	:	 ( TEXT? (proof | theorem | declaration | lemma | fileInclusion | formula))* TEXT?
 	;
 
 	

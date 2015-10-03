@@ -43,9 +43,8 @@ public class Main {
 	
 	
 	
-	//NB1: kõiki reavahetusi ei handle'i (tõestuste jms sees võivad olla, muidu mitte)
-	//NB2: $valem1$$valem2$ ei parsi
-	//NB3: ei parsi sümboleid /, { ja $ tekstina. (vaja grammatikas TEXTi muuta)
+	//NB1: $valem1$$valem2$ ei parsi
+	//NB2: ei parsi sümboleid /, { ja $ tekstina. (vaja grammatikas TEXTi muuta)
 	
 	public static void main(String[] args) {
 		
