@@ -9,3 +9,4 @@
 /.git
 /src/generated-sources
 /src/antlrgen
+/src/main/antlrgen
