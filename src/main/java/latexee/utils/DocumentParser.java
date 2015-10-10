@@ -15,6 +15,7 @@ import main.antlrgen.GrammarParser.FileInclusionContext;
 import main.antlrgen.GrammarParser.FormulaContext;
 import main.antlrgen.GrammarParser.LemmaContext;
 import main.antlrgen.GrammarParser.ProofContext;
+import main.antlrgen.GrammarParser.SubformulaContext;
 import main.antlrgen.GrammarParser.TheoremContext;
 import main.java.latexee.docast.DeclareStatement;
 import main.java.latexee.docast.FormulaStatement;
@@ -89,12 +90,19 @@ public class DocumentParser {
 				return new ParsedStatement(tree.getText(), startIndex, children);
 			}
 			
-			if (tree instanceof FormulaContext) {
+			if (tree instanceof SubformulaContext) {
 				String text = tree.getText();
 				text = text.substring(1, text.length() - 1);
-				if (text.charAt(0) == '$')
-					text = text.substring(1, text.length() - 1);
 				return new FormulaStatement(text, startIndex);
+			}
+			
+			if (tree instanceof FormulaContext) {
+				if (tree.getText().charAt(0) == '\\') {
+					String text = tree.getText();
+					text = text.substring(text.indexOf('}')+1, text.length()-"\\end{equation}".length());
+					return new FormulaStatement(text, startIndex);
+				}
+				return parseRecursively(tree.getChild(0), includedFiles);
 			}
 			
 			else if (tree instanceof ProofContext) {
@@ -129,9 +137,9 @@ public class DocumentParser {
 				String text = tree.getText();
 				String url = text.substring(text.indexOf('{')+1, text.length()-1);
 				if (!contains(includedFiles, url)) {
+					includedFiles.add(url);
 					String fileContent = getFileContent(url);
 					ParsedStatement child = parse(fileContent, includedFiles);
-					includedFiles.add(url);
 					return new IncludeStatement(url, startIndex, new ArrayList<ParsedStatement>(Arrays.asList(child)));
 				}
 				return new IncludeStatement(url, startIndex);

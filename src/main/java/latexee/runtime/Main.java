@@ -20,7 +20,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		//quick way to enable fast testing during writing. Uncomment to test.
-		args = new String[] {"src/test/antlr/basic.tex"};
+		args = new String[] {"src/test/antlr/LaTeX_file_2.tex"};
 		
 		File file = new File(args[0]);
 		ANTLRInputStream AIS = null;
@@ -42,5 +42,4 @@ public class Main {
 	
 	
 	
-	//NB1: $valem1$$valem2$ ei parsi
-	//NB2: ei parsi sümboleid /, { ja $ tekstina. (vaja grammatikas TEXTi muuta)
+	//NB1: ei parsi sümboleid / ja { tekstina. (vaja grammatikas TEXTi muuta)
