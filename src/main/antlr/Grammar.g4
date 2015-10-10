@@ -22,9 +22,13 @@ lemma
 	;
 	
 formula
-	:	'$' TEXT '$'
-	|	'$$' TEXT '$$'
+	:	'$' subformula '$'
+	|	subformula
 	|	'\\begin{equation}' TEXT '\\end{equation}'
+	;
+	
+subformula
+	:	'$' TEXT '$'
 	;
 	
 fileInclusion
@@ -32,7 +36,7 @@ fileInclusion
 	;
 
 TEXT
-	:	(~('$' | '\\' | '}'))+ /*Really needs to be changed! */
+	:	(~('$' | '\\' | '}') | '\\$')+ /*Really needs to be changed! */
 	;
 	
 WS : [ \t\n\r]+ -> skip;
