@@ -9,7 +9,7 @@ import main.antlrgen.GrammarLexer;
 import main.antlrgen.GrammarParser;
 import main.antlrgen.GrammarParser.DeclarationContext;
 import main.antlrgen.GrammarParser.DocumentContext;
-import main.antlrgen.GrammarParser.FileInclusionContext;
+//import main.antlrgen.GrammarParser.FileInclusionContext;
 import main.antlrgen.GrammarParser.FormulaContext;
 import main.antlrgen.GrammarParser.LemmaContext;
 import main.antlrgen.GrammarParser.ProofContext;
@@ -167,13 +167,13 @@ public class DocumentParser {
 			String declaration = text.substring(text.indexOf('{')+1, text.length()-1);
 			return new DeclareStatement(declaration, startIndex);
 		}
-		
+		/*
 		else if (tree instanceof FileInclusionContext) {
 			String text = tree.getText();
 			String url = text.substring(text.indexOf('{')+1, text.length()-1);
 			return new IncludeStatement(url, startIndex);
 		}
-		
+		*/
 		else if (tree instanceof LemmaContext) {
 			ArrayList<ParsedStatement> children = new ArrayList<>();
 			for (int i = 0; i < tree.getChildCount(); i++) {

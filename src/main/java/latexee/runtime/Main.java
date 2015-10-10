@@ -10,6 +10,7 @@ import main.antlrgen.GrammarLexer;
 import main.antlrgen.GrammarParser;
 import main.antlrgen.GrammarParser.*;
 import main.java.latexee.docast.ParsedStatement;
+import main.java.latexee.utils.DeclarationParser;
 import main.java.latexee.utils.DocumentParser;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -20,10 +21,9 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 
 public class Main {
-
 	public static void main(String[] args) {
 		//quick way to enable fast testing during writing. Uncomment to test.
-		//args = new String[] {"src/test/antlr/basic.tex"};
+		args = new String[] {"src/test/antlr/basic.tex"};
 		
 		File file = new File(args[0]);
 		ANTLRInputStream AIS = null;
@@ -39,26 +39,8 @@ public class Main {
 		GrammarParser parser = new GrammarParser(tokens);
 		ParseTree parseTree = parser.document();
 		ParsedStatement pst = DocumentParser.parse(parseTree);
+		
 	}
-	
-	
-	
-	
-
-	/*
-	public static void main(String[] args) {
-		
-		String filePath = "C://Users/Hiie/TVP/LaTeX_file_2.tex";
-		//String fileContent = getFileContent(filePath);
-		
-		String fileContent = "a\\InputIfFileExists{C://Users/Hiie/TVP/LaTeX_file_3.tex}\\begin{proof}" + 
-				"$ii$\\begin{lemma}$$oo$$\\end{lemma}vahetekst\\begin{lemma}\\declare{sth here}$valem$" + 
-				"\\end{lemma}$valem2$\\end{proof}";
-		
-		ParsedStatement ps = DocumentParser.parse(fileContent);
-		System.out.println(ps);
-		
-	}*/
 }
 	
 	
