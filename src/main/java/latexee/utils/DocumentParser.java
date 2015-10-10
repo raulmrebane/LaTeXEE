@@ -1,69 +1,47 @@
-package main.java.latexee;
+package main.java.latexee.utils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import main.antlrgen.GrammarLexer;
+import main.antlrgen.GrammarParser;
+import main.antlrgen.GrammarParser.DeclarationContext;
+import main.antlrgen.GrammarParser.DocumentContext;
+import main.antlrgen.GrammarParser.FileInclusionContext;
+import main.antlrgen.GrammarParser.FormulaContext;
+import main.antlrgen.GrammarParser.LemmaContext;
+import main.antlrgen.GrammarParser.ProofContext;
+import main.antlrgen.GrammarParser.TheoremContext;
+import main.java.latexee.docast.DeclareStatement;
+import main.java.latexee.docast.FormulaStatement;
+import main.java.latexee.docast.IncludeStatement;
+import main.java.latexee.docast.LemmaStatement;
+import main.java.latexee.docast.ParsedStatement;
+import main.java.latexee.docast.ProofStatement;
+import main.java.latexee.docast.TheoremStatement;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import antlrgen.GrammarLexer;
-import antlrgen.GrammarParser;
-import antlrgen.GrammarParser.*;
+//NB1: $valem1$$valem2$ ei parsi
+//NB2: ei parsi sï¿½mboleid /, { ja $ tekstina. (vaja grammatikas TEXTi muuta)
 
+public class DocumentParser {
 
-
-public class Main {
-
-	/*public static void main(String[] args) {
-		//quick way to enable fast testing during writing. Uncomment to test.
-		args = new String[] {"src/test/antlr/basic.tex"};
-		
-		File file = new File(args[0]);
-		ANTLRInputStream AIS = null;
-		try {
-			AIS = new ANTLRInputStream(new FileInputStream(file));
-		}
-		catch (Exception e){
-			System.out.println("Could not find specified file.");
-			System.exit(1);
-		}
-		GrammarLexer lexer = new GrammarLexer(AIS);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		GrammarParser parser = new GrammarParser(tokens);
-		ParseTree parseTree = parser.document();
-		ParsedStatement pst = parseRecursively(parseTree);
-		System.out.println(parseTree.getText());
-	}*/
-	
-	
-	
-	
-	//NB1: $valem1$$valem2$ ei parsi
-	//NB2: ei parsi sümboleid /, { ja $ tekstina. (vaja grammatikas TEXTi muuta)
-	
-	public static void main(String[] args) {
-		
-		String filePath = "C://Users/Hiie/TVP/LaTeX_file_2.tex";
-		//String fileContent = getFileContent(filePath);
-		
-		String fileContent = "a\\InputIfFileExists{C://Users/Hiie/TVP/LaTeX_file_3.tex}\\begin{proof}" + 
-				"$ii$\\begin{lemma}$$oo$$\\end{lemma}vahetekst\\begin{lemma}\\declare{sth here}$valem$" + 
-				"\\end{lemma}$valem2$\\end{proof}";
-		
-		ParsedStatement ps = parse(fileContent);
-		System.out.println(ps);
-		
-	}
-	
-	
 	//main parsing method (also gaters and parses all included documents, but doesn't do anything else with them yet)
 	public static ParsedStatement parse (String fileContent) {
 		ParseTree tree = parseText(fileContent);
+		ParsedStatement ps = parseRecursively(tree);
+		ArrayList<IncludeStatement> includedDocs = findIncludeStatements(ps);
+		ArrayList<ParsedStatement> sts = parseIncludedDocuments(includedDocs); //TODO: try&catch (in case some included files can't be parsed)
+		return ps;
+	}
+	
+	public static ParsedStatement parse (ParseTree tree){
 		ParsedStatement ps = parseRecursively(tree);
 		ArrayList<IncludeStatement> includedDocs = findIncludeStatements(ps);
 		ArrayList<ParsedStatement> sts = parseIncludedDocuments(includedDocs); //TODO: try&catch (in case some included files can't be parsed)
@@ -74,11 +52,11 @@ public class Main {
 	//LaTeX tekst -> ParseTree
 	public static ParseTree parseText (String text) {
 		ANTLRInputStream antlrInput = new ANTLRInputStream(text);
-        GrammarLexer lexer = new GrammarLexer(antlrInput);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        GrammarParser parser = new GrammarParser(tokens);
-        ParseTree tree = parser.document();
-        return tree;
+	    GrammarLexer lexer = new GrammarLexer(antlrInput);
+	    CommonTokenStream tokens = new CommonTokenStream(lexer);
+	    GrammarParser parser = new GrammarParser(tokens);
+	    ParseTree tree = parser.document();
+	    return tree;
 	}
 	
 	
@@ -139,7 +117,7 @@ public class Main {
 		return sb.toString();
 	}
 		
-
+	
 	public static ParsedStatement parseRecursively (ParseTree tree) {
 		int startIndex = 0;
 		//All contexts inherit from ParserRuleContext, so for each case the index will be set here.
@@ -209,6 +187,5 @@ public class Main {
 		return null;
 		
 	}
-	
-}
 
+}

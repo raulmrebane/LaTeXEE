@@ -2,7 +2,7 @@ package test.java;
 
 import java.util.ArrayList;
 
-import main.java.latexee.ParsedStatement;
+import main.java.latexee.docast.ParsedStatement;
 
 import org.junit.Test;
 

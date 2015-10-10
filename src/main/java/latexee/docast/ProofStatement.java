@@ -1,4 +1,4 @@
-package main.java.latexee;
+package main.java.latexee.docast;
 
 import java.util.ArrayList;
 
