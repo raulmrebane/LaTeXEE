@@ -69,6 +69,7 @@ public class DeclarationParser {
 		
 		LemmaStatement lemma = new LemmaStatement("placeholder",30);
 		lemma.getChildren().add(new DeclareStatement("\\declare{macro=asd, meaning=asdasd,    argspec=[2], code={...}}", 80));
+		lemma.getChildren().add(new DeclareStatement("{\\alright{then}{\\what{is}{\\nesting}}}", 80));
 		theorem1.getChildren().add(new FormulaStatement("$$2+5$$", 33));
 		
 		root.getChildren().addAll(Arrays.asList(theorem1,lemma));
