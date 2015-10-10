@@ -1,6 +1,7 @@
 package main.java.latexee.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +24,7 @@ import main.java.latexee.docast.LemmaStatement;
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.docast.ProofStatement;
 import main.java.latexee.docast.TheoremStatement;
+import main.java.latexee.logging.Logger;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -33,7 +35,25 @@ import org.antlr.v4.runtime.tree.ParseTree;
 //NB2: ei parsi sümboleid /, { ja $ tekstina. (vaja grammatikas TEXTi muuta)
 
 public class DocumentParser {
-
+		public static ParsedStatement parse (String filename){
+			File file = new File(filename);
+			ANTLRInputStream AIS = null;
+			try {
+				Logger.log("Attempting to open file: "+filename);
+				AIS = new ANTLRInputStream(new FileInputStream(file));
+				Logger.log("... OK");
+			}
+			catch (Exception e){
+				Logger.log("Could not access specified file.");
+				System.exit(1);
+			}
+			GrammarLexer lexer = new GrammarLexer(AIS);
+			CommonTokenStream tokens = new CommonTokenStream(lexer);
+			GrammarParser parser = new GrammarParser(tokens);
+			ParseTree parseTree = parser.document();
+			ParsedStatement AST = parseRecursively(parseTree, new ArrayList<String>());
+			return AST;
+		}
 	//main parsing method (also parses all included documents)
 		public static ParsedStatement parse (String fileContent, ArrayList<String> includedFiles) {
 			ParseTree tree = parseText(fileContent);
@@ -57,7 +77,9 @@ public class DocumentParser {
 		public static String getFileContent (String filePath) {
 			StringBuffer sb = new StringBuffer();
 			try {
+				Logger.log("Attempting to open file: "+filePath);
 				Scanner sc = new Scanner(new File(filePath));
+				Logger.log("... OK");
 				while (sc.hasNextLine()) {
 					sb.append(sc.nextLine()); //või reavahetus ka juurde?
 				}
@@ -65,7 +87,7 @@ public class DocumentParser {
 			}
 			
 			catch (FileNotFoundException e) {
-				System.out.println("Couldn't find " + filePath);
+				Logger.log("Could not access specified file.");
 			}
 			return sb.toString();
 		}
