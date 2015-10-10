@@ -26,7 +26,7 @@ argSpecComponent
 	;
 	
 codeComponent
-	: 'code=' CODE
+	: 'code=' code
 	;
 	
 //Infix/prefix/postfix operators
@@ -39,11 +39,14 @@ syntaxBracket
 	: TYPE WS+ NUMBERS WS+ CHARACTERS WS+ ('l'|'r') WS*
 	;
 
-
+code
+	: '{' NOPARENS (code)* '}' 
+	;
 
 
 //Lexer rules
-
+NOPARENS
+	: (~[{}])+;
 TYPE
 	: 'infix'
 	| 'prefix'
@@ -65,9 +68,7 @@ DECLARE
 NAME
 	: [._a-zA-Z0-9]+
 	;
-CODE
-	: '{' (~[}])+ '}'
-	;
+
 	
 CHARACTERS
 	: '"'(~['"'])+'"'
