@@ -9,7 +9,7 @@ ext.versions = [
 ext.antlr = [
     grammarpackage: 'antlrgen',
     antlrSource: 'src/main/antlr',
-    destinationDir: "src/generated-sources/java"
+    destinationDir: "src/"
 ]
 
 
