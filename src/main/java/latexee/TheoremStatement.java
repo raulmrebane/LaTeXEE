@@ -11,4 +11,8 @@ public class TheoremStatement extends ParsedStatement {
 		super(content, characterLocation);
 		this.children = children;
 	}
+	
+	public String toString() {
+		return "[Theorem: " + super.toString();
+	}
 }

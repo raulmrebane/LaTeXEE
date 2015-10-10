@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class ParsedStatement {
 	
-	private String content;
+	private String content; //TODO: remove? (add only to formulas, declarations and inclusions)
 	private int characterLocation;
 	protected ArrayList<ParsedStatement> children;
 
@@ -41,6 +41,14 @@ public class ParsedStatement {
 	
 	public void addChild(ParsedStatement child){
 		children.add(child);
+	}
+	
+	public String toString() {
+		String children = "";
+		for (int i = 0; i < this.getChildren().size(); i++) {
+			children += this.getChildren().get(i).toString();
+		}
+		return content + " " + children + "]"; //ainult ajutine
 	}
 
 }

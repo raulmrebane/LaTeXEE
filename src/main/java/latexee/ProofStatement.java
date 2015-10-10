@@ -11,5 +11,9 @@ public class ProofStatement extends ParsedStatement {
 		super(content, characterLocation);
 		this.children = children;
 	}
+	
+	public String toString() {
+		return "[Proof: " + super.toString();
+	}
 
 }

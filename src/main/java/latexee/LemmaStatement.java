@@ -11,5 +11,9 @@ public class LemmaStatement extends ParsedStatement {
 		super(content, characterLocation);
 		this.children = children;
 	}
+	
+	public String toString() {
+		return "[Lemma: " + super.toString();
+	}
 
 }
