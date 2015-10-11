@@ -19,7 +19,7 @@ public class ParsedStatementTest {
         assertEquals("Character location must be correct", 5, ex.getCharacterLocation());
         ex.setCharacterLocation(10);
         assertEquals("Test after re-setting character location", 10, ex.getCharacterLocation());
-        
+      //  assertEquals("mew", 1, -1);
     }
     
 	@Test
