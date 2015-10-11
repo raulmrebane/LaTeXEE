@@ -58,7 +58,7 @@ proof
 	;
 	
 theorem
-	:	'\\begin{theorem}' (.*? (formula | declarationGrammar))* .*? '\\end{theorem}'
+	:	'\\begin{theorem}' (.*? (formula | declarationGrammar | lemma))* .*? '\\end{theorem}'
 	;
 	
 lemma

@@ -1,0 +1,21 @@
+\documentclass[11pt]{article}
+
+\begin{document}
+
+\begin{theorem}
+\InputIfFileExists{parsing1.tex}
+\end{theorem}
+
+\begin{proof}
+$just a small formula$
+\InputIfFileExists{parsing2.tex}
+$an even smaller formula (although now it became longer)$
+\end{proof}
+
+\begin{lemma}
+\InputIfFileExists{parsing3.tex}
+\end{lemma}
+
+None of these should actually include the file!
+
+\end{document}
