@@ -52,7 +52,7 @@ task generateGrammarSource(dependsOn: antlrOutputDir, type: JavaExec) {
 }
 
 jar {
-    manifest.attributes 'Main-Class': 'latexee.Main'
+    manifest.attributes 'Main-Class': 'main.java.latexee.runtime.Main'
     // Package runtime to jar.
     from configurations.compile.collect { zipTree it}
 }
