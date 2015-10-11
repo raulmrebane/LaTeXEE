@@ -60,7 +60,7 @@ public class Main {
                 // input file can not start with "-"
                 if (args[0].charAt(0) != '-') {
                     inputFile = args[0];
-                    System.out.println("Inputfile is: " + inputFile);
+                    Logger.log("Inputfile is: " + inputFile);
                     
                     // If verbose is enabled
                     if (cmd.hasOption("v")) {
@@ -74,8 +74,14 @@ public class Main {
                         System.out.println("Outputfile is: " + outputFile);
                     }
                     else {
-                        // Default outputfile ?
-                    //    System.out.println("No outputfile specified");
+                        // Default outputfile is the same as input file, but change extension.
+                        // If no extension, then just add extension
+                        if (inputFile.indexOf('.') == -1) {
+                            outputFile = inputFile + ".txt";
+                        } else {
+                            outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + ".txt";
+                        }
+                        System.out.println("Outputfile is: " + outputFile);
                     }
                 }
                 else {
@@ -101,11 +107,12 @@ public class Main {
 		//quick way to enable fast testing during writing. Uncomment to test.
 		args = new String[] {"src/test/antlr/basic_with_declare.tex"};
 		String outputFile = "output.txt";
-		String filename = args[0];
-		
-		ParsedStatement AST = DocumentParser.parse(filename);
-		DeclarationParser.declarationFinder(AST);
-		OutputWriter.formulasToTXT(AST, outputFile);
-		Logger.log("Finished without errors");
+		String inputFile = args[0];
+		if (inputFile != null) {
+            ParsedStatement AST = DocumentParser.parse(inputFile);
+            DeclarationParser.declarationFinder(AST);
+            OutputWriter.formulasToTXT(AST, outputFile);
+            Logger.log("Finished without errors");
+        }
 	}
 }
