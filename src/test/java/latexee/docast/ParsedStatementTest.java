@@ -3,6 +3,7 @@ package test.java.latexee.docast;
 import java.util.ArrayList;
 
 import main.java.latexee.docast.ParsedStatement;
+import main.java.latexee.utils.DocumentParser;
 
 import org.junit.Test;
 
@@ -27,4 +28,12 @@ public class ParsedStatementTest {
         
         assertEquals("Testing if constructor working properly2", 5, ex.getCharacterLocation());
     }
+	
+	@Test
+	public void ExampleTest3() { //TODO: kõik testid kaustas src/test/antlr vaja testida. .toString() vaja muuta.
+		ParsedStatement ps = DocumentParser.parse("$1-8/a$", new ArrayList<>());
+		System.out.println(ps.toString());
+	}
+	
+
 }
