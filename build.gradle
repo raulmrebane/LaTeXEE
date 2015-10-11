@@ -7,9 +7,9 @@ ext.versions = [
 ]
 
 ext.antlr = [
-    grammarpackage: 'main.antlrgen',
+    grammarpackage: 'main.java.antlrgen',
     antlrSource: 'src/main/antlr',
-    destinationDir: "src/"
+    destinationDir: "src/main/java/antlrgen"
 ]
 
 
@@ -47,14 +47,46 @@ task generateGrammarSource(dependsOn: antlrOutputDir, type: JavaExec) {
     main = 'org.antlr.v4.Tool'
     classpath = configurations.antlr4
     def pkg = antlr.grammarpackage.replaceAll("\\.", "/")
-    args = ["-o", "${antlr.destinationDir}/${pkg}"/*, "-atn"*/, "-visitor", "-package", antlr.grammarpackage, grammars.files].flatten()
+    args = ["-o", "${antlr.destinationDir}"/*, "-atn"*/, "-visitor", "-package", antlr.grammarpackage, grammars.files].flatten()
 
 }
 
+sourceSets {
+    main.java.srcDir 'src/main' 
+    test.java.srcDir 'src/test' 
+}
+
 jar {
-    manifest.attributes 'Main-Class': 'latexee.Main'
+    // Add main class to manifest
+    manifest.attributes 'Main-Class': 'main.java.latexee.runtime.Main'
     // Package runtime to jar.
     from configurations.compile.collect { zipTree it}
+}
+
+// Runs the jar file. "gradlew.bat runJar"
+task runJar(type: Exec, dependsOn: jar) {
+    // dependsOn jar
+    executable 'java'
+    // ./gradlew run "-Prunargs=-x, a, b, c"
+    if (project.hasProperty('runargs')) {
+        args '-jar', "$jar.archivePath"
+        args(runargs.split(','))
+    }
+    else {
+        args '-jar', "$jar.archivePath"
+    }
+    
+}
+
+task run(type: JavaExec, dependsOn: classes) {
+    main 'main.java.latexee.runtime.Main'
+    classpath sourceSets.main.runtimeClasspath
+    // ./gradlew run "-Prunargs=-x, a, b, c"
+    // main args will be -x, a, b, c
+    if (project.hasProperty('runargs')) {
+        args(runargs.split(','))
+    }
+   
 }
 
 compileJava {

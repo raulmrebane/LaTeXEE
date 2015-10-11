@@ -1,4 +1,4 @@
-package test.java;
+package test.java.latexee.docast;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,6 @@ public class ParsedStatementTest {
         assertEquals("Character location must be correct", 5, ex.getCharacterLocation());
         ex.setCharacterLocation(10);
         assertEquals("Test after re-setting character location", 10, ex.getCharacterLocation());
-        
     }
     
 	@Test

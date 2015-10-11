@@ -7,6 +7,4 @@
 /build
 /.gradle
 /.git
-/src/generated-sources
-/src/antlrgen
-/src/main/antlrgen
+/src/main/java/antlrgen
