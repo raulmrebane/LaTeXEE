@@ -26,6 +26,7 @@ public class DeclarationParser {
 	public static void declarationFinder(ParsedStatement node){
 		if(node instanceof DeclareStatement){
 			DeclareStatement castNode = (DeclareStatement) node;
+			System.out.println(castNode.getContent());
 			ParseTree parseTree = parseDeclaration(castNode.getContent());
 			boolean operatorStyle = isOperatorSyntax(parseTree);
 			if(operatorStyle){

@@ -5,7 +5,7 @@ declarationGrammar
 	;
 	
 keyValuePairs
-	:	(pair ',' )* pair 
+	:	(pair ',' )* lastpair 
 	;
 
 syntaxBracket
@@ -16,6 +16,11 @@ pair
 	: 'syntax' '=' syntaxBracket
 	| KEY '=' VALUE
 	| .*? '=' .*?
+	;
+lastpair
+	: 'syntax' '=' syntaxBracket
+	| KEY '=' VALUE
+	| .*? '=' ('{' .*? '}'| .*?)
 	;
 KEY
 	:	'argspec'

@@ -1,5 +1,6 @@
 package main.java.latexee.declareast;
 
+import main.antlrgen.DocumentGrammarParser.LastpairContext;
 import main.antlrgen.DocumentGrammarParser.PairContext;
 import main.antlrgen.DocumentGrammarParser.SyntaxBracketContext;
 
@@ -45,7 +46,7 @@ public class OperatorDeclaration extends DeclareNode {
 	}
 
 	private void fillAttributes(ParseTree tree){
-		if(tree instanceof PairContext){
+		if(tree instanceof PairContext || tree instanceof LastpairContext){
 			String key = tree.getChild(0).getText();
 			String value = tree.getChild(2).getText();
 			if(key.equals("meaning")){
