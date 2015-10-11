@@ -1,8 +1,5 @@
 package main.java.latexee.declareast;
 
-
-
-import main.antlrgen.DocumentGrammarParser.LastpairContext;
 import main.antlrgen.DocumentGrammarParser.PairContext;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -30,7 +27,7 @@ public class MacroDeclaration extends DeclareNode {
 	}
 	
 	private void fillAttributes(ParseTree tree){
-		if(tree instanceof PairContext || tree instanceof LastpairContext){
+		if(tree instanceof PairContext){
 			
 			String key = tree.getChild(0).getText();
 			String value = tree.getChild(2).getText();
