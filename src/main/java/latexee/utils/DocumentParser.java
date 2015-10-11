@@ -143,9 +143,7 @@ public class DocumentParser {
 			}
 			
 			else if (tree instanceof DeclarationGrammarContext) {
-				String text = tree.getText();
-				System.out.println(text);
-				
+				String text = tree.getText();				
 				return new DeclareStatement(text, startIndex);
 			}
 			

@@ -12,7 +12,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		//quick way to enable fast testing during writing. Uncomment to test.
-		args = new String[] {"src/test/antlr/basic_with_declare.tex"};
+		//args = new String[] {"src/test/antlr/basic_with_declare.tex"};
 		
 		logStatus = false;
 		

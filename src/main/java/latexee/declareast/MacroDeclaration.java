@@ -54,8 +54,15 @@ public class MacroDeclaration extends DeclareNode {
 	
 	@Override
 	public String toGrammarRule() {
-		// TODO Auto-generated method stub
-		return null;
+		String highestLevelRule = "highestLevel";
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.macroName);
+		for(int i=0;i<arguments;i++){
+			sb.append("\'{\'");
+			sb.append(highestLevelRule);
+			sb.append("\'}\'");
+		}
+		return sb.toString();
 	}
 
 }
