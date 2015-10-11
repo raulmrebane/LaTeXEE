@@ -2,11 +2,13 @@ package main.java.latexee.runtime;
 
 import java.util.ArrayList;
 
-
 import main.java.latexee.docast.ParsedStatement;
+import main.java.latexee.logging.Logger;
 import main.java.latexee.utils.DeclarationParser;
 import main.java.latexee.utils.DocumentParser;
 import main.java.latexee.utils.GrammarGenerator;
+import main.java.latexee.utils.OutputWriter;
+
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
@@ -21,7 +23,6 @@ import org.apache.commons.cli.ParseException;
 
 
 public class Main {
-	public static boolean logStatus = false;
     public static String outputFile;
     public static String inputFile;
     public static boolean verbose = false;
@@ -99,12 +100,12 @@ public class Main {
         
 		//quick way to enable fast testing during writing. Uncomment to test.
 		args = new String[] {"src/test/antlr/basic_with_declare.tex"};
-		
-		logStatus = false;
-		
+		String outputFile = "output.txt";
 		String filename = args[0];
 		
 		ParsedStatement AST = DocumentParser.parse(filename);
 		DeclarationParser.declarationFinder(AST);
+		OutputWriter.formulasToTXT(AST, outputFile);
+		Logger.log("Finished without errors");
 	}
 }
