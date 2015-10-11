@@ -1,75 +1,50 @@
 grammar DeclarationGrammar;
 
 declarationGrammar 
-	: DECLARE (macroSyntax | operatorSyntax) '}'
-	;
-
-// Macro-style syntax fragments
-
-macroSyntax
-	: macroComponent ',' WS+ 
-	  meaningComponent ',' WS+
-	  argSpecComponent ',' WS+
-	  codeComponent WS*
+	: '\\declare' '{' keyValuePairs '}'
 	;
 	
-macroComponent
-	: 'macro=' NAME
-	;
-
-meaningComponent
-	: 'meaning=' NAME
-	;
-
-argSpecComponent
-	: 'argspec=' '[' NUMBERS ']'
-	;
-	
-codeComponent
-	: 'code=' code
-	;
-	
-//Infix/prefix/postfix operators
-
-operatorSyntax
-	: 'syntax={' syntaxBracket '}' ',' WS+ meaningComponent
+keyValuePairs
+	:	(pair ',' )* pair 
 	;
 
 syntaxBracket
-	: TYPE WS+ NUMBERS WS+ CHARACTERS WS+ ('l'|'r') WS*
+	: '{' TYPE ',' .*? ',' .*?  ',' ('l'|'r') '}'
+	;
+	
+pair
+	: 'syntax' '=' syntaxBracket
+	| KEY '=' VALUE
+	| .*? '=' .*?
+	;
+KEY
+	:	'argspec'
+	|	'meaning'
+	|	'macro'
 	;
 
-code
-	: '{' NOPARENS (code)* '}' 
-	;
-
-
-//Lexer rules
-NOPARENS
-	: (~[{}])+;
 TYPE
 	: 'infix'
 	| 'prefix'
 	| 'postfix'
 	;
 	
+VALUE
+	: NUMBERS
+	| NAME
+	;
 
 NUMBERS
 	: [1-9]|([1-9][0-9]*)
 	;
-WS
-	: [ \t\n\r]
+
+CHARACTERS
+	: '"' .*? '"'
 	;
 
-DECLARE
-	: '\\declare{'
-	;
-	
 NAME
 	: [._a-zA-Z0-9]+
 	;
 
-	
-CHARACTERS
-	: '"'(~['"'])+'"'
-	;
+WS : [ \t\n\r] -> skip; 
+OTHER : . -> skip ;

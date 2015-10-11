@@ -1,4 +1,4 @@
-grammar Grammar;
+grammar DocumentGrammar;
 
 document
 	:	 ( .*? (proof | theorem | declaration | lemma | fileInclusion | formula))* .*?

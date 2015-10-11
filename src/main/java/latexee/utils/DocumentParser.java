@@ -7,17 +7,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import main.antlrgen.GrammarLexer;
-import main.antlrgen.GrammarParser;
-import main.antlrgen.GrammarParser.DeclarationContext;
-import main.antlrgen.GrammarParser.DocumentContext;
-import main.antlrgen.GrammarParser.FileInclusionContext;
-//import main.antlrgen.GrammarParser.FileInclusionContext;
-import main.antlrgen.GrammarParser.FormulaContext;
-import main.antlrgen.GrammarParser.LemmaContext;
-import main.antlrgen.GrammarParser.ProofContext;
-import main.antlrgen.GrammarParser.SubformulaContext;
-import main.antlrgen.GrammarParser.TheoremContext;
+import main.antlrgen.DocumentGrammarLexer;
+import main.antlrgen.DocumentGrammarParser;
+import main.antlrgen.DocumentGrammarParser.DeclarationContext;
+import main.antlrgen.DocumentGrammarParser.DocumentContext;
+import main.antlrgen.DocumentGrammarParser.FileInclusionContext;
+import main.antlrgen.DocumentGrammarParser.FormulaContext;
+import main.antlrgen.DocumentGrammarParser.LemmaContext;
+import main.antlrgen.DocumentGrammarParser.ProofContext;
+import main.antlrgen.DocumentGrammarParser.TheoremContext;
 import main.java.latexee.docast.DeclareStatement;
 import main.java.latexee.docast.FormulaStatement;
 import main.java.latexee.docast.IncludeStatement;
@@ -32,8 +30,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-//NB1: $valem1$$valem2$ ei parsi
-//NB2: ei parsi sümboleid /, { ja $ tekstina. (vaja grammatikas TEXTi muuta)
 
 public class DocumentParser {
 		public static ParsedStatement parse (String filename){
@@ -48,14 +44,14 @@ public class DocumentParser {
 				Logger.log("Could not access specified file.");
 				System.exit(1);
 			}
-			GrammarLexer lexer = new GrammarLexer(AIS);
+			DocumentGrammarLexer lexer = new DocumentGrammarLexer(AIS);
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
-			GrammarParser parser = new GrammarParser(tokens);
+			DocumentGrammarParser parser = new DocumentGrammarParser(tokens);
 			ParseTree parseTree = parser.document();
 			ParsedStatement AST = parseRecursively(parseTree, new ArrayList<String>());
 			return AST;
 		}
-	//main parsing method (also parses all included documents)
+		//main parsing method (also parses all included documents)
 		public static ParsedStatement parse (String fileContent, ArrayList<String> includedFiles) {
 			ParseTree tree = parseText(fileContent);
 			ParsedStatement ps = parseRecursively(tree, includedFiles);
@@ -66,9 +62,9 @@ public class DocumentParser {
 		//LaTeX tekst -> ParseTree
 		public static ParseTree parseText (String text) {
 			ANTLRInputStream antlrInput = new ANTLRInputStream(text);
-	        GrammarLexer lexer = new GrammarLexer(antlrInput);
+			DocumentGrammarLexer lexer = new DocumentGrammarLexer(antlrInput);
 	        CommonTokenStream tokens = new CommonTokenStream(lexer);
-	        GrammarParser parser = new GrammarParser(tokens);
+	        DocumentGrammarParser parser = new DocumentGrammarParser(tokens);
 	        ParseTree tree = parser.document();
 	        return tree;
 		}
@@ -92,8 +88,8 @@ public class DocumentParser {
 			}
 			return sb.toString();
 		}
+		
 			
-
 		public static ParsedStatement parseRecursively (ParseTree tree, ArrayList<String> includedFiles) {
 			int startIndex = 0;
 			//All contexts inherit from ParserRuleContext, so for each case the index will be set here.
@@ -112,19 +108,16 @@ public class DocumentParser {
 				return new ParsedStatement(tree.getText(), startIndex, children);
 			}
 			
-			if (tree instanceof SubformulaContext) {
+			else if (tree instanceof FormulaContext) {
 				String text = tree.getText();
-				text = text.substring(1, text.length() - 1);
-				return new FormulaStatement(text, startIndex);
-			}
-			
-			if (tree instanceof FormulaContext) {
-				if (tree.getText().charAt(0) == '\\') {
-					String text = tree.getText();
-					text = text.substring(text.indexOf('}')+1, text.length()-"\\end{equation}".length());
-					return new FormulaStatement(text, startIndex);
+				if (text.charAt(0) == '$') {
+					text = text.substring(1, text.length() - 1);
+					if (text.length() > 1 && text.charAt(0) == '$')
+						text = text.substring(1, text.length() - 1);
 				}
-				return parseRecursively(tree.getChild(0), includedFiles);
+				else
+					text = text.substring(text.indexOf('}')+1, text.length()-"\\end{equation}".length());
+				return new FormulaStatement(text, startIndex);
 			}
 			
 			else if (tree instanceof ProofContext) {
@@ -156,7 +149,7 @@ public class DocumentParser {
 			}
 			
 			else if (tree instanceof FileInclusionContext) {
-				String text = tree.getText();
+				String text = tree.getChild(0).getText();
 				String url = text.substring(text.indexOf('{')+1, text.length()-1);
 				if (!contains(includedFiles, url)) {
 					includedFiles.add(url);
@@ -178,8 +171,8 @@ public class DocumentParser {
 				return new LemmaStatement("", startIndex, children);
 			}
 			return null;
-			
 		}
+		
 		
 		public static boolean contains(ArrayList<String> list, String el) { //TODO: Object instead of String to fit any type?
 			for (int i = 0; i < list.size(); i++) {

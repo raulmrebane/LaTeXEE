@@ -1,5 +1,7 @@
 package main.java.latexee.runtime;
 
+import java.util.ArrayList;
+
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.utils.DeclarationParser;
 import main.java.latexee.utils.DocumentParser;
