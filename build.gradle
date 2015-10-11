@@ -27,8 +27,10 @@ configurations {
 
 dependencies {
     compile group: "org.antlr", name: "antlr4-runtime", version: "4.5.1"
+    compile group: "commons-cli", name: "commons-cli", version: "1.3.1"
     antlr4 group: "org.antlr", name: "antlr4", version: "4.5.1"
     testCompile group: "junit", name: "junit", version: versions.junit
+    
 }
 
 task antlrOutputDir << {
@@ -70,7 +72,7 @@ task runJar(type: Exec, dependsOn: jar) {
     // ./gradlew run "-Prunargs=-x, a, b, c"
     if (project.hasProperty('runargs')) {
         args '-jar', "$jar.archivePath"
-        args(runargs.split(','))
+        args(runargs.split(' '))
     }
     else {
         args '-jar', "$jar.archivePath"
@@ -81,10 +83,10 @@ task runJar(type: Exec, dependsOn: jar) {
 task run(type: JavaExec, dependsOn: classes) {
     main 'main.java.latexee.runtime.Main'
     classpath sourceSets.main.runtimeClasspath
-    // ./gradlew run "-Prunargs=-x, a, b, c"
+    // ./gradlew run "-Prunargs=-x a b c"
     // main args will be -x, a, b, c
     if (project.hasProperty('runargs')) {
-        args(runargs.split(','))
+        args(runargs.split(' '))
     }
    
 }
