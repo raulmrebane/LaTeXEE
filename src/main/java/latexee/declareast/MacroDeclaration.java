@@ -41,6 +41,10 @@ public class MacroDeclaration extends DeclareNode {
 				break;
 			case "meaning":
 				this.meaning=value;
+				break;
+			default:
+				this.miscellaneous.put(key, value);
+				break;
 			}
 		}
 		for(int i=0;i<tree.getChildCount();i++){
@@ -50,8 +54,15 @@ public class MacroDeclaration extends DeclareNode {
 	
 	@Override
 	public String toGrammarRule() {
-		// TODO Auto-generated method stub
-		return null;
+		String highestLevelRule = "highestLevel";
+		StringBuilder sb = new StringBuilder();
+		sb.append("\'"+this.macroName+"\'");
+		for(int i=0;i<arguments;i++){
+			sb.append("\'{\'");
+			sb.append(highestLevelRule);
+			sb.append("\'}\'");
+		}
+		return sb.toString();
 	}
 
 }

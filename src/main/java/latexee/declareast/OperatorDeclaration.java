@@ -45,13 +45,6 @@ public class OperatorDeclaration extends DeclareNode {
 	}
 
 	private void fillAttributes(ParseTree tree){
-		if(tree instanceof PairContext){
-			String key = tree.getChild(0).getText();
-			String value = tree.getChild(2).getText();
-			if(key.equals("meaning")){
-				this.meaning=value;
-			}
-		}
 		if(tree instanceof SyntaxBracketContext){
 			this.type = tree.getChild(1).getText();
 			this.priority = Integer.parseInt(tree.getChild(3).getText());
@@ -61,16 +54,84 @@ public class OperatorDeclaration extends DeclareNode {
 				this.associativity = tree.getChild(7).getText();
 			}
 		}
+		else if(tree instanceof PairContext){
+			String key = tree.getChild(0).getText();
+			String value = tree.getChild(2).getText();
+			if(key.equals("meaning")){
+				this.meaning=value;
+			}
+			else{
+				this.miscellaneous.put(key,value);
+			}
+		}
+
 		
 				
 		for(int i=0;i<tree.getChildCount();i++){
 			fillAttributes(tree.getChild(i));
 		}
 	}
+	//only increments the priority by one.
 	@Override
 	public String toGrammarRule() {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder sb = new StringBuilder();
+		String operatorToken = "\'"+this.operator+"\'";
+		String currentLevel = "level"+priority.toString();
+		String lowerLevel = "level"+Integer.toString(priority+1);
+		if(this.type.equals("infix")){
+			if(this.associativity.equals("l")){
+				sb.append(currentLevel);
+				sb.append(operatorToken);
+				sb.append(lowerLevel);
+			}
+			if(this.associativity.equals("r")){
+				sb.append(lowerLevel);
+				sb.append(operatorToken);
+				sb.append(currentLevel);
+			}
+		}
+		else if(this.type.equals("postfix")){
+			sb.append(lowerLevel);
+			sb.append(operatorToken);
+		}
+		else if(this.type.equals("prefix")){
+			sb.append(operatorToken);
+			sb.append(lowerLevel);
+		}
+		
+		return sb.toString();
+	}
+	
+	public String toGrammarRule(Integer nextPriority) {
+		StringBuilder sb = new StringBuilder();
+		String operatorToken = "\'"+this.operator+"\'";
+		String currentLevel = "level"+priority.toString();
+		String lowerLevel = "level"+Integer.toString(nextPriority);
+		if(this.type.equals("infix")){
+			if(this.associativity.equals("l")){
+				sb.append(currentLevel);
+				sb.append(operatorToken);
+				sb.append(lowerLevel);
+			}
+			if(this.associativity.equals("r")){
+				sb.append(lowerLevel);
+				sb.append(operatorToken);
+				sb.append(currentLevel);
+			}
+		}
+		else if(this.type.equals("postfix")){
+			sb.append(lowerLevel);
+			sb.append(operatorToken);
+		}
+		else if(this.type.equals("prefix")){
+			sb.append(operatorToken);
+			sb.append(lowerLevel);
+		}
+		
+		return sb.toString();
+	}
+	public Integer getPriority() {
+		return priority;
 	}
 
 }

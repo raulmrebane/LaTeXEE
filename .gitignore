@@ -1,4 +1,4 @@
-
+LaTeXEE.iml
 /bin
 /target
 .classpath
@@ -7,4 +7,6 @@
 /build
 /.gradle
 /.git
+/.idea
 /src/main/java/antlrgen
+/src/main/antlrgen
