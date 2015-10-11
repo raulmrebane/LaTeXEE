@@ -71,22 +71,23 @@ public class OperatorDeclaration extends DeclareNode {
 			fillAttributes(tree.getChild(i));
 		}
 	}
+	//only increments the priority by one.
 	@Override
 	public String toGrammarRule() {
 		StringBuilder sb = new StringBuilder();
 		String operatorToken = "\'"+this.operator+"\'";
 		String currentLevel = "level"+priority.toString();
-		String lowerLevel = "level"+Integer.toString(priority-1);
+		String lowerLevel = "level"+Integer.toString(priority+1);
 		if(this.type.equals("infix")){
 			if(this.associativity.equals("l")){
-				sb.append(lowerLevel);
-				sb.append(operatorToken);
 				sb.append(currentLevel);
+				sb.append(operatorToken);
+				sb.append(lowerLevel);
 			}
 			if(this.associativity.equals("r")){
-				sb.append(currentLevel);
-				sb.append(operatorToken);
 				sb.append(lowerLevel);
+				sb.append(operatorToken);
+				sb.append(currentLevel);
 			}
 		}
 		else if(this.type.equals("postfix")){
@@ -99,6 +100,38 @@ public class OperatorDeclaration extends DeclareNode {
 		}
 		
 		return sb.toString();
+	}
+	
+	public String toGrammarRule(Integer nextPriority) {
+		StringBuilder sb = new StringBuilder();
+		String operatorToken = "\'"+this.operator+"\'";
+		String currentLevel = "level"+priority.toString();
+		String lowerLevel = "level"+Integer.toString(nextPriority);
+		if(this.type.equals("infix")){
+			if(this.associativity.equals("l")){
+				sb.append(currentLevel);
+				sb.append(operatorToken);
+				sb.append(lowerLevel);
+			}
+			if(this.associativity.equals("r")){
+				sb.append(lowerLevel);
+				sb.append(operatorToken);
+				sb.append(currentLevel);
+			}
+		}
+		else if(this.type.equals("postfix")){
+			sb.append(lowerLevel);
+			sb.append(operatorToken);
+		}
+		else if(this.type.equals("prefix")){
+			sb.append(operatorToken);
+			sb.append(lowerLevel);
+		}
+		
+		return sb.toString();
+	}
+	public Integer getPriority() {
+		return priority;
 	}
 
 }

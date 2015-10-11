@@ -29,14 +29,12 @@ public class DeclarationParser {
 			ParseTree parseTree = parseDeclaration(castNode.getContent());
 			boolean operatorStyle = isOperatorSyntax(parseTree);
 			if(operatorStyle){
-				castNode.setNode(new OperatorDeclaration(parseTree));
+				OperatorDeclaration jama = new OperatorDeclaration(parseTree);
+				castNode.setNode(jama);
 			}else{
 				castNode.setNode(new MacroDeclaration(parseTree));
-			}
-			System.out.println(castNode.getNode().toGrammarRule());
-			
+			}			
 		}
-		
 		ArrayList<ParsedStatement> children = node.getChildren();
 		for(int i=0;i<children.size();i++){
 			declarationFinder(children.get(i));
@@ -73,7 +71,9 @@ public class DeclarationParser {
 		
 		TheoremStatement theorem1 = new TheoremStatement("$2+3$$$2+5$$",20);
 		theorem1.getChildren().add(new DeclareStatement("\\declare{syntax={infix,7,\"/\",l}, meaning=artih1.divide}", 23));
-		theorem1.getChildren().add(new DeclareStatement("\\declare{syntax={prefix,7,\"/\"}, meaning=artih1.divide}", 23));
+		theorem1.getChildren().add(new DeclareStatement("\\declare{syntax={infix,5,\"+\",l}, meaning=liitmine}", 23));
+		theorem1.getChildren().add(new DeclareStatement("\\declare{syntax={infix,5,\"-\",l}, meaning=lahutamine}", 23));
+		theorem1.getChildren().add(new DeclareStatement("\\declare{syntax={infix,7,\"*\",l}, meaning=korrutamine}", 23));
 		theorem1.getChildren().add(new FormulaStatement("$2+3$", 23));
 		theorem1.getChildren().add(new FormulaStatement("$$2+5$$", 33));
 		

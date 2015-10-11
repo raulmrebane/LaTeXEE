@@ -56,7 +56,7 @@ public class MacroDeclaration extends DeclareNode {
 	public String toGrammarRule() {
 		String highestLevelRule = "highestLevel";
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.macroName);
+		sb.append("\'"+this.macroName+"\'");
 		for(int i=0;i<arguments;i++){
 			sb.append("\'{\'");
 			sb.append(highestLevelRule);
