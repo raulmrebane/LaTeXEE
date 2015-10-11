@@ -8,8 +8,8 @@ import main.java.latexee.utils.DocumentParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
-//import org.apache.commons.cli.PosixParser; // Default or posix?
-import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.PosixParser; // Default or posix?
+//import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 //import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.CommandLine;
@@ -23,7 +23,7 @@ public class Main {
     
     
 	public static void main(String[] args) {
-        
+     
         // Testing command line parser
         Options options = new Options();
         
@@ -36,30 +36,43 @@ public class Main {
         options.addOption("v", "be verbose");
         options.addOption("h", "do you need help?");
 
-        CommandLineParser parser = new DefaultParser();
+        CommandLineParser parser = new PosixParser();
         CommandLine cmd; 
         
         try {
             cmd = parser.parse(options, args);
             
-            // If asked for help
-            if (cmd.hasOption("h")) {
+            // If asked for help or there are no arguments.
+            if (args.length == 0 || cmd.hasOption("h")) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp( "latexee", options );
+                formatter.printHelp( "latexee [inputFile]", options );
             }
-            // If verbose is enabled
-            if (cmd.hasOption("v")) {
-                System.out.println("Verbose option enable. Enjoy your text");
-            }
-                        
-            if (cmd.hasOption ("o")) {
-                // Check if can write there, etc... Legal path, warning
-                String outFile = cmd.getOptionValue("o");
-                System.out.println("Outputfile is: " + outFile);
-            } 
-            else {
-                // Default outputfile ?
-            //    System.out.println("No outputfile specified");
+            if (args.length > 0) {
+                String inputFile;
+                // input file can not start with "-"
+                if (args[0].charAt(0) != '-') {
+                    inputFile = args[0];
+                    System.out.println("Inputfile is: " + inputFile);
+                    
+                    // If verbose is enabled
+                    if (cmd.hasOption("v")) {
+                        System.out.println("Verbose option enable. Enjoy your text");
+                    }
+                                
+                    if (cmd.hasOption ("o")) {
+                        // Check if can write there, etc... Legal path, warning
+                        String outFile = cmd.getOptionValue("o");
+                        System.out.println("Outputfile is: " + outFile);
+                    }
+                    else {
+                        // Default outputfile ?
+                    //    System.out.println("No outputfile specified");
+                    }
+                }
+                else {
+                    System.out.println("No inputfile specified");
+                }
+               
             }
 
             
