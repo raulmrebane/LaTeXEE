@@ -41,6 +41,10 @@ public class MacroDeclaration extends DeclareNode {
 				break;
 			case "meaning":
 				this.meaning=value;
+				break;
+			default:
+				this.miscellaneous.put(key, value);
+				break;
 			}
 		}
 		for(int i=0;i<tree.getChildCount();i++){

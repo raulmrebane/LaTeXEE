@@ -51,6 +51,9 @@ public class OperatorDeclaration extends DeclareNode {
 			if(key.equals("meaning")){
 				this.meaning=value;
 			}
+			else{
+				this.miscellaneous.put(key,value);
+			}
 		}
 		if(tree instanceof SyntaxBracketContext){
 			this.type = tree.getChild(1).getText();
