@@ -1,8 +1,8 @@
-package main.antlr.latexee.declareast;
+package main.java.latexee.declareast;
 
 
 
-import main.antlrgen.DeclarationGrammarParser.PairContext;
+import main.antlrgen.DocumentGrammarParser.PairContext;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 

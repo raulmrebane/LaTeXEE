@@ -12,13 +12,13 @@ public class Main {
 
 	public static void main(String[] args) {
 		//quick way to enable fast testing during writing. Uncomment to test.
-		args = new String[] {"src/test/antlr/LaTeX_file_2.tex"};
+		args = new String[] {"src/test/antlr/basic_with_declare.tex"};
 		
-		logStatus = true;
+		logStatus = false;
 		
 		String filename = args[0];
 		
 		ParsedStatement AST = DocumentParser.parse(filename);
-		DeclarationParser.declarationFinder(DeclarationParser.giveMeTheTestCase());
+		DeclarationParser.declarationFinder(AST);
 	}
 }

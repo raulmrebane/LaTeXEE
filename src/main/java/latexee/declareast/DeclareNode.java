@@ -1,4 +1,4 @@
-package main.antlr.latexee.declareast;
+package main.java.latexee.declareast;
 
 public abstract class DeclareNode {
 	protected String meaning;

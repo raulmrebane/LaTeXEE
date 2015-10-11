@@ -7,12 +7,11 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import main.antlr.latexee.declareast.MacroDeclaration;
-import main.antlr.latexee.declareast.OperatorDeclaration;
-import main.antlrgen.DeclarationGrammarLexer;
-import main.antlrgen.DeclarationGrammarParser;
-import main.antlrgen.DeclarationGrammarParser.KeyValuePairsContext;
-import main.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
+import main.antlrgen.DocumentGrammarLexer;
+import main.antlrgen.DocumentGrammarParser;
+import main.antlrgen.DocumentGrammarParser.SyntaxBracketContext;
+import main.java.latexee.declareast.MacroDeclaration;
+import main.java.latexee.declareast.OperatorDeclaration;
 import main.java.latexee.docast.DeclareStatement;
 import main.java.latexee.docast.FormulaStatement;
 import main.java.latexee.docast.LemmaStatement;
@@ -60,9 +59,9 @@ public class DeclarationParser {
 	
 	public static ParseTree parseDeclaration(String rule){
 		ANTLRInputStream antlrInput = new ANTLRInputStream(rule);
-	    DeclarationGrammarLexer lexer = new DeclarationGrammarLexer(antlrInput);
+	    DocumentGrammarLexer lexer = new DocumentGrammarLexer(antlrInput);
 	    CommonTokenStream tokens = new CommonTokenStream(lexer);
-	    DeclarationGrammarParser parser = new DeclarationGrammarParser(tokens);
+	    DocumentGrammarParser parser = new DocumentGrammarParser(tokens);
 	    ParseTree tree = parser.declarationGrammar();
 	    return tree;
 	}

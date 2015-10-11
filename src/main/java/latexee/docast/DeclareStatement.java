@@ -2,7 +2,7 @@ package main.java.latexee.docast;
 
 import java.util.ArrayList;
 
-import main.antlr.latexee.declareast.DeclareNode;
+import main.java.latexee.declareast.DeclareNode;
 
 public class DeclareStatement extends ParsedStatement {
 	//TODO: find a better name for this field.
