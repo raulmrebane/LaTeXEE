@@ -1,7 +1,7 @@
 package main.java.latexee.declareast;
 
-import main.antlrgen.DocumentGrammarParser.PairContext;
-import main.antlrgen.DocumentGrammarParser.SyntaxBracketContext;
+import main.java.antlrgen.DocumentGrammarParser.PairContext;
+import main.java.antlrgen.DocumentGrammarParser.SyntaxBracketContext;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 

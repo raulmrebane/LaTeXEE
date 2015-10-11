@@ -7,9 +7,9 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import main.antlrgen.DocumentGrammarLexer;
-import main.antlrgen.DocumentGrammarParser;
-import main.antlrgen.DocumentGrammarParser.SyntaxBracketContext;
+import main.java.antlrgen.DocumentGrammarLexer;
+import main.java.antlrgen.DocumentGrammarParser;
+import main.java.antlrgen.DocumentGrammarParser.SyntaxBracketContext;
 import main.java.latexee.declareast.MacroDeclaration;
 import main.java.latexee.declareast.OperatorDeclaration;
 import main.java.latexee.docast.DeclareStatement;
