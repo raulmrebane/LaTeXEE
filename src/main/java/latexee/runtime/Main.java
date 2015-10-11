@@ -2,9 +2,11 @@ package main.java.latexee.runtime;
 
 import java.util.ArrayList;
 
+
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.utils.DeclarationParser;
 import main.java.latexee.utils.DocumentParser;
+import main.java.latexee.utils.GrammarGenerator;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
@@ -20,35 +22,40 @@ import org.apache.commons.cli.ParseException;
 
 public class Main {
 	public static boolean logStatus = false;
+    public static String outputFile;
+    public static String inputFile;
+    public static boolean verbose = false;
     
     
-	public static void main(String[] args) {
-     
-        // Testing command line parser
-        Options options = new Options();
+    /* Construct options for the command line parser. */
+    private static Options constructOptions() {
+        final Options options = new Options();
         
-        Option outputFile = OptionBuilder.withArgName( "file" )
+        Option o = OptionBuilder.withArgName( "file" )
                                 .hasArg()
                                 .withDescription( "output will be here")
                                 .create( "o" );
         
-        options.addOption(outputFile);
+        options.addOption(o);
         options.addOption("v", "be verbose");
         options.addOption("h", "do you need help?");
-
-        CommandLineParser parser = new PosixParser();
-        CommandLine cmd; 
         
+        return options;
+    }
+    /* Use the command line parser */
+    private static void useParser(final String[] args) {
+        final CommandLineParser parser = new PosixParser();    
+        final Options options = constructOptions();  
+
+        CommandLine cmd;     
         try {
             cmd = parser.parse(options, args);
-            
             // If asked for help or there are no arguments.
             if (args.length == 0 || cmd.hasOption("h")) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp( "latexee [inputFile]", options );
+                formatter.printHelp( "LaTeXEE [inputFile]", options );
             }
             if (args.length > 0) {
-                String inputFile;
                 // input file can not start with "-"
                 if (args[0].charAt(0) != '-') {
                     inputFile = args[0];
@@ -56,13 +63,14 @@ public class Main {
                     
                     // If verbose is enabled
                     if (cmd.hasOption("v")) {
+                        verbose = true;
                         System.out.println("Verbose option enable. Enjoy your text");
                     }
                                 
                     if (cmd.hasOption ("o")) {
                         // Check if can write there, etc... Legal path, warning
-                        String outFile = cmd.getOptionValue("o");
-                        System.out.println("Outputfile is: " + outFile);
+                        outputFile = cmd.getOptionValue("o");
+                        System.out.println("Outputfile is: " + outputFile);
                     }
                     else {
                         // Default outputfile ?
@@ -81,10 +89,13 @@ public class Main {
             System.err.println("Encountered exception while parsing arguments\n"  
                 + parseException.getMessage());
         }
+    }
+    
+    
+	public static void main(String[] args) {
         
-       
-        
-        
+        // Call parser.
+        useParser(args);   
         
 		//quick way to enable fast testing during writing. Uncomment to test.
 		args = new String[] {"src/test/antlr/basic_with_declare.tex"};
