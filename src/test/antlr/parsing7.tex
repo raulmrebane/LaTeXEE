@@ -2,6 +2,33 @@
 
 \begin{document}
 
-Some declaration test here!
+Lähevad läbi:
+
+Syntax l ja r
+\declare{syntax={infix, 7, "/", l}, meaning=arith1.divide}
+\declare{syntax={infix, 7, "/", r}, meaning=arith1.divide}
+
+Ilma ass
+\declare{syntax={prefix, 7, "/"}, meaning=arith1.divide}
+\declare{syntax={postfix, 7, "/"}, meaning=arith1.divide}
+
+Macro - argument optional ja mitte
+\declare{macro=\frac, meaning=arith1.divide, argspec=[2], code={...}}
+\declare{macro=\frac2, meaning=arith1.divide, argspec=2, code={...}}
+
+\declare{macro=\tuple, meaning=ecc.Tuple, argspec=[2], code={#1, \ldots, #2}}
+
+Ei tohi minna läbi:
+
+Midagi valesti syntax juures
+\declare{syntax={infix, -2, "/", l}, meaning=arith1.divide} 
+\declare{syntax={infix, 7, "/", m}, meaning=arith1.divide}
+\declare{syntax={infi, 7, "/", l}, meaning=arith1.divide}
+\declare{syntax={prefix, 7, "/", l}, meaning=arith1.divide}
+\declare{syntax={postfix, 7, "/", l}, meaning=arith1.divide}
+
+Nimesid pole
+\declare{syntax={infi, 7, "/", l}}
+\declare{macro=\frac3, argspec=2, code={...}}
 
 \end{document}
