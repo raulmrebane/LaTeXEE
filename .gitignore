@@ -7,4 +7,4 @@
 /build
 /.gradle
 /.git
-/src/main/antlrgen
+/src/main/java/antlrgen
