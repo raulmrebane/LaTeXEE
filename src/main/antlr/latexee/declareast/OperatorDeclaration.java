@@ -1,6 +1,6 @@
 package main.antlr.latexee.declareast;
 
-import main.antlrgen.DeclarationGrammarParser.MeaningComponentContext;
+import main.antlrgen.DeclarationGrammarParser.PairContext;
 import main.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -24,29 +24,44 @@ public class OperatorDeclaration extends DeclareNode {
 	public OperatorDeclaration(ParseTree tree){
 		fillAttributes(tree);
 		
-		//Just in case, there is a check to make sure all fields are instantiated.
-		if(
-				this.type == null ||
-				this.priority == null ||
-				this.operator == null ||
-				this.meaning == null ||
-				this.associativity == null){
-			//However, this should never happen. As I write this, I'm sure it will some day.
-			throw new RuntimeException("Not all fields were instantiated on operator declaration: "+tree.getText());
+		//Yesterday, this was a formality. Today it guards us from the hell of nullpointers.
+		if(this.type == null){
+			throw new RuntimeException("Type field was not instantiated on operator declaration: "+tree.getText());
 		}
+		if(this.priority == null){
+			throw new RuntimeException("Priority field was not instantiated on operator declaration: "+tree.getText());
+		}
+		if(this.meaning == null){
+			throw new RuntimeException("Meaning field was not instantiated on operator declaration: "+tree.getText());
+		}
+		if(this.operator == null){
+			throw new RuntimeException("Operator character field was not instantiated on operator declaration: "+tree.getText());
+		}
+		if(this.associativity == null && type.equals("infix")){
+			throw new RuntimeException("Associativity field was not instantiated on infix operator declaration: "+tree.getText());
+		}
+			
+			
 	}
 
 	private void fillAttributes(ParseTree tree){
+		if(tree instanceof PairContext){
+			String key = tree.getChild(0).getText();
+			String value = tree.getChild(2).getText();
+			if(key.equals("meaning")){
+				this.meaning=value;
+			}
+		}
 		if(tree instanceof SyntaxBracketContext){
-			this.type = tree.getChild(0).getText();
-			this.priority = Integer.parseInt(tree.getChild(2).getText());
-			String roughOp = tree.getChild(4).getText();
+			this.type = tree.getChild(1).getText();
+			this.priority = Integer.parseInt(tree.getChild(3).getText());
+			String roughOp = tree.getChild(5).getText();
 			this.operator = roughOp.substring(1, roughOp.length()-1);
-			this.associativity = tree.getChild(6).getText();
+			if(tree.getChildCount()==9){
+				this.associativity = tree.getChild(7).getText();
+			}
 		}
-		if(tree instanceof MeaningComponentContext){
-			this.meaning = tree.getChild(1).getText();
-		}
+		
 				
 		for(int i=0;i<tree.getChildCount();i++){
 			fillAttributes(tree.getChild(i));

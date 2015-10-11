@@ -11,8 +11,8 @@ import main.antlr.latexee.declareast.MacroDeclaration;
 import main.antlr.latexee.declareast.OperatorDeclaration;
 import main.antlrgen.DeclarationGrammarLexer;
 import main.antlrgen.DeclarationGrammarParser;
-import main.antlrgen.DeclarationGrammarParser.MacroSyntaxContext;
-import main.antlrgen.DeclarationGrammarParser.OperatorSyntaxContext;
+import main.antlrgen.DeclarationGrammarParser.KeyValuePairsContext;
+import main.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
 import main.java.latexee.docast.DeclareStatement;
 import main.java.latexee.docast.FormulaStatement;
 import main.java.latexee.docast.LemmaStatement;
@@ -28,15 +28,11 @@ public class DeclarationParser {
 		if(node instanceof DeclareStatement){
 			DeclareStatement castNode = (DeclareStatement) node;
 			ParseTree parseTree = parseDeclaration(castNode.getContent());
-			ParseTree contentNode = parseTree.getChild(1);
-			
-			//currently this only checks the parsing of declarations, there is no place of storing them at the current moment.
-			if(contentNode instanceof OperatorSyntaxContext){
-				System.out.println(contentNode.getText());
-				((DeclareStatement) node).setNode(new OperatorDeclaration(contentNode));
-			}
-			else if(contentNode instanceof MacroSyntaxContext){
-				((DeclareStatement) node).setNode(new MacroDeclaration(contentNode));
+			boolean operatorStyle = isOperatorSyntax(parseTree);
+			if(operatorStyle){
+				castNode.setNode(new OperatorDeclaration(parseTree));
+			}else{
+				castNode.setNode(new MacroDeclaration(parseTree));
 			}
 			
 		}
@@ -46,6 +42,18 @@ public class DeclarationParser {
 			declarationFinder(children.get(i));
 		}
 		
+	}
+	
+	public static boolean isOperatorSyntax(ParseTree tree){
+		boolean foundOperator = false;
+		if(tree instanceof SyntaxBracketContext){
+			foundOperator = true;
+		}
+		int childCount = tree.getChildCount();
+		for(int i=0;i<childCount;i++){
+			foundOperator = foundOperator || isOperatorSyntax(tree.getChild(i));
+		}
+		return foundOperator;
 	}
 	
 	//Generates the ANTLR parse tree for each declaration string
@@ -64,12 +72,13 @@ public class DeclarationParser {
 		ParsedStatement root = new ParsedStatement("placeholder", 0);
 		
 		TheoremStatement theorem1 = new TheoremStatement("$2+3$$$2+5$$",20);
-		//theorem1.getChildren().add(new DeclareStatement("\\declare{syntax={infix 7 \"/\" l}, meaning=artih1.divide}", 23));
+		theorem1.getChildren().add(new DeclareStatement("\\declare{syntax={infix,7,\"/\",l}, meaning=artih1.divide}", 23));
+		theorem1.getChildren().add(new DeclareStatement("\\declare{syntax={prefix,7,\"/\"}, meaning=artih1.divide}", 23));
 		theorem1.getChildren().add(new FormulaStatement("$2+3$", 23));
 		theorem1.getChildren().add(new FormulaStatement("$$2+5$$", 33));
 		
 		LemmaStatement lemma = new LemmaStatement("placeholder",30);
-		//lemma.getChildren().add(new DeclareStatement("\\declare{macro=asd, meaning=asdasd,    argspec=[2], code={...}}", 80));
+		lemma.getChildren().add(new DeclareStatement("\\declare{macro=asd, meaning=asdasd,    argspec=[2], code={...}}", 80));
 		lemma.getChildren().add(new DeclareStatement("\\declare{macro=asd, meaning=asdasd,    argspec=[2], code={\\alright{then}{\\what{is}{\\nesting}}}", 80));
 		theorem1.getChildren().add(new FormulaStatement("$$2+5$$", 33));
 		
