@@ -8,3 +8,4 @@
 /.gradle
 /.git
 /src/main/java/antlrgen
+/src/main/antlrgen
