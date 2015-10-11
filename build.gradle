@@ -7,9 +7,9 @@ ext.versions = [
 ]
 
 ext.antlr = [
-    grammarpackage: 'antlrgen',
+    grammarpackage: 'main.java.antlrgen',
     antlrSource: 'src/main/antlr',
-    destinationDir: "src/generated-sources/java"
+    destinationDir: "src/main/java/antlrgen"
 ]
 
 
@@ -47,12 +47,12 @@ task generateGrammarSource(dependsOn: antlrOutputDir, type: JavaExec) {
     main = 'org.antlr.v4.Tool'
     classpath = configurations.antlr4
     def pkg = antlr.grammarpackage.replaceAll("\\.", "/")
-    args = ["-o", "${antlr.destinationDir}/${pkg}"/*, "-atn"*/, "-visitor", "-package", antlr.grammarpackage, grammars.files].flatten()
+    args = ["-o", "${antlr.destinationDir}"/*, "-atn"*/, "-visitor", "-package", antlr.grammarpackage, grammars.files].flatten()
 
 }
 
 jar {
-    manifest.attributes 'Main-Class': 'latexee.Main'
+    manifest.attributes 'Main-Class': 'main.java.latexee.runtime.Main'
     // Package runtime to jar.
     from configurations.compile.collect { zipTree it}
 }
