@@ -51,10 +51,42 @@ task generateGrammarSource(dependsOn: antlrOutputDir, type: JavaExec) {
 
 }
 
+sourceSets {
+    main.java.srcDir 'src/main' 
+    test.java.srcDir 'src/test' 
+}
+
 jar {
+    // Add main class to manifest
     manifest.attributes 'Main-Class': 'main.java.latexee.runtime.Main'
     // Package runtime to jar.
     from configurations.compile.collect { zipTree it}
+}
+
+// Runs the jar file. "gradlew.bat runJar"
+task runJar(type: Exec, dependsOn: jar) {
+    // dependsOn jar
+    executable 'java'
+    // ./gradlew run "-Prunargs=-x, a, b, c"
+    if (project.hasProperty('runargs')) {
+        args '-jar', "$jar.archivePath"
+        args(runargs.split(','))
+    }
+    else {
+        args '-jar', "$jar.archivePath"
+    }
+    
+}
+
+task run(type: JavaExec, dependsOn: classes) {
+    main 'main.java.latexee.runtime.Main'
+    classpath sourceSets.main.runtimeClasspath
+    // ./gradlew run "-Prunargs=-x, a, b, c"
+    // main args will be -x, a, b, c
+    if (project.hasProperty('runargs')) {
+        args(runargs.split(','))
+    }
+   
 }
 
 compileJava {
