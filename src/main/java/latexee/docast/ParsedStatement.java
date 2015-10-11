@@ -43,12 +43,23 @@ public class ParsedStatement {
 		children.add(child);
 	}
 	
+	public int getChildCount() {
+		return children.size();
+	}
+	
+	public ParsedStatement getChild(int i) {
+		return children.get(i);
+	}
+	
 	public String toString() {
+		if (this instanceof FormulaStatement || this instanceof DeclareStatement || this instanceof IncludeStatement)
+			return content + "]";
 		String children = "";
 		for (int i = 0; i < this.getChildren().size(); i++) {
 			children += this.getChildren().get(i).toString();
 		}
-		return content + " " + children + "]"; //ainult ajutine
+		return " " + children + "]";
+		//return content + " " + children + "]"; //ainult ajutine
 	}
 
 }
