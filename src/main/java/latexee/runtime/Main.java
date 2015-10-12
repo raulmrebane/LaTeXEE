@@ -101,18 +101,18 @@ public class Main {
     
 	public static void main(String[] args) {
         
-        // Call parser.
-        useParser(args);   
+                // Call parser.
+                useParser(args);   
         
 		//quick way to enable fast testing during writing. Uncomment to test.
-		args = new String[] {"src/test/antlr/basic_with_declare.tex"};
-		String outputFile = "output.txt";
-		String inputFile = args[0];
-		if (inputFile != null) {
-            ParsedStatement AST = DocumentParser.parse(inputFile);
-            DeclarationParser.declarationFinder(AST);
-            OutputWriter.formulasToTXT(AST, outputFile);
-            Logger.log("Finished without errors");
-        }
+        	//args = new String[] {"src/test/antlr/basic_with_declare.tex"};
+        	//String outputFile = "output.txt";
+        	//String inputFile = args[0];
+        	if (inputFile != null) {
+                    ParsedStatement AST = DocumentParser.parse(inputFile);
+                    DeclarationParser.declarationFinder(AST);
+                    OutputWriter.formulasToTXT(AST, outputFile);
+                    Logger.log("Finished without errors");
+                }
 	}
 }
