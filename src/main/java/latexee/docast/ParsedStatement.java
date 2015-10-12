@@ -52,14 +52,19 @@ public class ParsedStatement {
 	}
 	
 	public String toString() {
-		if (this instanceof FormulaStatement || this instanceof DeclareStatement || this instanceof IncludeStatement)
-			return content + "]";
-		String children = "";
-		for (int i = 0; i < this.getChildren().size(); i++) {
-			children += this.getChildren().get(i).toString();
-		}
-		return " " + children + "]";
-		//return content + " " + children + "]"; //ainult ajutine
-	}
+    	StringBuilder sb = new StringBuilder();
+        print("", true, sb);
+        return sb.toString();
+    }
+	//Credit to Vasya Novikov - http://stackoverflow.com/a/8948691
+    private void print(String prefix, boolean isTail, StringBuilder sb) {
+        sb.append(prefix + (isTail ? "└── " : "├── ") + this.getClass().getSimpleName()+"\n");
+        for (int i = 0; i < children.size() - 1; i++) {
+            children.get(i).print(prefix + (isTail ? "    " : "│   "), false, sb);
+        }
+        if (children.size() > 0) {
+            children.get(children.size() - 1).print(prefix + (isTail ?"    " : "│   "), true, sb);
+        }
+    }
 
 }

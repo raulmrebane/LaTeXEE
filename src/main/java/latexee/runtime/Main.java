@@ -105,9 +105,9 @@ public class Main {
         useParser(args);   
         
 		//quick way to enable fast testing during writing. Uncomment to test.
-		args = new String[] {"src/test/antlr/basic_with_declare.tex"};
-		String outputFile = "output.txt";
-		String inputFile = args[0];
+		//args = new String[] {"src/test/antlr/basic_with_declare.tex"};
+		//String outputFile = "output.txt";
+		//String inputFile = args[0];
 		if (inputFile != null) {
             ParsedStatement AST = DocumentParser.parse(inputFile);
             DeclarationParser.declarationFinder(AST);
