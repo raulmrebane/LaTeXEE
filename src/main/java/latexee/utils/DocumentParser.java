@@ -48,7 +48,7 @@ public class DocumentParser {
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			DocumentGrammarParser parser = new DocumentGrammarParser(tokens);
 			ParseTree parseTree = parser.document();
-			ParsedStatement AST = parseRecursively(parseTree, new ArrayList<String>());
+			ParsedStatement AST = parseRecursively(parseTree, new ArrayList<String>(Arrays.asList(filename)));
 			return AST;
 		}
 		//main parsing method (also parses all included documents)

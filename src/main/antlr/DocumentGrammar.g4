@@ -19,7 +19,6 @@ lemma
 
 formula
 	: FormulaLiteral
-	| DoubleFormulaLiteral
 	| MACROFORMULA
 	;
 

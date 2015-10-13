@@ -52,28 +52,28 @@ public class ParsedStatementTest {
 			new FormulaStatement("formula3", 0),
 			new FormulaStatement("formula4", 0)
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing1.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing1.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test //tests formulas (all types)
-	public void ParsingTest2() {
+	public void ParsingTest2() { //fails probably because of some \r\n differences, but not sure. Seems identical.
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new FormulaStatement("7*5-(4-2/5)", 0),
-			new FormulaStatement("1-2-3-4-5-6-7", 0),
+			new FormulaStatement("\r\n1-2-3-4-5-6-7\r\n", 0),
 			new FormulaStatement("A", 0),
 			new FormulaStatement("B", 0),
-			new FormulaStatement("a-bb=x+2", 0), //NB! \r\n disappears.
-			new FormulaStatement("a^0b+1", 0),
+			new FormulaStatement("\r\na-b\r\nb=x+2\r\n", 0),
+			new FormulaStatement("a^0\r\nb+1\r\n", 0),
 			new FormulaStatement("\\\\begin\\{equation\\}That's planned\\\\end\\{equation\\}", 0), //could do real syntax, but .tex wouldn't compile
-			new FormulaStatement("0.6 * x^8", 0)
+			new FormulaStatement("\r\n0.6 * x^8\r\n", 0)
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing2.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing2.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test //tests theorems, lemmas and proofs
-	public void ParsingTest3() { //fails because of a known bug
+	public void ParsingTest3() { //fails because of the adjacency bug
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new TheoremStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 				new FormulaStatement("x+5=6", 0)	
@@ -94,12 +94,12 @@ public class ParsedStatementTest {
 				new FormulaStatement("4*4/4=y", 0)
 			)))
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing3.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing3.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test //tests nested thorems, lemmas and proofs
-	public void ParsingTest4() { //fails because of a known bug
+	public void ParsingTest4() { //fails because of the adjacency bug + doesn't parse a lemma within a theorem
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new TheoremStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 				new LemmaStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
@@ -116,23 +116,23 @@ public class ParsedStatementTest {
 				)))	
 			)))
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing4.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing4.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test //tests brackets (not in the case of declarations!)
-	public void ParsingTest5() {
+	public void ParsingTest5() { //fails because of a mismatched '{' (or '\{' within a proof
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new FormulaStatement("something{here}", 0),
 			new FormulaStatement("{{_d}}}", 0),
 			new ProofStatement("", 0, new ArrayList<ParsedStatement>())
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing5.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing5.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test //tests \$ within formulas
-	public void ParsingTest6() { //this fails because of the known bug
+	public void ParsingTest6() { //fails, because still doesn't parse a\$ $valem$$\$$ correctly
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new FormulaStatement("\\$", 0),
 			new FormulaStatement("a\\$", 0),
@@ -154,12 +154,12 @@ public class ParsedStatementTest {
 			new FormulaStatement("4+5", 0),
 			new FormulaStatement("8", 0)
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing6.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing6.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test //tests declarations
-	public void ParsingTest7() { //fails due to a known bug
+	public void ParsingTest7() { //fails for unknown reasons (parses declarations that it shouldn't)
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new DeclareStatement("\\declare{syntax={infix,7,\"/\",l},meaning=arith1.divide}", 0),
 			new DeclareStatement("\\declare{syntax={infix,7,\"/\",r},meaning=arith1.divide}", 0),
@@ -169,12 +169,12 @@ public class ParsedStatementTest {
 			new DeclareStatement("\\declare{macro=\\frac2,meaning=arith1.divide,argspec=2,code={...}}", 0),
 			new DeclareStatement("\\declare{macro=\\tuple,meaning=ecc.Tuple,argspec=[2],code={#1,\\ldots,#2}}", 0)
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing7.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing7.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test //tests declarations within proofs, theorems and lemmas
-	public void ParsingTest8() {
+	public void ParsingTest8() { //fails for unknown reasons
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new TheoremStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 				new DeclareStatement("\\declare{syntax={infix,7,\"/\",l},meaning=arith1.divide}", 0)	
@@ -185,7 +185,7 @@ public class ParsedStatementTest {
 				)))
 			)))
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing8.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing8.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -199,7 +199,7 @@ public class ParsedStatementTest {
 			))),
 			new LemmaStatement("", 0, new ArrayList<ParsedStatement>())
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing9.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing9.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -213,7 +213,7 @@ public class ParsedStatementTest {
 				new ParsedStatement("", 0)	
 			)))
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing10.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing10.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -224,7 +224,7 @@ public class ParsedStatementTest {
 				new ParsedStatement("", 0)	
 			)))
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing11.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing11.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -233,7 +233,7 @@ public class ParsedStatementTest {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new FormulaStatement("a random formula so the document wouldn't feel empty inside", 0)
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing12.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing12.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -244,7 +244,7 @@ public class ParsedStatementTest {
 				new ParsedStatement("", 0)	
 			)))
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing13.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing13.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -255,28 +255,45 @@ public class ParsedStatementTest {
 				new ParsedStatement("", 0)	
 			)))
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/parsing14.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing14.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test //tests everything together
-	public void LaTeX_file_2Test() { //fails because of a known bug
+	public void LaTeX_file_2Test() { //fails becasue of the adjacency bug
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-			new IncludeStatement("src/test/antlr/LaTeX_file_3.tex", 0),
+			new IncludeStatement("src/test/antlr/LaTeX_file_3.tex", 0, new ArrayList<ParsedStatement>(Arrays.asList(
+				new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
+					new TheoremStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
+						new FormulaStatement("TEISEFAILIVALEM", 0)	
+					)))
+				)))	
+			))),
 			new ProofStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 				new FormulaStatement("i", 0),
 				new LemmaStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 					new FormulaStatement("o", 0)	
 				))),
 				new LemmaStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-					new DeclareStatement("syntax={infix, 7, /, lassoc}, meaning=arith1.divide", 0),
+					new DeclareStatement("{syntax={infix, 7, /, lassoc}, meaning=arith1.divide}", 0),
 					new FormulaStatement("meh", 0)
 				))),
 				new FormulaStatement("blaa", 0)
 			))),
-			new IncludeStatement("src/test/antlr/LaTeX_file_4.tex", 0, new ArrayList<ParsedStatement>())
+			new IncludeStatement("src/test/antlr/LaTeX_file_4.tex", 0, new ArrayList<ParsedStatement>(Arrays.asList(
+				new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
+					new FormulaStatement("Mingi valem ka.", 0),
+					new IncludeStatement("src/test/antlr/LaTeX_file_3.tex", 0),
+					new FormulaStatement("\r\nNeljas!\r\n", 0),
+					new FormulaStatement("valem", 0),
+					new FormulaStatement("\\$", 0),
+					new IncludeStatement("src/test/antlr/LaTeX_file_4.tex", 0)
+				)))	
+			)))
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/LaTeX_file_2.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/LaTeX_file_2.tex");
+		System.out.println(ps);
+		System.out.println(ps2);
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -287,21 +304,27 @@ public class ParsedStatementTest {
 				new FormulaStatement("TEISEFAILIVALEM", 0)	
 			)))
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/LaTeX_file_3.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/LaTeX_file_3.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test
-	public void LaTeX_file_4Test() { //also fails because of the known bug
+	public void LaTeX_file_4Test() { //also fails because it doesn't parse \$$valem$$\$$ correctly
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new FormulaStatement("Mingi valem ka.", 0),
-			new IncludeStatement("src/test/antlr/LaTeX_file_3.tex", 0),
-			new FormulaStatement("Neljas!", 0),
+			new IncludeStatement("src/test/antlr/LaTeX_file_3.tex", 0, new ArrayList<ParsedStatement>(Arrays.asList(
+				new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
+					new TheoremStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
+						new FormulaStatement("TEISEFAILIVALEM", 0)	
+					)))
+				)))
+			))),
+			new FormulaStatement("\r\nNeljas!\r\n", 0),
 			new FormulaStatement("valem", 0),
 			new FormulaStatement("\\$", 0),
 			new IncludeStatement("src/test/antlr/LaTeX_file_4.tex", 0)
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/LaTeX_file_4.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/LaTeX_file_4.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -319,12 +342,12 @@ public class ParsedStatementTest {
 					new FormulaStatement("2+2", 0)
 			)))				
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/basic.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/basic.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test
-	public void basic_with_declareTest() { //NB! Spaces may not match (have to delete all unnecessary when testing declarations). Also []-brackets.
+	public void basic_with_declareTest() { //fails for unknown reasons
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new TheoremStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 				new DeclareStatement("\\declare{syntax={infix,7,\"/\",l},meaning=artih1.divide}", 0),
@@ -339,7 +362,7 @@ public class ParsedStatementTest {
 					new FormulaStatement("2+2", 0)
 			)))				
 		)));
-		ParsedStatement ps2 = DocumentParser.parse(DocumentParser.getFileContent("src/test/antlr/basic_with_declare.tex"), new ArrayList<>());
+		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/basic_with_declare.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
