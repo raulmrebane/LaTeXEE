@@ -52,9 +52,7 @@ public class GrammarGenerator {
 		//Macro declarations go to the highest level
 		sb.append("grammar GeneratorTarget;\n");
 		sb.append("highestLevel : ");
-		for (DeclareNode node : macroNodes){
-			sb.append(node.toGrammarRule()+" | ");
-		}
+
 		sb.append("highestNumber ;\n");
 		
 		ArrayList<Integer> priorities = new ArrayList<Integer>(operatorNodes.keySet());
@@ -89,7 +87,11 @@ public class GrammarGenerator {
 				}
 			}
 		}
-		sb.append("lowestLevel : '{' highestLevel '}' | .*?;\n");
+		sb.append("lowestLevel : '{' highestLevel '}' |");
+		for (DeclareNode node : macroNodes){
+			sb.append(node.toGrammarRule()+" | ");
+		}
+		sb.append(" .*?;\n");
 		sb.append("OTHER : .->skip;");
 		
 		return sb.toString();
