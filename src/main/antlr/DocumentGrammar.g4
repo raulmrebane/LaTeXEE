@@ -1,98 +1,66 @@
 grammar DocumentGrammar;
 
-declarationGrammar 
-	: '\\declare' '{' keyValuePairs '}'
-	;
-	
-keyValuePairs
-	:	(pair ',' )* pair 
-	;
-
-syntaxBracket
-	: '{' TYPE ',' .*? ',' .*?  (',' ('l'|'r'))? '}'
-	;
-	
-pair
-	: 'syntax' '=' syntaxBracket
-	| KEY '=' VALUE
-	| .*? '=' ('{' .*? '}'| .*?)
-	;
-KEY
-	:	'argspec'
-	|	'meaning'
-	|	'macro'
-	;
-
-TYPE
-	: 'infix'
-	| 'prefix'
-	| 'postfix'
-	;
-	
-VALUE
-	: NUMBERS
-	| NAME
-	;
-
-NUMBERS
-	: [1-9]|([1-9][0-9]*)
-	;
-
-CHARACTERS
-	: '"' .*? '"'
-	;
-
-NAME
-	: [._a-zA-Z0-9]+
-	;
-
-WS : [ \t\n\r] -> skip; 
-OTHER : . -> skip ;
 document
-	:	 ( .*? (proof | theorem | declarationGrammar | lemma | fileInclusion | formula))* .*?
+	:	 ( .*? (proof | theorem | declaration | lemma | fileInclusion | formula))* .*?
 	;
 
-
+	
 proof
-	:	'\\begin{proof}' (.*? (formula | declarationGrammar | lemma ))* .*? '\\end{proof}'
+	:	'\\begin{proof}' (.*? (formula | declaration | lemma ))* .*? '\\end{proof}'
 	;
 	
 theorem
-	:	'\\begin{theorem}' (.*? (formula | declarationGrammar | lemma))* .*? '\\end{theorem}'
+	:	'\\begin{theorem}' (.*? (formula | declaration))* .*? '\\end{theorem}'
 	;
 	
 lemma
-	:	'\\begin{lemma}' (.*? (formula | declarationGrammar))* .*? '\\end{lemma}'
+	:	'\\begin{lemma}' (.*? (formula | declaration))* .*? '\\end{lemma}'
 	;
 
 formula
-	: DOLLARFORMULA
+	: FormulaLiteral
+	| DoubleFormulaLiteral
 	| MACROFORMULA
 	;
 
 fileInclusion
 	:	FILEINCLUSION
 	;
-
-DOLLARFORMULA
-	:	'$' SUBFORMULA '$'
-	|	SUBFORMULA
+	
+declaration
+	: '\\declare' BraceLiteral
 	;
+
 	
 MACROFORMULA
 	: BEGINFRAGMENT .*? ENDFRAGMENT
 	;
 	
-
 fragment BEGINFRAGMENT
 	: '\\begin{equation}'
 	;
 fragment ENDFRAGMENT
 	: '\\end{equation}'
 	;
-SUBFORMULA
-	:	'$' .*? '$'
-	;
+
 FILEINCLUSION
 	:	'\\InputIfFileExists{' .*? '}'
 	;
+
+BraceLiteral
+  : UnterminatedBraceLiteral '}'
+  ;
+
+UnterminatedBraceLiteral
+  : '{' (~[\\}] | '\\' (. | EOF)|BraceLiteral)* 
+  ;
+
+FormulaLiteral
+  : UnterminatedFormulaLiteral '$'
+  ;
+
+UnterminatedFormulaLiteral
+  : '$' ('$' (~[\\$] | '\\' (. | EOF))* '$'|(~[\\$] | '\\' (. | EOF))*)
+  ;  
+
+OTHER : .->skip;
