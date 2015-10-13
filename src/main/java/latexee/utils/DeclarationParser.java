@@ -7,9 +7,9 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import main.java.antlrgen.DocumentGrammarLexer;
-import main.java.antlrgen.DocumentGrammarParser;
-import main.java.antlrgen.DocumentGrammarParser.SyntaxBracketContext;
+import main.java.antlrgen.DeclarationGrammarLexer;
+import main.java.antlrgen.DeclarationGrammarParser;
+import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
 import main.java.latexee.declareast.MacroDeclaration;
 import main.java.latexee.declareast.OperatorDeclaration;
 import main.java.latexee.docast.DeclareStatement;
@@ -58,9 +58,9 @@ public class DeclarationParser {
 	
 	public static ParseTree parseDeclaration(String rule){
 		ANTLRInputStream antlrInput = new ANTLRInputStream(rule);
-	    DocumentGrammarLexer lexer = new DocumentGrammarLexer(antlrInput);
+	    DeclarationGrammarLexer lexer = new DeclarationGrammarLexer(antlrInput);
 	    CommonTokenStream tokens = new CommonTokenStream(lexer);
-	    DocumentGrammarParser parser = new DocumentGrammarParser(tokens);
+	    DeclarationGrammarParser parser = new DeclarationGrammarParser(tokens);
 	    ParseTree tree = parser.declarationGrammar();
 	    return tree;
 	}
@@ -70,15 +70,15 @@ public class DeclarationParser {
 		ParsedStatement root = new ParsedStatement("placeholder", 0);
 		
 		TheoremStatement theorem1 = new TheoremStatement("$2+3$$$2+5$$",20);
-		theorem1.getChildren().add(new DeclareStatement("\\declare{syntax={infix,7,\"/\",l}, meaning=artih1.divide}", 23));
-		theorem1.getChildren().add(new DeclareStatement("\\declare{syntax={infix,5,\"+\",l}, meaning=arith1.plus}", 23));
-		theorem1.getChildren().add(new DeclareStatement("\\declare{syntax={infix,5,\"-\",l}, meaning=arith1.minus}", 23));
-		theorem1.getChildren().add(new DeclareStatement("\\declare{syntax={infix,7,\"*\",l}, meaning=arith1.times}", 23));
+		theorem1.getChildren().add(new DeclareStatement("{syntax={infix,7,\"/\",l}, meaning=artih1.divide}", 23));
+		theorem1.getChildren().add(new DeclareStatement("{syntax={infix,5,\"+\",l}, meaning=arith1.plus}", 23));
+		theorem1.getChildren().add(new DeclareStatement("{syntax={infix,5,\"-\",l}, meaning=arith1.minus}", 23));
+		theorem1.getChildren().add(new DeclareStatement("{syntax={infix,7,\"*\",l}, meaning=arith1.times}", 23));
 		theorem1.getChildren().add(new FormulaStatement("$2+3$", 23));
 		theorem1.getChildren().add(new FormulaStatement("$$2+5$$", 33));
 		
 		LemmaStatement lemma = new LemmaStatement("placeholder",30);
-		lemma.getChildren().add(new DeclareStatement("\\declare{macro=gcd, meaning=arith1.gcd,    argspec=[2], code={...}}", 80));
+		lemma.getChildren().add(new DeclareStatement("{macro=gcd, meaning=arith1.gcd,    argspec=[2], code={...}}", 80));
 		//lemma.getChildren().add(new DeclareStatement("\\declare{macro=asd, meaning=asdasd,    argspec=[2], code={\\alright{then}{\\what{is}{\\nesting}}}", 80));
 		theorem1.getChildren().add(new FormulaStatement("$$2+5$$", 33));
 		

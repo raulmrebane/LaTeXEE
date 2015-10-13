@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 import main.java.antlrgen.DocumentGrammarLexer;
 import main.java.antlrgen.DocumentGrammarParser;
-import main.java.antlrgen.DocumentGrammarParser.DeclarationGrammarContext;
+import main.java.antlrgen.DocumentGrammarParser.DeclarationContext;
 import main.java.antlrgen.DocumentGrammarParser.DocumentContext;
 import main.java.antlrgen.DocumentGrammarParser.FileInclusionContext;
 import main.java.antlrgen.DocumentGrammarParser.FormulaContext;
@@ -142,8 +142,8 @@ public class DocumentParser {
 				return new TheoremStatement("", startIndex, children);
 			}
 			
-			else if (tree instanceof DeclarationGrammarContext) {
-				String text = tree.getText();				
+			else if (tree instanceof DeclarationContext) {
+				String text = tree.getChild(1).getText();				
 				return new DeclareStatement(text, startIndex);
 			}
 			
