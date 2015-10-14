@@ -1,20 +1,20 @@
 grammar DocumentGrammar;
 
 document
-	:	 ( .*? (proof | theorem | declaration | lemma | fileInclusion | formula))* .*?
+	:	 (proof | theorem | declaration | lemma | fileInclusion | formula | .)*?
 	;
 
 	
 proof
-	:	'\\begin{proof}' (.*? (formula | declaration | lemma ))* .*? '\\end{proof}'
+	:	'\\begin{proof}' (formula | declaration | lemma | . )*?  '\\end{proof}'
 	;
 	
 theorem
-	:	'\\begin{theorem}' (.*? (formula | declaration))* .*? '\\end{theorem}'
+	:	'\\begin{theorem}' (formula | declaration | .)*? '\\end{theorem}'
 	;
 	
 lemma
-	:	'\\begin{lemma}' (.*? (formula | declaration))* .*? '\\end{lemma}'
+	:	'\\begin{lemma}' (formula | declaration | .)*? '\\end{lemma}'
 	;
 
 formula
