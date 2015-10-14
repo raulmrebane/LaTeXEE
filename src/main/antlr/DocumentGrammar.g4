@@ -10,7 +10,7 @@ proof
 	;
 	
 theorem
-	:	'\\begin{theorem}' (formula | declaration | .)*? '\\end{theorem}'
+	:	'\\begin{theorem}' (formula | declaration | lemma | .)*? '\\end{theorem}'
 	;
 	
 lemma
