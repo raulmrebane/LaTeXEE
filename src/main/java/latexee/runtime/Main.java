@@ -2,6 +2,7 @@ package main.java.latexee.runtime;
 
 import java.util.ArrayList;
 
+import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.logging.Logger;
 import main.java.latexee.utils.DeclarationParser;
@@ -112,6 +113,9 @@ public class Main {
             ParsedStatement AST = DocumentParser.parse(inputFile);
             DeclarationParser.declarationFinder(AST);
             OutputWriter.formulasToTXT(AST, outputFile);
+            ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(AST, new ArrayList<DeclareNode>());
+            String grammar = GrammarGenerator.createGrammar(nodes);
+            System.out.println(grammar);
             Logger.log("Finished without errors");
         }
 	}
