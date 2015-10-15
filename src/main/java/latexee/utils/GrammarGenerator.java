@@ -49,7 +49,6 @@ public class GrammarGenerator {
 			}
 		}
 		
-		//Macro declarations go to the highest level
 		sb.append("grammar GeneratorTarget;\n");
 		sb.append("highestLevel : ");
 
@@ -64,7 +63,7 @@ public class GrammarGenerator {
 			sb.append("highestNumber : lowestlevel;\n");
 		}
 		else{
-			sb.append("highestNumber : level" + Integer.toString(priorities.get(0))+ ";");
+			sb.append("highestNumber : level" + Integer.toString(priorities.get(0))+ ";\n");
 			
 			for(int i=0;i<priorities.size();i++){
 				if(i<priorities.size()-1){
