@@ -1,0 +1,18 @@
+\documentclass{article}\begin{document}
+\begin{theorem}
+\declare{syntax={infix,7,"/",l}, meaning=artih1.divide}
+\declare{syntax={infix,5,"+",l}, meaning=arith1.sum}
+\declare{syntax={infix,5,"-",l}, meaning=arith1.minus}
+\declare{syntax={infix,7,"*",l}, meaning=arith1.times}
+$2+3$
+$$2+5$$
+\end{theorem}
+\begin{proof}
+\declare{macro=gcd, meaning=arith1.gcd, argspec=[2], code={...}}
+$1+1$
+\end{proof}
+\begin{lemma}
+$2+2$
+\end{lemma}
+\end{document}
+

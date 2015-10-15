@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 import main.java.antlrgen.DocumentGrammarLexer;
 import main.java.antlrgen.DocumentGrammarParser;
-import main.java.antlrgen.DocumentGrammarParser.DeclarationGrammarContext;
+import main.java.antlrgen.DocumentGrammarParser.DeclarationContext;
 import main.java.antlrgen.DocumentGrammarParser.DocumentContext;
 import main.java.antlrgen.DocumentGrammarParser.FileInclusionContext;
 import main.java.antlrgen.DocumentGrammarParser.FormulaContext;
@@ -48,7 +48,7 @@ public class DocumentParser {
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			DocumentGrammarParser parser = new DocumentGrammarParser(tokens);
 			ParseTree parseTree = parser.document();
-			ParsedStatement AST = parseRecursively(parseTree, new ArrayList<String>());
+			ParsedStatement AST = parseRecursively(parseTree, new ArrayList<String>(Arrays.asList(filename)));
 			return AST;
 		}
 		//main parsing method (also parses all included documents)
@@ -142,8 +142,8 @@ public class DocumentParser {
 				return new TheoremStatement("", startIndex, children);
 			}
 			
-			else if (tree instanceof DeclarationGrammarContext) {
-				String text = tree.getText();				
+			else if (tree instanceof DeclarationContext) {
+				String text = tree.getChild(1).getText();				
 				return new DeclareStatement(text, startIndex);
 			}
 			

@@ -57,8 +57,21 @@ public class ParsedStatement {
         return sb.toString();
     }
 	//Credit to Vasya Novikov - http://stackoverflow.com/a/8948691
-    private void print(String prefix, boolean isTail, StringBuilder sb) {
+	/*private void print(String prefix, boolean isTail, StringBuilder sb) {
         sb.append(prefix + (isTail ? "└── " : "├── ") + this.getClass().getSimpleName()+"\n");
+        for (int i = 0; i < children.size() - 1; i++) {
+            children.get(i).print(prefix + (isTail ? "    " : "│   "), false, sb);
+        }
+        if (children.size() > 0) {
+            children.get(children.size() - 1).print(prefix + (isTail ?"    " : "│   "), true, sb);
+        }
+    }*/
+	
+    private void print(String prefix, boolean isTail, StringBuilder sb) {
+    	String text = "";
+    	if (this instanceof FormulaStatement || this instanceof IncludeStatement || this instanceof DeclareStatement)
+    		text = ": " + this.getContent();
+        sb.append(prefix + (isTail ? "└── " : "├── ") + this.getClass().getSimpleName()+text+"\n");
         for (int i = 0; i < children.size() - 1; i++) {
             children.get(i).print(prefix + (isTail ? "    " : "│   "), false, sb);
         }
