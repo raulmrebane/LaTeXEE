@@ -90,7 +90,8 @@ public class GrammarGenerator {
 		for (DeclareNode node : macroNodes){
 			sb.append(node.toGrammarRule()+" | ");
 		}
-		sb.append(" .*?;\n");
+		sb.append(" LEXERRULE;\n");
+		sb.append("LEXERRULE : [0-9]+ | [a-z]+;\n");
 		sb.append("OTHER : .->skip;");
 		
 		return sb.toString();
