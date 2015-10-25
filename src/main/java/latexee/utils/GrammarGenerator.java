@@ -49,7 +49,7 @@ public class GrammarGenerator {
 			}
 		}
 		
-		sb.append("grammar GeneratorTarget;\n");
+		sb.append("grammar RuntimeGrammar;\n");
 		sb.append("highestLevel : ");
 
 		sb.append("highestNumber ;\n");
