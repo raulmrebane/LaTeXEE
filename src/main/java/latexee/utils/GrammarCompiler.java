@@ -40,7 +40,7 @@ public class GrammarCompiler {
 	public static ParseTree compile(List<DeclareNode> nodes, String grammar, String formula) throws IOException{
         ParseTree tree = null;
         packageIncrement++;
-        //TODO: It doesn't clean itself up even though I tell it to
+        
         Path tempDir = Files.createTempDirectory("LaTeXEE", new FileAttribute[0]);
         
         //Writes the grammar string into a .g4 file in the temp directory.
@@ -82,7 +82,6 @@ public class GrammarCompiler {
 			e.printStackTrace();
 		}
 		
-        //TODO: Make this actually work - still does not delete
         tempDir.toFile().deleteOnExit();
         
         return tree;
