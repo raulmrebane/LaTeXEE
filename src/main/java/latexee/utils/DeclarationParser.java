@@ -29,8 +29,8 @@ public class DeclarationParser {
 			ParseTree parseTree = parseDeclaration(castNode.getContent());
 			boolean operatorStyle = isOperatorSyntax(parseTree);
 			if(operatorStyle){
-				OperatorDeclaration jama = new OperatorDeclaration(parseTree);
-				castNode.setNode(jama);
+				OperatorDeclaration opDec = new OperatorDeclaration(parseTree);
+				castNode.setNode(opDec);
 			}else{
 				castNode.setNode(new MacroDeclaration(parseTree));
 			}			

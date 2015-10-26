@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.declareast.MacroDeclaration;
@@ -28,7 +29,7 @@ public class GrammarGenerator {
 		return existingRules;
 	}
 	
-	public static String createGrammar(ArrayList<DeclareNode> nodes){
+	public static String createGrammar(List<DeclareNode> nodes){
 		StringBuilder sb = new StringBuilder();
 		
 		HashMap<Integer,ArrayList<OperatorDeclaration>> operatorNodes = new HashMap<Integer,ArrayList<OperatorDeclaration>>();

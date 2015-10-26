@@ -13,7 +13,7 @@ public class ParserClassLoader extends ClassLoader{
         super(parent);
     }
 
-    public Class loadClass(String name, String pathName) throws ClassNotFoundException {
+    public Class loadClass(String name, String pathName, String packageName) throws ClassNotFoundException {
         FileInputStream fis;
 		try {
 			File file = new File(name);
@@ -31,7 +31,7 @@ public class ParserClassLoader extends ClassLoader{
 	        byte[] classData = buffer.toByteArray();
 	        String fullName = file.getPath().replace(pathName+"/", "");
 	        String noExtension = fullName.substring(0, fullName.length()-6);
-	        return defineClass(noExtension,
+	        return defineClass(packageName+"."+noExtension,
 	                classData, 0, classData.length);
 		} catch (IOException e) {
 			Logger.log("Could not access file: "+name);
