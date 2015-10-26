@@ -83,7 +83,7 @@ public class GrammarCompiler {
 		}
 		
         //TODO: Make this actually work - still does not delete
-        tempDir.toFile().delete();
+        tempDir.toFile().deleteOnExit();
         
         return tree;
 	}
@@ -133,6 +133,7 @@ public class GrammarCompiler {
 		String pathString = path.toString();
 		ArrayList<File> classFiles = new ArrayList<File>();
 		Files.walk(path.toAbsolutePath()).forEach(filePath -> {
+			filePath.toFile().deleteOnExit();
 		    if (Files.isRegularFile(filePath)) {
 		    	if(filePath.toString().replaceAll("^.*\\.(.*)$", "$1").equals("class")){
 		    		classFiles.add(new File(filePath.toString()));
