@@ -1,11 +1,7 @@
 grammar GeneratorTarget;
 
 highestLevel
-	: macroStatement | highestNumber
-	;
-
-macroStatement
-	:
+	: highestNumber
 	;
 	
 highestNumber
@@ -13,6 +9,7 @@ highestNumber
 	;
 	
 lowestLevel
-	: '{' highestLevel '}'
+	: '{' highestLevel '}' | LEXERRULE
 	;
 
+LEXERRULE : [0-9]+;

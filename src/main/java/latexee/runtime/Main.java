@@ -1,12 +1,22 @@
 package main.java.latexee.runtime;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
 
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.logging.Logger;
 import main.java.latexee.utils.DeclarationParser;
 import main.java.latexee.utils.DocumentParser;
+import main.java.latexee.utils.FormulaParser;
+import main.java.latexee.utils.GrammarCompiler;
 import main.java.latexee.utils.GrammarGenerator;
 import main.java.latexee.utils.OutputWriter;
 
@@ -82,7 +92,7 @@ public class Main {
                         } else {
                             outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + ".txt";
                         }
-                        System.out.println("Outputfile is: " + outputFile);
+                        //System.out.println("Outputfile is: " + outputFile);
                     }
                 }
                 else {
@@ -100,7 +110,7 @@ public class Main {
     }
     
     
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
         
         // Call parser.
         useParser(args);   
@@ -111,12 +121,11 @@ public class Main {
 		//String inputFile = args[0];
 		if (inputFile != null) {
             ParsedStatement AST = DocumentParser.parse(inputFile);
+            System.out.println("AST: \n");
             DeclarationParser.declarationFinder(AST);
+            System.out.println(AST.toString()+"\n");
             OutputWriter.formulasToTXT(AST, outputFile);
-            ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(AST, new ArrayList<DeclareNode>());
-            String grammar = GrammarGenerator.createGrammar(nodes);
-            System.out.println(grammar);
-            Logger.log("Finished without errors");
+            FormulaParser.parse(AST, new ArrayList<DeclareNode>());
         }
 	}
 }

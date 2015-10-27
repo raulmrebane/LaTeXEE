@@ -32,7 +32,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 
 public class DocumentParser {
-		public static ParsedStatement parse (String filename){
+		public static ParsedStatement parse2 (String filename){
 			File file = new File(filename);
 			ANTLRInputStream AIS = null;
 			try {
@@ -51,8 +51,15 @@ public class DocumentParser {
 			ParsedStatement AST = parseRecursively(parseTree, new ArrayList<String>(Arrays.asList(filename)));
 			return AST;
 		}
+		
+		public static ParsedStatement parse(String filename) {
+			return parse (filename, new ArrayList<String>());
+		}
+		
+		
 		//main parsing method (also parses all included documents)
-		public static ParsedStatement parse (String fileContent, ArrayList<String> includedFiles) {
+		public static ParsedStatement parse (String filename, ArrayList<String> includedFiles) {
+			String fileContent = getFileContent(filename);
 			ParseTree tree = parseText(fileContent);
 			ParsedStatement ps = parseRecursively(tree, includedFiles);
 			return ps;
@@ -78,7 +85,7 @@ public class DocumentParser {
 				Scanner sc = new Scanner(new File(filePath));
 				Logger.log("... OK");
 				while (sc.hasNextLine()) {
-					sb.append(sc.nextLine()); //või reavahetus ka juurde?
+					sb.append(sc.nextLine()); //TODO: add /r/n as well?
 				}
 				sc.close();
 			}
@@ -152,8 +159,7 @@ public class DocumentParser {
 				String url = text.substring(text.indexOf('{')+1, text.length()-1);
 				if (!contains(includedFiles, url)) {
 					includedFiles.add(url);
-					String fileContent = getFileContent(url);
-					ParsedStatement child = parse(fileContent, includedFiles);
+					ParsedStatement child = parse(url, includedFiles);
 					return new IncludeStatement(url, startIndex, new ArrayList<ParsedStatement>(Arrays.asList(child)));
 				}
 				return new IncludeStatement(url, startIndex);

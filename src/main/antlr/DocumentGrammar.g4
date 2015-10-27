@@ -61,5 +61,8 @@ FormulaLiteral
 UnterminatedFormulaLiteral
   : '$' ('$' (~[\\$] | '\\' (. | EOF))* '$'|(~[\\$] | '\\' (. | EOF))*)
   ;  
-
+BugFixLiteral
+  : '\\$'
+  | '\\{' //the other brace is handled in UnterminatedBraceLiteral
+  ;
 OTHER : .->skip;

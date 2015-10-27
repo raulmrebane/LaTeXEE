@@ -10,3 +10,4 @@ LaTeXEE.iml
 /.idea
 /src/main/java/antlrgen
 /src/main/antlrgen
+*.txt

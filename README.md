@@ -13,7 +13,7 @@ LaTeXEE is a command-line only application which parses a valid .tex document, w
 
 ### Flags
 
-Available flags are available:
+The following flags are available:
 
 * "-o filename" change output filename
 * "-h" help

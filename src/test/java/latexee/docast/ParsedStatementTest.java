@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/* This class is just an example. Remove in production. */
 public class ParsedStatementTest {
 	
 	@Test
@@ -57,23 +56,23 @@ public class ParsedStatementTest {
 	}
 	
 	@Test //tests formulas (all types)
-	public void ParsingTest2() { //fails probably because of some \r\n differences, but not sure. Seems identical.
+	public void ParsingTest2() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new FormulaStatement("7*5-(4-2/5)", 0),
-			new FormulaStatement("\r\n1-2-3-4-5-6-7\r\n", 0),
+			new FormulaStatement("1-2-3-4-5-6-7", 0),
 			new FormulaStatement("A", 0),
 			new FormulaStatement("B", 0),
-			new FormulaStatement("\r\na-b\r\nb=x+2\r\n", 0),
-			new FormulaStatement("a^0\r\nb+1\r\n", 0),
+			new FormulaStatement("a-bb=x+2", 0),
+			new FormulaStatement("a^0b+1", 0),
 			new FormulaStatement("\\\\begin\\{equation\\}That's planned\\\\end\\{equation\\}", 0), //could do real syntax, but .tex wouldn't compile
-			new FormulaStatement("\r\n0.6 * x^8\r\n", 0)
+			new FormulaStatement("0.6 * x^8", 0)
 		)));
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing2.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test //tests theorems, lemmas and proofs
-	public void ParsingTest3() { //fails because of the adjacency bug
+	public void ParsingTest3() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new TheoremStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 				new FormulaStatement("x+5=6", 0)	
@@ -99,7 +98,7 @@ public class ParsedStatementTest {
 	}
 	
 	@Test //tests nested thorems, lemmas and proofs
-	public void ParsingTest4() { //fails because of the adjacency bug + doesn't parse a lemma within a theorem
+	public void ParsingTest4() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new TheoremStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 				new LemmaStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
@@ -159,29 +158,36 @@ public class ParsedStatementTest {
 	}
 	
 	@Test //tests declarations
-	public void ParsingTest7() { //fails for unknown reasons (parses declarations that it shouldn't)
+	public void ParsingTest7() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-			new DeclareStatement("\\declare{syntax={infix,7,\"/\",l},meaning=arith1.divide}", 0),
-			new DeclareStatement("\\declare{syntax={infix,7,\"/\",r},meaning=arith1.divide}", 0),
-			new DeclareStatement("\\declare{syntax={prefix,7,\"/\"},meaning=arith1.divide}", 0),
-			new DeclareStatement("\\declare{syntax={postfix,7,\"/\"},meaning=arith1.divide}", 0),
-			new DeclareStatement("\\declare{macro=\\frac,meaning=arith1.divide,argspec=[2],code={...}}", 0),
-			new DeclareStatement("\\declare{macro=\\frac2,meaning=arith1.divide,argspec=2,code={...}}", 0),
-			new DeclareStatement("\\declare{macro=\\tuple,meaning=ecc.Tuple,argspec=[2],code={#1,\\ldots,#2}}", 0)
+			new DeclareStatement("{syntax={infix, 7, \"/\", l}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={infix, 7, \"/\", r}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={prefix, 7, \"/\"}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={postfix, 7, \"/\"}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{macro=\\frac, meaning=arith1.divide, argspec=[2], code={...}}", 0),
+			new DeclareStatement("{macro=\\frac2, meaning=arith1.divide, argspec=2, code={...}}", 0),
+			new DeclareStatement("{macro=\\tuple, meaning=ecc.Tuple, argspec=[2], code={#1, \\ldots, #2}}", 0),
+			new DeclareStatement("{syntax={infix, -2, \"/\", l}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={infix, 7, \"/\", m}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={infi, 7, \"/\", l}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={prefix, 7, \"/\", l}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={postfix, 7, \"/\", l}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={infi, 7, \"/\", l}}", 0),
+			new DeclareStatement("{macro=\\frac3, argspec=2, code={...}}", 0)
 		)));
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing7.tex");
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test //tests declarations within proofs, theorems and lemmas
-	public void ParsingTest8() { //fails for unknown reasons
+	public void ParsingTest8() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new TheoremStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-				new DeclareStatement("\\declare{syntax={infix,7,\"/\",l},meaning=arith1.divide}", 0)	
+				new DeclareStatement("{syntax={infix, 7, \"/\", l}, meaning=arith1.divide}", 0)	
 			))),
 			new ProofStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 				new LemmaStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-					new DeclareStatement("\\declare{syntax={infix,7,\"/\",l},meaning=arith1.divide}", 0)	
+					new DeclareStatement("{syntax={infix, 7, \"/\", l}, meaning=arith1.divide}", 0)	
 				)))
 			)))
 		)));
@@ -260,7 +266,7 @@ public class ParsedStatementTest {
 	}
 	
 	@Test //tests everything together
-	public void LaTeX_file_2Test() { //fails becasue of the adjacency bug
+	public void LaTeX_file_2Test() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new IncludeStatement("src/test/antlr/LaTeX_file_3.tex", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 				new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
@@ -284,7 +290,7 @@ public class ParsedStatementTest {
 				new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 					new FormulaStatement("Mingi valem ka.", 0),
 					new IncludeStatement("src/test/antlr/LaTeX_file_3.tex", 0),
-					new FormulaStatement("\r\nNeljas!\r\n", 0),
+					new FormulaStatement("Neljas!", 0),
 					new FormulaStatement("valem", 0),
 					new FormulaStatement("\\$", 0),
 					new IncludeStatement("src/test/antlr/LaTeX_file_4.tex", 0)
@@ -292,8 +298,6 @@ public class ParsedStatementTest {
 			)))
 		)));
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/LaTeX_file_2.tex");
-		System.out.println(ps);
-		System.out.println(ps2);
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -319,7 +323,7 @@ public class ParsedStatementTest {
 					)))
 				)))
 			))),
-			new FormulaStatement("\r\nNeljas!\r\n", 0),
+			new FormulaStatement("Neljas!", 0),
 			new FormulaStatement("valem", 0),
 			new FormulaStatement("\\$", 0),
 			new IncludeStatement("src/test/antlr/LaTeX_file_4.tex", 0)
@@ -347,15 +351,15 @@ public class ParsedStatementTest {
 	}
 	
 	@Test
-	public void basic_with_declareTest() { //fails for unknown reasons
+	public void basic_with_declareTest() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new TheoremStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-				new DeclareStatement("\\declare{syntax={infix,7,\"/\",l},meaning=artih1.divide}", 0),
+				new DeclareStatement("{syntax={infix,7,\"/\",l}, meaning=artih1.divide}", 0),
 				new FormulaStatement("2+3", 0),
 				new FormulaStatement("2+5", 0)
 			))),
 			new ProofStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-					new DeclareStatement("\\declare{macro=asd,meaning=asdasd,argspec=2,code={...}}", 0),
+					new DeclareStatement("{macro=asd, meaning=asdasd,    argspec=[2], code={...}}", 0),
 					new FormulaStatement("1+1", 0)
 			))),
 			new LemmaStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
