@@ -21,7 +21,7 @@ importantPair
 	: 'syntax' '=' syntaxBracket
 	| 'macro' '=' '\\'NAME
 	| 'meaning' '=' NAME '.' NAME
-	| 'argspec' '=' '['NUMBERS']''['.*?']'
+	| 'argspec' '=' '['NUMBERS']'('['.*?']')?
 	;
 	
 miscPair
