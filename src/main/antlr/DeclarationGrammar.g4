@@ -20,7 +20,7 @@ pair
 importantPair
 	: 'syntax' '=' syntaxBracket
 	| 'macro' '=' '\\'NAME
-	| 'meaning' '=' NAME'.'NAME
+	| 'meaning' '=' NAME''.''NAME
 	| 'argspec' '=' '['NUMBERS']''['.*?']'
 	;
 	
