@@ -13,7 +13,6 @@ import main.java.latexee.docast.DeclareStatement;
 import main.java.latexee.docast.ParsedStatement;
 
 public class GrammarGenerator {
-	
 	//This assumes that DeclareStatements have their appropriate nodes attached. 
 	//If you're not sure, run your tree through DeclarationParser.declarationFinder(tree) first.
 	//This method serves only as a proof of concept, in later iterations of the project the list would be created during AST traversal.
@@ -97,7 +96,7 @@ public class GrammarGenerator {
 		}
 		sb.append("LEXERRULE #DEFAULT"+Integer.toString(defaultCounter)+";\n");
 		defaultCounter++;
-		sb.append("LEXERRULE : [0-9]+ | [a-z]+;\n");
+		sb.append("LEXERRULE : [0-9]+ | [a-z];\n");
 		
 		return sb.toString();
 	}
