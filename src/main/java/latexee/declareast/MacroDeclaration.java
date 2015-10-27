@@ -100,8 +100,8 @@ public class MacroDeclaration extends DeclareNode {
 				sb.append(highestLevelRule);
 				sb.append("\'}\'");
 			}
+			sb.append(" #"+this.macroName+"Optional\n");
 		}
-		sb.append(" #"+this.macroName+"Optional\n");
 		return sb.toString();
 	}
 
