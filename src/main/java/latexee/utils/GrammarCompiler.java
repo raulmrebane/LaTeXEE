@@ -82,7 +82,7 @@ public class GrammarCompiler {
 			e.printStackTrace();
 		}
 		
-        tempDir.toFile().deleteOnExit();
+        //tempDir.toFile().deleteOnExit();
         
         return tree;
 	}
@@ -132,7 +132,7 @@ public class GrammarCompiler {
 		String pathString = path.toString();
 		ArrayList<File> classFiles = new ArrayList<File>();
 		Files.walk(path.toAbsolutePath()).forEach(filePath -> {
-			filePath.toFile().deleteOnExit();
+			//filePath.toFile().deleteOnExit();
 		    if (Files.isRegularFile(filePath)) {
 		    	if(filePath.toString().replaceAll("^.*\\.(.*)$", "$1").equals("class")){
 		    		classFiles.add(new File(filePath.toString()));
@@ -151,9 +151,17 @@ public class GrammarCompiler {
         try{
         	Class rgl = pcl.loadClass(pathString+"/RuntimeGrammarListener.class",pathString,packageString);
         	loadedClasses.add(rgl);
+        	Class llc = pcl.loadClass(pathString+"/RuntimeGrammarParser$LowestLevelContext.class",pathString,packageString);
+        	ArrayList<File> toLoadLater = new ArrayList<File>();
         	for(File i:classFiles){
         		String className = i.toString();
-        		if(!className.equals(pathString+"/RuntimeGrammarListener.class")){
+        		System.out.println(className);
+        		if(!className.equals(pathString+"/RuntimeGrammarListener.class") &&
+        				!className.equals(pathString+"/RuntimeGrammarParser$LowestLevelContext.class")){
+        			if(!className.contains("Level")){
+        				toLoadLater.add(i);
+        			}
+        			else{
         			Class loadedClass = pcl.loadClass(i.getAbsolutePath(),pathString,packageString);
             		loadedClasses.add(loadedClass);
             		if(className.contains("Lexer")){
@@ -162,8 +170,19 @@ public class GrammarCompiler {
             		if(className.contains("Parser.class")){
             			parserClass = loadedClass;
             		}
+        			}
         		}
-        		
+        	}
+        	for(File i:toLoadLater){
+        		String className = i.toString();
+    			Class loadedClass = pcl.loadClass(i.getAbsolutePath(),pathString,packageString);
+        		loadedClasses.add(loadedClass);
+        		if(className.contains("Lexer")){
+        			lexerClass = loadedClass;
+        		}
+        		if(className.contains("Parser.class")){
+        			parserClass = loadedClass;
+        		}
         	}
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
