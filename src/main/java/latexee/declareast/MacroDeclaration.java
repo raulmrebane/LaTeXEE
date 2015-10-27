@@ -22,7 +22,7 @@ public class MacroDeclaration extends DeclareNode {
 	
 	public MacroDeclaration(ParseTree tree){
 		fillAttributes(tree);
-		if(		this.meaning == null){
+		if(		this.meaning == null || this.contentDictionary==null){
 			//Yesterday, this was a formality. Today it guards us from the hell of nullpointers.
 			throw new RuntimeException("OpenMath meaning was not instantiated on macro declaration: "+tree.getText());
 		}
