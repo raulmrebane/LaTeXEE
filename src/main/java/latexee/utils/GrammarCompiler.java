@@ -155,7 +155,6 @@ public class GrammarCompiler {
         	ArrayList<File> toLoadLater = new ArrayList<File>();
         	for(File i:classFiles){
         		String className = i.toString();
-        		System.out.println(className);
         		if(!className.equals(pathString+"/RuntimeGrammarListener.class") &&
         				!className.equals(pathString+"/RuntimeGrammarParser$LowestLevelContext.class")){
         			if(!className.contains("Level")){
