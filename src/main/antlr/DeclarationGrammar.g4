@@ -20,7 +20,7 @@ pair
 importantPair
 	: 'syntax' '=' syntaxBracket
 	| 'macro' '=' '\\'NAME
-	| 'meaning' '=' NAME''.''NAME
+	| 'meaning' '=' NAME '.' NAME
 	| 'argspec' '=' '['NUMBERS']''['.*?']'
 	;
 	
@@ -37,7 +37,9 @@ TYPE
 NUMBERS
 	: [1-9]|([1-9][0-9]*)
 	;
-
+NEGATIVENUMBER
+	: '-' NUMBERS
+	;
 CHARACTERS
 	: '"' .*? '"'
 	;
