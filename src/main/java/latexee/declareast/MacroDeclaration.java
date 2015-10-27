@@ -32,6 +32,9 @@ public class MacroDeclaration extends DeclareNode {
 		if(this.macroName==null){
 			throw new RuntimeException("Macro name was not instantiated on macro declaration: "+tree.getText());
 		}
+		if(this.arguments<0){
+			throw new RuntimeException("Negative amount of arguments given for macro declaration: "+tree.getText());
+		}
 	}
 	
 	private void fillAttributes(ParseTree tree){
