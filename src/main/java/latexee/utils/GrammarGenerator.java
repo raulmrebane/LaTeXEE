@@ -49,51 +49,55 @@ public class GrammarGenerator {
 				macroNodes.add(unknownNode);
 			}
 		}
-		
+		int defaultCounter = 0;
 		sb.append("grammar RuntimeGrammar;\n");
 		sb.append("highestLevel : ");
 
-		sb.append("highestNumber ;\n");
+		sb.append("highestNumber #DEFAULT"+Integer.toString(defaultCounter)+";\n");
+		defaultCounter++;
 		
 		ArrayList<Integer> priorities = new ArrayList<Integer>(operatorNodes.keySet());
 		
-		//lazy
 		Collections.sort(priorities);
-
+		
 		if(priorities.size()==0){
-			sb.append("highestNumber : lowestlevel;\n");
+			sb.append("highestNumber : lowestlevel #DEFAULT"+Integer.toString(defaultCounter)+";\n");
+			defaultCounter++;
 		}
 		else{
-			sb.append("highestNumber : level" + Integer.toString(priorities.get(0))+ ";\n");
-			
+			sb.append("highestNumber : level" + Integer.toString(priorities.get(0))+ " #DEFAULT"+Integer.toString(defaultCounter)+"; \n");
+			defaultCounter++;
 			for(int i=0;i<priorities.size();i++){
 				if(i<priorities.size()-1){
 					sb.append("level"+Integer.toString(priorities.get(i))+" : ");
 					
 					for(OperatorDeclaration opNode : operatorNodes.get(priorities.get(i))){
-						sb.append(opNode.toGrammarRule(priorities.get(i+1))+" | ");
+						sb.append(opNode.toGrammarRule(priorities.get(i+1))+"|");
 					}
 					
-					sb.append("level"+Integer.toString(priorities.get(i+1))+";\n");
+					sb.append("level"+Integer.toString(priorities.get(i+1))+" #DEFAULT"+Integer.toString(defaultCounter)+"; \n");
+					defaultCounter++;
 				}
 				else{
 					String lowestPriority = Integer.toString(priorities.get(i));
-					sb.append("level"+lowestPriority+" : ");
+					sb.append("level"+lowestPriority+": ");
 					for(DeclareNode opNode : operatorNodes.get(priorities.get(i))){
-						sb.append(opNode.toGrammarRule()+" | ");
+						sb.append(opNode.toGrammarRule()+"|");
 					}
-					sb.append("level"+Integer.toString(priorities.get(i)+1)+";\n");
-					sb.append("level"+Integer.toString(priorities.get(i)+1)+ " : lowestLevel;\n");
+					sb.append("level"+Integer.toString(priorities.get(i)+1)+" #DEFAULT"+Integer.toString(defaultCounter)+"; \n");
+					defaultCounter++;
+					sb.append("level"+Integer.toString(priorities.get(i)+1)+ " : lowestLevel #DEFAULT"+Integer.toString(defaultCounter)+"; \n");
+					defaultCounter++;
 				}
 			}
 		}
-		sb.append("lowestLevel : '{' highestLevel '}' |");
+		sb.append("lowestLevel : '{' highestLevel '}' #BRACKETS\n|");
 		for (DeclareNode node : macroNodes){
-			sb.append(node.toGrammarRule()+" | ");
+			sb.append(node.toGrammarRule()+"|");
 		}
-		sb.append(" LEXERRULE;\n");
+		sb.append("LEXERRULE #DEFAULT"+Integer.toString(defaultCounter)+";\n");
+		defaultCounter++;
 		sb.append("LEXERRULE : [0-9]+ | [a-z]+;\n");
-		sb.append("OTHER : .->skip;");
 		
 		return sb.toString();
 	}

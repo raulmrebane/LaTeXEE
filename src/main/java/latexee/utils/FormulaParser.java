@@ -39,6 +39,9 @@ public class FormulaParser {
 		}
 		else if(root instanceof FormulaStatement){
 			String grammar = GrammarGenerator.createGrammar(declarations);
+			System.out.println(grammar);
+			System.out.println("----");
+			/*
 			try {
 				ParseTree formulaTree = GrammarCompiler.compile(declarations, grammar, root.getContent());
 				System.out.println(OutputWriter.prettyParseTree(formulaTree));
@@ -46,6 +49,7 @@ public class FormulaParser {
 				Logger.log("IO exception when parsing formula: "+root.getContent());
 				e.printStackTrace();
 			}
+			*/
 			
 		}
 		else if(root instanceof TheoremStatement ||

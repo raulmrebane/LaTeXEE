@@ -74,13 +74,16 @@ public class DeclarationParser {
 		theorem1.getChildren().add(new DeclareStatement("{syntax={infix,5,\"+\",l}, meaning=arith1.plus}", 23));
 		theorem1.getChildren().add(new DeclareStatement("{syntax={infix,5,\"-\",l}, meaning=arith1.minus}", 23));
 		theorem1.getChildren().add(new DeclareStatement("{syntax={infix,7,\"*\",l}, meaning=arith1.times}", 23));
-		theorem1.getChildren().add(new FormulaStatement("$2+3$", 23));
+		theorem1.getChildren().add(new DeclareStatement("{macro=\\gcd, meaning=arith1.gcd,    argspec=[2][optional], code={...}}", 80));
+		theorem1.getChildren().add(new FormulaStatement("$2+7$", 23));
 		theorem1.getChildren().add(new FormulaStatement("$$2+5$$", 33));
 		
 		LemmaStatement lemma = new LemmaStatement("placeholder",30);
-		lemma.getChildren().add(new DeclareStatement("{macro=gcd, meaning=arith1.gcd,    argspec=[2], code={...}}", 80));
+		lemma.getChildren().add(new DeclareStatement("{macro=\\gcd, meaning=arith1.gcd,    argspec=[2][optional], code={...}}", 80));
+		lemma.getChildren().add(new DeclareStatement("{macro=\\gcd2, meaning=arith1.gcd2,    argspec=[2][optional], code={...}}", 80));
+
 		//lemma.getChildren().add(new DeclareStatement("\\declare{macro=asd, meaning=asdasd,    argspec=[2], code={\\alright{then}{\\what{is}{\\nesting}}}", 80));
-		theorem1.getChildren().add(new FormulaStatement("$$2+5$$", 33));
+		lemma.getChildren().add(new FormulaStatement("$$2+5$$", 33));
 		
 		root.getChildren().addAll(Arrays.asList(theorem1,lemma));
 		return root;

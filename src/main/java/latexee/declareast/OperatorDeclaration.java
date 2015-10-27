@@ -1,12 +1,15 @@
 package main.java.latexee.declareast;
 
+import main.java.antlrgen.DeclarationGrammarParser.ImportantPairContext;
+import main.java.antlrgen.DeclarationGrammarParser.MiscPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.PairContext;
 import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class OperatorDeclaration extends DeclareNode {
-	
+	private static int identifier = 0;
+	private String id;
 	private String type; //infix/prefix/etc
 	private Integer priority; //parsing priority
 	private String operator; //The actual character, for example "+"
@@ -23,7 +26,8 @@ public class OperatorDeclaration extends DeclareNode {
 	}
 	public OperatorDeclaration(ParseTree tree){
 		fillAttributes(tree);
-		
+		this.id = "op"+Integer.toString(identifier);
+		identifier++;
 		//Yesterday, this was a formality. Today it guards us from the hell of nullpointers.
 		if(this.type == null){
 			throw new RuntimeException("Type field was not instantiated on operator declaration: "+tree.getText());
@@ -31,8 +35,8 @@ public class OperatorDeclaration extends DeclareNode {
 		if(this.priority == null){
 			throw new RuntimeException("Priority field was not instantiated on operator declaration: "+tree.getText());
 		}
-		if(this.meaning == null){
-			throw new RuntimeException("Meaning field was not instantiated on operator declaration: "+tree.getText());
+		if(this.meaning == null || this.contentDictionary == null){
+			throw new RuntimeException("OpenMath meaning field was not instantiated on operator declaration: "+tree.getText());
 		}
 		if(this.operator == null){
 			throw new RuntimeException("Operator character field was not instantiated on operator declaration: "+tree.getText());
@@ -43,7 +47,9 @@ public class OperatorDeclaration extends DeclareNode {
 			
 			
 	}
-
+	public String getId() {
+		return id;
+	}
 	private void fillAttributes(ParseTree tree){
 		if(tree instanceof SyntaxBracketContext){
 			this.type = tree.getChild(1).getText();
@@ -54,19 +60,19 @@ public class OperatorDeclaration extends DeclareNode {
 				this.associativity = tree.getChild(7).getText();
 			}
 		}
-		else if(tree instanceof PairContext){
+		else if(tree instanceof ImportantPairContext){
 			String key = tree.getChild(0).getText();
 			String value = tree.getChild(2).getText();
 			if(key.equals("meaning")){
-				this.meaning=value;
-			}
-			else{
-				this.miscellaneous.put(key,value);
+				this.contentDictionary=value;
+				this.meaning = tree.getChild(4).getText();
 			}
 		}
-
-		
-				
+		else if(tree instanceof MiscPairContext){
+			String key = tree.getChild(0).getText();
+			String value = tree.getChild(2).getText();
+			this.miscellaneous.put(key,value);
+		}	
 		for(int i=0;i<tree.getChildCount();i++){
 			fillAttributes(tree.getChild(i));
 		}
@@ -76,8 +82,8 @@ public class OperatorDeclaration extends DeclareNode {
 	public String toGrammarRule() {
 		StringBuilder sb = new StringBuilder();
 		String operatorToken = "\'"+this.operator+"\'";
-		String currentLevel = "level"+priority.toString();
-		String lowerLevel = "level"+Integer.toString(priority+1);
+		String currentLevel = "level"+priority.toString().replace('-', '_');
+		String lowerLevel = "level"+Integer.toString(priority+1).replace('-', '_');
 		if(this.type.equals("infix")){
 			if(this.associativity.equals("l")){
 				sb.append(currentLevel);
@@ -98,15 +104,15 @@ public class OperatorDeclaration extends DeclareNode {
 			sb.append(operatorToken);
 			sb.append(lowerLevel);
 		}
-		
+		sb.append(" #"+this.id+"\n");
 		return sb.toString();
 	}
 	
 	public String toGrammarRule(Integer nextPriority) {
 		StringBuilder sb = new StringBuilder();
 		String operatorToken = "\'"+this.operator+"\'";
-		String currentLevel = "level"+priority.toString();
-		String lowerLevel = "level"+Integer.toString(nextPriority);
+		String currentLevel = "level"+priority.toString().replace('-', '_');
+		String lowerLevel = "level"+Integer.toString(nextPriority).replace('-', '_');
 		if(this.type.equals("infix")){
 			if(this.associativity.equals("l")){
 				sb.append(currentLevel);
@@ -127,7 +133,7 @@ public class OperatorDeclaration extends DeclareNode {
 			sb.append(operatorToken);
 			sb.append(lowerLevel);
 		}
-		
+		sb.append(" #"+this.id+"\n");
 		return sb.toString();
 	}
 	public Integer getPriority() {
