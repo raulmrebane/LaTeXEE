@@ -17,7 +17,8 @@ public class MacroDeclaration extends DeclareNode {
 		this.meaning=meaning;
 		this.macroName=macroname;
 		this.arguments=arguments;
-		this.id="MACRO"+identifier;
+		this.id="MACRO"+Integer.toString(identifier);
+		identifier++;
 	}
 	
 	public MacroDeclaration(ParseTree tree){
@@ -35,7 +36,8 @@ public class MacroDeclaration extends DeclareNode {
 		if(this.arguments<0){
 			throw new RuntimeException("Negative amount of arguments given for macro declaration: "+tree.getText());
 		}
-		this.id="MACRO"+identifier;
+		this.id="MACRO"+Integer.toString(identifier);
+		identifier++;
 	}
 	
 	private void fillAttributes(ParseTree tree){
