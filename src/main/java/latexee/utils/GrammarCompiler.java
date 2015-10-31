@@ -110,7 +110,7 @@ public class GrammarCompiler {
 		String tempPath = path.toString();
 		Writer writer = null;
         try{
-        	writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempPath + "/RuntimeGrammar.g4"), "utf-8"));
+        	writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempPath + File.separator+"RuntimeGrammar.g4"), "utf-8"));
         	writer.write(grammar);
         }		
         catch (Exception e){
@@ -122,7 +122,7 @@ public class GrammarCompiler {
         
         Logger.log("Finished without errors");
         String packageString = "LaTeXEE"+Integer.toString(packageIncrement);
-        String[] args2 = {"-o",tempPath,"-encoding","UTF-8","-package",packageString,tempPath+"/RuntimeGrammar.g4"};
+        String[] args2 = {"-o",tempPath,"-encoding","UTF-8","-package",packageString,tempPath+File.separator+"RuntimeGrammar.g4"};
 		Tool antlr = new Tool(args2);
 		
 		antlr.processGrammarsOnCommandLine();
@@ -149,24 +149,24 @@ public class GrammarCompiler {
         ClassInfo pair = null;
         String packageString = "LaTeXEE"+Integer.toString(packageIncrement);
         try{
-        	Class rgl = pcl.loadClass(pathString+"/RuntimeGrammarListener.class",pathString,packageString);
+        	Class rgl = pcl.loadClass(pathString+File.separator+"RuntimeGrammarListener.class",pathString,packageString);
         	loadedClasses.add(rgl);
-        	Class llc = pcl.loadClass(pathString+"/RuntimeGrammarParser$LowestLevelContext.class",pathString,packageString);
+        	Class llc = pcl.loadClass(pathString+File.separator+"RuntimeGrammarParser$LowestLevelContext.class",pathString,packageString);
         	ArrayList<File> toLoadLater = new ArrayList<File>();
         	for(File i:classFiles){
         		String className = i.toString();
-        		if(!className.equals(pathString+"/RuntimeGrammarListener.class") &&
-        				!className.equals(pathString+"/RuntimeGrammarParser$LowestLevelContext.class")){
+        		if(!className.equals(pathString+File.separator+"RuntimeGrammarListener.class") &&
+        				!className.equals(pathString+File.separator+"RuntimeGrammarParser$LowestLevelContext.class")){
         			if(!className.contains("Level")){
         				toLoadLater.add(i);
         			}
         			else{
         			Class loadedClass = pcl.loadClass(i.getAbsolutePath(),pathString,packageString);
             		loadedClasses.add(loadedClass);
-            		if(className.contains("Lexer")){
+            		if(className.contains("RuntimeGrammarLexer.class")){
             			lexerClass = loadedClass;
             		}
-            		if(className.contains("Parser.class")){
+            		if(className.contains("RuntimeGrammarParser.class")){
             			parserClass = loadedClass;
             		}
         			}

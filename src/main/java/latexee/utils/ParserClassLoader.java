@@ -29,7 +29,7 @@ public class ParserClassLoader extends ClassLoader{
 	        }
 	        fis.close();
 	        byte[] classData = buffer.toByteArray();
-	        String fullName = file.getPath().replace(pathName+"/", "");
+	        String fullName = file.getPath().replace(pathName+File.separator, "");
 	        String noExtension = fullName.substring(0, fullName.length()-6);
 	        return defineClass(packageName+"."+noExtension,
 	                classData, 0, classData.length);
