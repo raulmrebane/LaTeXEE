@@ -120,7 +120,7 @@ public class ParsedStatementTest {
 	}
 	
 	@Test //tests brackets (not in the case of declarations!)
-	public void ParsingTest5() { //fails because of a mismatched '{' (or '\{' within a proof
+	public void ParsingTest5() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new FormulaStatement("something{here}", 0),
 			new FormulaStatement("{{_d}}}", 0)
@@ -131,7 +131,7 @@ public class ParsedStatementTest {
 	}
 	
 	@Test //tests \$ within formulas
-	public void ParsingTest6() { //fails, because still doesn't parse a\$ $valem$$\$$ correctly
+	public void ParsingTest6() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new FormulaStatement("\\$", 0),
 			new FormulaStatement("a\\$", 0),
@@ -313,7 +313,7 @@ public class ParsedStatementTest {
 	}
 	
 	@Test
-	public void LaTeX_file_4Test() { //also fails because it doesn't parse \$$valem$$\$$ correctly
+	public void LaTeX_file_4Test() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new FormulaStatement("Mingi valem ka.", 0),
 			new IncludeStatement("src/test/antlr/LaTeX_file_3.tex", 0, new ArrayList<ParsedStatement>(Arrays.asList(
@@ -329,7 +329,6 @@ public class ParsedStatementTest {
 		)));
 
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/LaTeX_file_4.tex");
-
 		assertTrue(compareTrees(ps, ps2));
 	}
 	

@@ -53,7 +53,7 @@ public class DocumentParser {
 		}
 		
 		public static ParsedStatement parse(String filename) {
-			return parse (filename, new ArrayList<String>());
+			return parse (filename, new ArrayList<String>(Arrays.asList(filename)));
 		}
 		
 		
