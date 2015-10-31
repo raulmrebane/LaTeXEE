@@ -123,10 +123,10 @@ public class ParsedStatementTest {
 	public void ParsingTest5() { //fails because of a mismatched '{' (or '\{' within a proof
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new FormulaStatement("something{here}", 0),
-			new FormulaStatement("{{_d}}}", 0),
-			new ProofStatement("", 0, new ArrayList<ParsedStatement>())
+			new FormulaStatement("{{_d}}}", 0)
 		)));
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing5.tex");
+
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -325,10 +325,11 @@ public class ParsedStatementTest {
 			))),
 			new FormulaStatement("Neljas!", 0),
 			new FormulaStatement("valem", 0),
-			new FormulaStatement("\\$", 0),
-			new IncludeStatement("src/test/antlr/LaTeX_file_4.tex", 0)
+			new FormulaStatement("\\$", 0)
 		)));
+
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/LaTeX_file_4.tex");
+
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -359,7 +360,7 @@ public class ParsedStatementTest {
 				new FormulaStatement("2+5", 0)
 			))),
 			new ProofStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-					new DeclareStatement("{macro=asd, meaning=asdasd,    argspec=[2], code={...}}", 0),
+					new DeclareStatement("{macro=\\asd, meaning=asdasd,    argspec=[2], code={...}}", 0),
 					new FormulaStatement("1+1", 0)
 			))),
 			new LemmaStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
@@ -383,7 +384,7 @@ public class ParsedStatementTest {
 		
 		for (int i = 0; i < actual.getChildCount(); i++) {
 			boolean b = compareTrees(actual.getChild(i), result.getChild(i));
-			if (b == false)
+			if (!b)
 				return b;
 		}
 		return true;
