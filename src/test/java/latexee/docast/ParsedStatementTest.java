@@ -123,11 +123,11 @@ public class ParsedStatementTest {
 	public void ParsingTest5() { //fails because of a mismatched '{' (or '\{' within a proof
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new FormulaStatement("something{here}", 0),
-			new FormulaStatement("{{_d}}}", 0),
-			new ProofStatement("", 0, new ArrayList<ParsedStatement>())
+			new FormulaStatement("{{_d}}}", 0)
 		)));
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing5.tex");
-		assertFalse(compareTrees(ps, ps2));
+
+		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test //tests \$ within formulas
@@ -325,11 +325,12 @@ public class ParsedStatementTest {
 			))),
 			new FormulaStatement("Neljas!", 0),
 			new FormulaStatement("valem", 0),
-			new FormulaStatement("\\$", 0),
-			new IncludeStatement("src/test/antlr/LaTeX_file_4.tex", 0)
+			new FormulaStatement("\\$", 0)
 		)));
+
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/LaTeX_file_4.tex");
-		assertFalse(compareTrees(ps, ps2));
+
+		assertTrue(compareTrees(ps, ps2));
 	}
 	
 	@Test
