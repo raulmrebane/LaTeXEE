@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.tools.JavaCompiler;
@@ -148,27 +149,36 @@ public class GrammarCompiler {
         Constructor parserCtor = null;
         ClassInfo pair = null;
         String packageString = "LaTeXEE"+Integer.toString(packageIncrement);
-        try{
-        	Class rgl = pcl.loadClass(pathString+File.separator+"RuntimeGrammarListener.class",pathString,packageString);
-        	loadedClasses.add(rgl);
-        	Class llc = pcl.loadClass(pathString+File.separator+"RuntimeGrammarParser$LowestLevelContext.class",pathString,packageString);
-        	ArrayList<File> toLoadLater = new ArrayList<File>();
-        	for(File i:classFiles){
-        		String className = i.toString();
-        		if(!className.equals(pathString+File.separator+"RuntimeGrammarListener.class") &&
-        				!className.equals(pathString+File.separator+"RuntimeGrammarParser$LowestLevelContext.class")){
-        			if(!className.contains("Level")){
-        				toLoadLater.add(i);
+        try{ 
+        	ArrayList<String> loadManually = new ArrayList<String>();
+        	String rgls = pathString+File.separator+"RuntimeGrammarListener.class"; 
+        	String pcls = pathString+File.separator+"RuntimeGrammarParser$LowestLevelContext.class"; 
+        	String hnc = pathString+File.separator+"RuntimeGrammarParser$HighestNumberContext.class"; 
+        	
+        	loadManually.addAll(Arrays.asList(rgls, pcls, hnc));
+        	
+        	for(String i: loadManually){ 
+        		Class manual = pcl.loadClass(i,pathString,packageString); 
+        		loadedClasses.add(manual); 
+        	} 
+        	
+        	ArrayList<File> toLoadLater = new ArrayList<File>(); 
+        	
+        	for(File i:classFiles){ 
+        		String className = i.toString(); 
+        		if(!loadManually.contains(className)){ 
+        			if(!className.contains("Level")){ 
+        				toLoadLater.add(i); 
         			}
         			else{
-        			Class loadedClass = pcl.loadClass(i.getAbsolutePath(),pathString,packageString);
-            		loadedClasses.add(loadedClass);
-            		if(className.contains("RuntimeGrammarLexer.class")){
-            			lexerClass = loadedClass;
-            		}
-            		if(className.contains("RuntimeGrammarParser.class")){
-            			parserClass = loadedClass;
-            		}
+	        			Class loadedClass = pcl.loadClass(i.getAbsolutePath(),pathString,packageString);
+	            		loadedClasses.add(loadedClass);
+	            		if(className.contains("RuntimeGrammarLexer.class")){
+	            			lexerClass = loadedClass;
+	            		}
+	            		if(className.contains("RuntimeGrammarParser.class")){
+	            			parserClass = loadedClass;
+	            		}
         			}
         		}
         	}
