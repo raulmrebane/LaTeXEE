@@ -38,6 +38,7 @@ public class GrammarCompiler {
 	private static JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 	private static ParserClassLoader pcl = new ParserClassLoader(GrammarCompiler.class.getClassLoader());
 	private static int packageIncrement = 0;
+	public static boolean foundErrors;
 	public static ParseTree compile(List<DeclareNode> nodes, String grammar, String formula) throws IOException{
         ParseTree tree = null;
         packageIncrement++;
@@ -69,10 +70,19 @@ public class GrammarCompiler {
 			parser = (Parser) parserCtor.newInstance(tokens);
 			Method[] allMethods = parserClass.getMethods();
 			Object o = null;
+			foundErrors = false;
 			for(Method m : allMethods){
 				if(m.getName().equals("highestLevel")){
 					m.setAccessible(true);
+					parser.removeErrorListeners();
+					parser.addErrorListener(DescriptiveErrorListener.INSTANCE);
+					lexer.removeErrorListeners();
+					lexer.addErrorListener(DescriptiveErrorListener.INSTANCE);
 					o = m.invoke(parser);
+					if (foundErrors) {
+						Logger.log(OutputWriter.prettyParseTree((ParseTree) o));
+						System.out.println("VIGANE:\n" + OutputWriter.prettyParseTree((ParseTree) o));
+					}
 				}
 				
 			}
