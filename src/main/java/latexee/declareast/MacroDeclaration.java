@@ -7,7 +7,6 @@ import main.java.antlrgen.DeclarationGrammarParser.PairContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class MacroDeclaration extends DeclareNode {
-	
 	private String macroName; //the name of the macro - the characters following \
 	private Integer arguments;
 	private boolean hasOptionalArgument = false;
@@ -18,6 +17,7 @@ public class MacroDeclaration extends DeclareNode {
 		this.meaning=meaning;
 		this.macroName=macroname;
 		this.arguments=arguments;
+		this.id="MACRO"+identifier;
 	}
 	
 	public MacroDeclaration(ParseTree tree){
@@ -35,6 +35,7 @@ public class MacroDeclaration extends DeclareNode {
 		if(this.arguments<0){
 			throw new RuntimeException("Negative amount of arguments given for macro declaration: "+tree.getText());
 		}
+		this.id="MACRO"+identifier;
 	}
 	
 	private void fillAttributes(ParseTree tree){
@@ -81,7 +82,9 @@ public class MacroDeclaration extends DeclareNode {
 	public String getOptionalValue() {
 		return optionalValue;
 	}
-
+	public Integer getArguments() {
+		return arguments;
+	}
 	@Override
 	public String toGrammarRule() {
 		String highestLevelRule = "highestLevel";
@@ -92,7 +95,7 @@ public class MacroDeclaration extends DeclareNode {
 			sb.append(highestLevelRule);
 			sb.append("\'}\'");
 		}
-		sb.append(" #"+this.macroName+"AllArgs\n");
+		sb.append(" #"+this.id+"\n");
 		if(this.hasOptionalArgument){
 			sb.append("|\'\\\\"+this.macroName+"\'");
 			for(int i=0;i<arguments-1;i++){
@@ -100,7 +103,7 @@ public class MacroDeclaration extends DeclareNode {
 				sb.append(highestLevelRule);
 				sb.append("\'}\'");
 			}
-			sb.append(" #"+this.macroName+"Optional\n");
+			sb.append(" #"+this.id+"Optional\n");
 		}
 		return sb.toString();
 	}

@@ -8,8 +8,7 @@ import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class OperatorDeclaration extends DeclareNode {
-	private static int identifier = 0;
-	private String id;
+	
 	private String type; //infix/prefix/etc
 	private Integer priority; //parsing priority
 	private String operator; //The actual character, for example "+"
@@ -26,7 +25,7 @@ public class OperatorDeclaration extends DeclareNode {
 	}
 	public OperatorDeclaration(ParseTree tree){
 		fillAttributes(tree);
-		this.id = "op"+Integer.toString(identifier);
+		this.id = "Op"+Integer.toString(identifier);
 		identifier++;
 		//Yesterday, this was a formality. Today it guards us from the hell of nullpointers.
 		if(this.type == null){
@@ -139,5 +138,7 @@ public class OperatorDeclaration extends DeclareNode {
 	public Integer getPriority() {
 		return priority;
 	}
-
+	public String getType() {
+		return type;
+	}
 }
