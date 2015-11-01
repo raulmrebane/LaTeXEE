@@ -22,24 +22,36 @@ public class DescriptiveErrorListener extends BaseErrorListener {
     		msg = "Undeclared operator '" + symbol + "'";
     	}
     	else if (msg.contains("extraneous input")) {
-    		System.out.println(msg);
-    		String end = msg.substring(msg.indexOf('\'')+1, msg.length()-2);
-    		String input = end.substring(0, end.indexOf('\''));
-    		String expected = msg.substring(msg.indexOf('{')+1, msg.length()-1);
-    		String expectedElements = "";
-    		for (String s : expected.split(",")) {
-    			expectedElements += s +", ";
-    		}
-    		expectedElements = expectedElements.substring(0, expectedElements.length()-2);
+    		String input = getInput(msg);
+    		String expectedElements = getExpectedElements(msg);
     		msg = "Extraneous input: " + input + ", were expecting one of the following: " + expectedElements;
     	}
     	else if (msg.contains("no viable alternative at input")) {
     		String input = msg.substring(msg.indexOf('\'')+1, msg.length()-1);
     		msg = "Unexpected input: " + input;
     	}
+    	else if (msg.contains("mismatched input")) {
+    		String input = getInput(msg);
+    		String expectedElements = getExpectedElements(msg);
+    		msg = "Mismatched input: " + input + ", were expecting one of the following: " + expectedElements;
+    	}
     	//TODO: millised errorid veel võimalikud?
     	msg = msg.replaceAll("<EOF>", "the end of the file");
         Logger.log("Syntax error on line " + line + " character " + charPositionInLine + ": " + msg);
         System.out.println("Syntax error on line " + line + " character " + charPositionInLine + ": " + msg);
+    }
+    
+    public static String getInput(String msg) {
+    	String end = msg.substring(msg.indexOf('\'')+1, msg.length()-2);
+		return end.substring(0, end.indexOf('\''));
+    }
+    
+    public static String getExpectedElements(String msg) {
+    	String expected = msg.substring(msg.indexOf('{')+1, msg.length()-1);
+		String expectedElements = "";
+		for (String s : expected.split(",")) {
+			expectedElements += s +", ";
+		}
+		return expectedElements.substring(0, expectedElements.length()-2);
     }
 }
