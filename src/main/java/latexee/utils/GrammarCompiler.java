@@ -9,6 +9,8 @@ import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
@@ -53,8 +55,10 @@ public class GrammarCompiler {
         compileSourceFolder(tempDir);
 		
         //Loads compiled classes into java, ClassInfo is just a container for stuff we need for reflection
+        //ClassInfo pair = loadClasses(tempDir);
         ClassInfo pair = loadClasses(tempDir);
         
+        //Extracting values from wrapper class
         Constructor lexerCtor = pair.getLexer();
         Constructor parserCtor = pair.getParser();
         Class parserClass = pair.getParserClass();
@@ -65,32 +69,40 @@ public class GrammarCompiler {
         ANTLRInputStream antlrInput = new ANTLRInputStream(formula);
         
         try {
+        	//Using reflected constructors and methods to initiate parsing
 			lexer = (Lexer) lexerCtor.newInstance(antlrInput);
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			parser = (Parser) parserCtor.newInstance(tokens);
-			Method[] allMethods = parserClass.getMethods();
-			Object o = null;
+			
 			foundErrors = false;
-			for(Method m : allMethods){
-				if(m.getName().equals("highestLevel")){
-					m.setAccessible(true);
-					parser.removeErrorListeners();
-					parser.addErrorListener(DescriptiveErrorListener.INSTANCE);
-					lexer.removeErrorListeners();
-					lexer.addErrorListener(DescriptiveErrorListener.INSTANCE);
-					o = m.invoke(parser);
-					if (foundErrors) {
-						Logger.log(OutputWriter.prettyParseTree((ParseTree) o));
-						System.out.println("VIGANE:\n" + OutputWriter.prettyParseTree((ParseTree) o));
-					}
-				}
-				
+			
+			//This lets us handle any ANTLR errors that occur during parsing/lexing
+			parser.removeErrorListeners();
+			lexer.removeErrorListeners();
+			parser.addErrorListener(DescriptiveErrorListener.INSTANCE);
+			lexer.addErrorListener(DescriptiveErrorListener.INSTANCE);
+			
+			//The method we're invoking takes no parameters
+			Class[] params = {};
+			Method parsingMethod = parserClass.getMethod("highestLevel", params);
+			Object rawObject = parsingMethod.invoke(parser);
+			
+			if(foundErrors){
+				//TODO: Make our own exception type for this purpose
+				Logger.log("Error in formula: "+formula+"\n");
 			}
-			tree = (ParseTree) o;			
+			tree = (ParseTree) rawObject;
+			
 		} catch (InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (NoSuchMethodException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SecurityException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
         //tempDir.toFile().deleteOnExit();
@@ -99,6 +111,8 @@ public class GrammarCompiler {
 	}
 	
 	private static void compileSourceFolder(Path path) throws IOException{
+		
+		//Filtering files in folder by extension (that's what the regex does) and adding them to a list
 		ArrayList<File> sourceFiles = new ArrayList<File>();
 		Files.walk(path.toAbsolutePath()).forEach(filePath -> {
 		    if (Files.isRegularFile(filePath)) {
@@ -108,6 +122,7 @@ public class GrammarCompiler {
 		    }
 		});
 		
+		//Compiling all the .java files
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
 
         Iterable<? extends JavaFileObject> compilationUnits1 =
@@ -119,108 +134,71 @@ public class GrammarCompiler {
 	
 	private static void createSource(Path path, String grammar) throws IOException{
 		String tempPath = path.toString();
+		
+		//Writing .g4 file to temp directory
 		Writer writer = null;
         try{
+        	Logger.log("Attempting to write grammar to temp directory "+tempPath+".");
         	writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempPath + File.separator+"RuntimeGrammar.g4"), "utf-8"));
         	writer.write(grammar);
         }		
         catch (Exception e){
-			Logger.log("Could not access specified file.");
+			Logger.log("Could not access temp directory.");
 			System.exit(1);
 		}finally{
 			writer.close();
 		}
         
         Logger.log("Finished without errors");
+        
+        //Add a package name to each class so we would not have issues with naming
         String packageString = "LaTeXEE"+Integer.toString(packageIncrement);
-        String[] args2 = {"-o",tempPath,"-encoding","UTF-8","-package",packageString,tempPath+File.separator+"RuntimeGrammar.g4"};
+        String[] args2 = {"-o",tempPath+File.separator+packageString,"-encoding","UTF-8","-package",packageString,tempPath+File.separator+"RuntimeGrammar.g4"};
 		Tool antlr = new Tool(args2);
 		
+		//Generate .java files
 		antlr.processGrammarsOnCommandLine();
 	}
 	
 	private static ClassInfo loadClasses(Path path) throws IOException{
-		String pathString = path.toString();
-		ArrayList<File> classFiles = new ArrayList<File>();
-		Files.walk(path.toAbsolutePath()).forEach(filePath -> {
-			//filePath.toFile().deleteOnExit();
-		    if (Files.isRegularFile(filePath)) {
-		    	if(filePath.toString().replaceAll("^.*\\.(.*)$", "$1").equals("class")){
-		    		classFiles.add(new File(filePath.toString()));
-		    	};
-		    }
-		});
-        
-        ArrayList<Class> loadedClasses = new ArrayList<Class>();
-        
+		String pathString = path.toString()+File.separator;
+		
+		//Specifying the source folder will allow java to just search for other missing classes it needs.
+		URL folder = new URL("file://"+pathString);
+		URL[] urls = {folder};
+		
+		URLClassLoader cl = new URLClassLoader(urls, GrammarCompiler.class.getClassLoader());
+		
+		//Things we need to initialize in try/catch blocks
         Class lexerClass = null;
         Constructor lexerCtor = null;
         Class parserClass = null;
         Constructor parserCtor = null;
         ClassInfo pair = null;
-        String packageString = "LaTeXEE"+Integer.toString(packageIncrement);
-        try{ 
-        	ArrayList<String> loadManually = new ArrayList<String>();
-        	String rgls = pathString+File.separator+"RuntimeGrammarListener.class"; 
-        	String pcls = pathString+File.separator+"RuntimeGrammarParser$LowestLevelContext.class"; 
-        	String hnc = pathString+File.separator+"RuntimeGrammarParser$HighestNumberContext.class"; 
-        	
-        	loadManually.addAll(Arrays.asList(rgls, pcls, hnc));
-        	
-        	for(String i: loadManually){ 
-        		Class manual = pcl.loadClass(i,pathString,packageString); 
-        		loadedClasses.add(manual); 
-        	} 
-        	
-        	ArrayList<File> toLoadLater = new ArrayList<File>(); 
-        	
-        	for(File i:classFiles){ 
-        		String className = i.toString(); 
-        		if(!loadManually.contains(className)){ 
-        			if(!className.contains("Level")){ 
-        				toLoadLater.add(i); 
-        			}
-        			else{
-	        			Class loadedClass = pcl.loadClass(i.getAbsolutePath(),pathString,packageString);
-	            		loadedClasses.add(loadedClass);
-	            		if(className.contains("RuntimeGrammarLexer.class")){
-	            			lexerClass = loadedClass;
-	            		}
-	            		if(className.contains("RuntimeGrammarParser.class")){
-	            			parserClass = loadedClass;
-	            		}
-        			}
-        		}
-        	}
-        	for(File i:toLoadLater){
-        		String className = i.toString();
-    			Class loadedClass = pcl.loadClass(i.getAbsolutePath(),pathString,packageString);
-        		loadedClasses.add(loadedClass);
-        		if(className.contains("Lexer")){
-        			lexerClass = loadedClass;
-        		}
-        		if(className.contains("Parser.class")){
-        			parserClass = loadedClass;
-        		}
-        	}
+        
+		try {
+			String packageName = "LaTeXEE"+Integer.toString(packageIncrement);
+			
+			//The only two classes we really need to access directly
+			lexerClass = cl.loadClass(packageName+".RuntimeGrammarLexer");
+			parserClass = cl.loadClass(packageName+".RuntimeGrammarParser");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        try {
+		
+		try {
+			//Getting the necessary constructors 
 			lexerCtor = lexerClass.getDeclaredConstructor(CharStream.class);
 			lexerCtor.setAccessible(true);
 			parserCtor = parserClass.getDeclaredConstructor(TokenStream.class);
 			parserCtor.setAccessible(true);
 			pair =  new ClassInfo(parserCtor, lexerCtor, parserClass);
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
+		} catch (NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        return pair;
+		return pair;
 	}
 }
 
