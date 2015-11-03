@@ -38,7 +38,6 @@ import main.java.latexee.logging.Logger;
 
 public class GrammarCompiler {
 	private static JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-	private static ParserClassLoader pcl = new ParserClassLoader(GrammarCompiler.class.getClassLoader());
 	private static int packageIncrement = 0;
 	public static boolean foundErrors;
 	public static ParseTree compile(List<DeclareNode> nodes, String grammar, String formula) throws IOException{
