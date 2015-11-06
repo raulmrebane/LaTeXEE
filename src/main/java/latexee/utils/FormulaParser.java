@@ -48,8 +48,9 @@ public class FormulaParser {
 		}
 		else if(root instanceof FormulaStatement){
 			String grammar = GrammarGenerator.createGrammar(declarations);
+			System.out.println(grammar);
 			try {
-				ParseTree formulaTree = GrammarCompiler.compile(declarations, grammar, root.getContent());
+				ParseTree formulaTree = GrammarCompiler.compile(grammar, root.getContent());
 				System.out.println(OutputWriter.prettyParseTree(formulaTree));
 				Node a = OpenMathTranslator.parseToOM(formulaTree, declarations, false);
 				treePrinter.printTree(a);

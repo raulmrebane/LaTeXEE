@@ -1,11 +1,11 @@
 \documentclass{article}\begin{document}
-\declare{syntax={infix,5,"+",l}, meaning=arith1.sum,thisis=nonsemanticdata}
+\declare{syntax={infix,99,"+",l}, meaning=arith1.sum,thisis=nonsemanticdata}
 \begin{theorem}
-\declare{syntax={infix,7,"/",l}, meaning=artih1.divide}
-\declare{syntax={infix,5,"-",l}, meaning=arith1.minus}
-\declare{syntax={infix,7,"*",l}, meaning=arith1.times,thisis=nonsemanticdata}
+\declare{syntax={infix,100,"/",l}, meaning=artih1.divide}
+\declare{syntax={infix,99,"-",l}, meaning=arith1.minus}
+\declare{syntax={infix,100,"*",l}, meaning=arith1.times,thisis=nonsemanticdata}
 $2*3$
-$${2+5}/2$$
+$${2+{ab}}/2$$
 \end{theorem}
 \begin{proof}
 \declare{macro=\gcd, meaning=arith1.gcd, argspec=[2], code={...}}

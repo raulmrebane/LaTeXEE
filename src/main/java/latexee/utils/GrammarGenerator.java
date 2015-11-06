@@ -77,6 +77,14 @@ public class GrammarGenerator {
 		//Gather all used priority levels up (there may be gaps, i.e. 1,2,7 are the only used priorities)
 		ArrayList<Integer> priorities = new ArrayList<Integer>(operatorNodes.keySet());
 		
+		//Add invisible times priority as it is hard-coded
+		if(!priorities.contains(100)){
+			priorities.add(100);
+		}
+		if(!operatorNodes.containsKey(100)){
+			operatorNodes.put(100, new ArrayList<OperatorDeclaration>());
+		}
+		
 		//Sort them so we can always use i+1 for the next priority to be used
 		Collections.sort(priorities);
 		
@@ -94,12 +102,15 @@ public class GrammarGenerator {
 			//And this is faster than an if-else clause
 			int i = 0;
 			for(;i<priorities.size()-1;i++){
-				
-				String priorityAsString = Integer.toString(priorities.get(i));
+
+				int priority = priorities.get(i);
+				String priorityAsString = Integer.toString(priority);
 				String nextPriorityAsString = Integer.toString(priorities.get(i+1));
 				
 				sb.append("level"+priorityAsString+" : ");
-				
+				if(priority==100){
+					sb.append("level"+priorityAsString+" "+"level"+nextPriorityAsString+" #INVISIBLETIMES\n|");
+				}
 				for(OperatorDeclaration opNode : operatorNodes.get(priorities.get(i))){
 					
 					//Using the method which specifies which level the rule should point to
@@ -116,7 +127,9 @@ public class GrammarGenerator {
 			Integer lastPriority = priorities.get(i);
 			String priorityAsString = Integer.toString(lastPriority);
 			sb.append("level"+priorityAsString+": ");
-			
+			if(lastPriority==100){
+				sb.append("level"+priorityAsString+" level101"+" #INVISIBLETIMES\n|");
+			}
 			//Here opNode.toGrammarRule just points to a level that is 1 higher than the current one. 
 			for(DeclareNode opNode : operatorNodes.get(lastPriority)){
 				sb.append(opNode.toGrammarRule()+"|");

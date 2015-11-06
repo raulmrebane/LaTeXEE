@@ -38,6 +38,29 @@ public class OpenMathTranslator {
 		else if(treeName.equalsIgnoreCase("BRACKETSContext")){
 			return parseToOM(tree.getChild(1),declarations, true);
 		}
+		else if(treeName.equalsIgnoreCase("invisibletimescontext")){
+			Node root = new NodeImpl(Node.OM_APP);
+			if(brackets){
+				addParens(root);
+			}
+			
+			Symbol timesSymbol = new Symbol("arith1","times");
+			Node omsNode = new SymbolNodeImpl(timesSymbol);
+			
+			
+			ParseTree leftChild = tree.getChild(0);
+			ParseTree rightChild = tree.getChild(1);
+			
+			Node leftNode = parseToOM(leftChild,declarations,false);
+			Node rightNode = parseToOM(rightChild,declarations,false);
+			
+			root.appendChild(omsNode);
+			root.appendChild(leftNode);
+			root.appendChild(rightNode);
+			
+
+			return root;
+		}
 		else{
 			if(tree instanceof TerminalNodeImpl){
 				TerminalNodeImpl castTree = (TerminalNodeImpl) tree;
@@ -99,13 +122,7 @@ public class OpenMathTranslator {
 				
 				
 				if(brackets){
-					//Labeling the attribute again
-					Symbol latexeeCD = new Symbol("LaTeXEE","nonsemantic");
-					
-					//Setting parens and type. Currently only one type of parens exist 
-					Symbol braceCDSymbol = new Symbol("parens","brace");
-					Node braceNode = new SymbolNodeImpl(braceCDSymbol);
-					root.setAttribute(latexeeCD, braceNode);
+					addParens(root);
 				}
 
 				List<Node> children = new ArrayList<Node>();
@@ -163,7 +180,15 @@ public class OpenMathTranslator {
 		return children;
 	}
 	
-	
+	public static void addParens(Node root){
+		//Labeling the attribute again
+		Symbol latexeeCD = new Symbol("LaTeXEE","nonsemantic");
+		
+		//Setting parens and type. Currently only one type of parens exist 
+		Symbol braceCDSymbol = new Symbol("LATEXEE","brace");
+		Node braceNode = new SymbolNodeImpl(braceCDSymbol);
+		root.setAttribute(latexeeCD, braceNode);
+	}
 	
 	
 	//This is an ugly (hopefully temporary) hack.

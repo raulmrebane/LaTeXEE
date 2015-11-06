@@ -40,7 +40,7 @@ public class GrammarCompiler {
 	private static JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 	private static int packageIncrement = 0;
 	public static boolean foundErrors;
-	public static ParseTree compile(List<DeclareNode> nodes, String grammar, String formula) throws IOException{
+	public static ParseTree compile(String grammar, String formula) throws IOException{
         ParseTree tree = null;
         packageIncrement++;
         
