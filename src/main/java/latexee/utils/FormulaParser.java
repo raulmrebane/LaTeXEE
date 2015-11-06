@@ -59,7 +59,9 @@ public class FormulaParser {
 			} catch (IOException e) {
 				Logger.log("IO exception when parsing formula: "+root.getContent());
 				e.printStackTrace();
-			}			
+			} catch (NullPointerException e) {
+				//Do nothing, logging errors already covered
+			}
 		}
 		else if(root instanceof TheoremStatement ||
 				root instanceof LemmaStatement ||

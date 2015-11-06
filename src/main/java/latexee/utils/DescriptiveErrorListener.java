@@ -2,6 +2,8 @@ package main.java.latexee.utils;
 
 //credit: http://stackoverflow.com/questions/18132078/handling-errors-in-antlr4
 
+import java.util.ArrayList;
+
 import main.java.latexee.logging.Logger;
 
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -10,6 +12,7 @@ import org.antlr.v4.runtime.Recognizer;
 
 public class DescriptiveErrorListener extends BaseErrorListener {
     public static DescriptiveErrorListener INSTANCE = new DescriptiveErrorListener();
+    public static ArrayList<Object[]> locationData; //1. - line, 2. - charPos, 3. - error message
 
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, 
@@ -37,8 +40,8 @@ public class DescriptiveErrorListener extends BaseErrorListener {
     	}
     	//TODO: millised errorid veel võimalikud?
     	msg = msg.replaceAll("<EOF>", "the end of the file");
-        Logger.log("Syntax error on line " + line + " character " + charPositionInLine + ": " + msg);
-        System.out.println("Syntax error on line " + line + " character " + charPositionInLine + ": " + msg);
+        Object[] data = {line, charPositionInLine, msg};
+        locationData.add(data);
     }
     
     public static String getInput(String msg) {
