@@ -1,6 +1,8 @@
 package main.java.latexee.utils;
 
 import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ import main.java.latexee.logging.Logger;
 
 public class FormulaParser {
 	private static OutputStream out = new DataOutputStream(System.out);
-	private static TreePrinterImpl treePrinter = new TreePrinterImpl(new XMLPrinter(out));
+	private static TreePrinterImpl treePrinter;
 	
 	public static void parse(ParsedStatement root,List<DeclareNode> declarations){
 		
@@ -48,14 +50,10 @@ public class FormulaParser {
 		}
 		else if(root instanceof FormulaStatement){
 			String grammar = GrammarGenerator.createGrammar(declarations);
-			System.out.println(grammar);
 			try {
 				ParseTree formulaTree = GrammarCompiler.compile(grammar, root.getContent());
-				System.out.println(OutputWriter.prettyParseTree(formulaTree));
 				Node a = OpenMathTranslator.parseToOM(formulaTree, declarations, false);
 				treePrinter.printTree(a);
-				treePrinter.endPrint();
-				System.out.println();
 				
 			} catch (IOException e) {
 				Logger.log("IO exception when parsing formula: "+root.getContent());
@@ -71,5 +69,11 @@ public class FormulaParser {
 			parse(child,declarations);
 		}
 			
+	}
+	public static void setFilename(String filename) throws FileNotFoundException{
+		 treePrinter = new TreePrinterImpl(new XMLPrinter(new FileOutputStream(filename)));
+	}
+	public static void donePrinting(){
+		treePrinter.endPrint();
 	}
 }

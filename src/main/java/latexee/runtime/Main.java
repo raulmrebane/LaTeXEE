@@ -76,9 +76,9 @@ public class Main {
                         // Default outputfile is the same as input file, but change extension.
                         // If no extension, then just add extension
                         if (inputFile.indexOf('.') == -1) {
-                            outputFile = inputFile + ".txt";
+                            outputFile = inputFile + ".xml";
                         } else {
-                            outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + ".txt";
+                            outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + ".xml";
                         }
                         //System.out.println("Outputfile is: " + outputFile);
                     }
@@ -109,11 +109,10 @@ public class Main {
 		//String inputFile = args[0];
 		if (inputFile != null) {
             ParsedStatement AST = DocumentParser.parse(inputFile);
-            System.out.println("AST: \n");
             DeclarationParser.declarationFinder(AST);
-            System.out.println(AST.toString()+"\n");
-            OutputWriter.formulasToTXT(AST, outputFile);
+            FormulaParser.setFilename(outputFile);
             FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+            FormulaParser.donePrinting();
 		}
 	}
 }
