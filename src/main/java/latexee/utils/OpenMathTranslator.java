@@ -14,6 +14,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import org.symcomp.openmath.OpenMathBase;
 
+
 import fr.inria.openmath.omapi.Node;
 import fr.inria.openmath.omapi.Symbol;
 import fr.inria.openmath.omapi.implementation.IntNodeImpl;
@@ -35,6 +36,30 @@ public class OpenMathTranslator {
 		}
 		else if(treeName.equalsIgnoreCase("BRACKETSContext")){
 			return parseToOM(tree.getChild(1),declarations, true);
+		}
+		else if(treeName.equalsIgnoreCase("invisibletimescontext")){
+			Node root = new NodeImpl(Node.OM_APP);
+			if(brackets){
+				addParens(root);
+			}
+			
+			//There is no declaration for invisible times so we add it manually
+			Symbol timesSymbol = new Symbol("arith1","times");
+			Node omsNode = new SymbolNodeImpl(timesSymbol);
+			
+			
+			ParseTree leftChild = tree.getChild(0);
+			ParseTree rightChild = tree.getChild(1);
+			
+			Node leftNode = parseToOM(leftChild,declarations,false);
+			Node rightNode = parseToOM(rightChild,declarations,false);
+			
+			root.appendChild(omsNode);
+			root.appendChild(leftNode);
+			root.appendChild(rightNode);
+			
+
+			return root;
 		}
 		else{
 			if(tree instanceof TerminalNodeImpl){
@@ -97,13 +122,7 @@ public class OpenMathTranslator {
 				
 				
 				if(brackets){
-					//Labeling the attribute again
-					Symbol latexeeCD = new Symbol("LaTeXEE","nonsemantic");
-					
-					//Setting parens and type. Currently only one type of parens exist 
-					Symbol braceCDSymbol = new Symbol("parens","brace");
-					Node braceNode = new SymbolNodeImpl(braceCDSymbol);
-					root.setAttribute(latexeeCD, braceNode);
+					addParens(root);
 				}
 
 				List<Node> children = new ArrayList<Node>();
@@ -161,7 +180,15 @@ public class OpenMathTranslator {
 		return children;
 	}
 	
-	
+	public static void addParens(Node root){
+		//Labeling the attribute again
+		Symbol latexeeCD = new Symbol("LaTeXEE","nonsemantic");
+		
+		//Setting parens and type. Currently only one type of parens exist 
+		Symbol braceCDSymbol = new Symbol("LATEXEE","brace");
+		Node braceNode = new SymbolNodeImpl(braceCDSymbol);
+		root.setAttribute(latexeeCD, braceNode);
+	}
 	
 	
 	//This is an ugly (hopefully temporary) hack.
@@ -170,7 +197,9 @@ public class OpenMathTranslator {
 	private static Pattern OMI = Pattern.compile("[0-9]+");
 	private static Pattern OMV = Pattern.compile("[a-z]");
 	
-
+	//Adds non-semantic data about the existence of parens to the node.
+	//Could later be improved upon by adding a type parameter
+	//In case we deal with more than {} such as ()
 	public static Node lexerToOM(TerminalNodeImpl tree){
 		String constant = tree.getText();
 		if(OMI.matcher(constant).matches()){

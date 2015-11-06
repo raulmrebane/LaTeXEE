@@ -15,8 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -32,15 +30,13 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import main.java.latexee.declareast.DeclareNode;
-import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.logging.Logger;
 
 public class GrammarCompiler {
 	private static JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 	private static int packageIncrement = 0;
 	public static boolean foundErrors;
-	public static ParseTree compile(List<DeclareNode> nodes, String grammar, String formula) throws IOException{
+	public static ParseTree compile(String grammar, String formula) throws IOException{
         ParseTree tree = null;
         packageIncrement++;
         

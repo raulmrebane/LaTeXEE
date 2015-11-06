@@ -1,14 +1,7 @@
 package main.java.latexee.runtime;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
 
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.docast.ParsedStatement;
@@ -16,10 +9,6 @@ import main.java.latexee.logging.Logger;
 import main.java.latexee.utils.DeclarationParser;
 import main.java.latexee.utils.DocumentParser;
 import main.java.latexee.utils.FormulaParser;
-import main.java.latexee.utils.GrammarCompiler;
-import main.java.latexee.utils.GrammarGenerator;
-import main.java.latexee.utils.OpenMathTranslator;
-import main.java.latexee.utils.OutputWriter;
 
 import org.apache.commons.cli.*;
 
@@ -76,9 +65,9 @@ public class Main {
                         // Default outputfile is the same as input file, but change extension.
                         // If no extension, then just add extension
                         if (inputFile.indexOf('.') == -1) {
-                            outputFile = inputFile + ".txt";
+                            outputFile = inputFile + ".xml3";
                         } else {
-                            outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + ".txt";
+                            outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + ".xml";
                         }
                         //System.out.println("Outputfile is: " + outputFile);
                     }
@@ -109,11 +98,10 @@ public class Main {
 		//String inputFile = args[0];
 		if (inputFile != null) {
             ParsedStatement AST = DocumentParser.parse(inputFile);
-            System.out.println("AST: \n");
             DeclarationParser.declarationFinder(AST);
-            System.out.println(AST.toString()+"\n");
-            OutputWriter.formulasToTXT(AST, outputFile);
+            FormulaParser.setFilename(outputFile);
             FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+            FormulaParser.donePrinting();
 		}
 	}
 }
