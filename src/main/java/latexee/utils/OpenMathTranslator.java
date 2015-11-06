@@ -44,6 +44,7 @@ public class OpenMathTranslator {
 				addParens(root);
 			}
 			
+			//There is no declaration for invisible times so we add it manually
 			Symbol timesSymbol = new Symbol("arith1","times");
 			Node omsNode = new SymbolNodeImpl(timesSymbol);
 			
@@ -197,7 +198,9 @@ public class OpenMathTranslator {
 	private static Pattern OMI = Pattern.compile("[0-9]+");
 	private static Pattern OMV = Pattern.compile("[a-z]");
 	
-
+	//Adds non-semantic data about the existence of parens to the node.
+	//Could later be improved upon by adding a type parameter
+	//In case we deal with more than {} such as ()
 	public static Node lexerToOM(TerminalNodeImpl tree){
 		String constant = tree.getText();
 		if(OMI.matcher(constant).matches()){

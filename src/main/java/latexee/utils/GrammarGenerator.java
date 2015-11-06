@@ -29,16 +29,6 @@ public class GrammarGenerator {
 		return existingRules;
 	}
 	
-	
-	
-	/*	There needs to be exactly one built-in operator in the grammar and that is the invisible multiplication operator.
-	 *	As tokens 'ab' are translated as a*b. There are two ways to approach this: Either set it on a high default value
-	 *	so the user has enough rules to work with for values lower than that OR set it to 0 and allow for negative priority
-	 *  values where the minus has to be replaced by an underscore in the grammar.
-	 */
-	
-	//TODO: Add invisible times operator
-	
 	public static String createGrammar(List<DeclareNode> nodes){
 		//Resulting grammar is built here.
 		StringBuilder sb = new StringBuilder();
@@ -77,7 +67,8 @@ public class GrammarGenerator {
 		//Gather all used priority levels up (there may be gaps, i.e. 1,2,7 are the only used priorities)
 		ArrayList<Integer> priorities = new ArrayList<Integer>(operatorNodes.keySet());
 		
-		//Add invisible times priority as it is hard-coded
+		//Add invisible times priority as it is hard-coded. Adding value to operatorNodes so it would
+		//comply with earlier design
 		if(!priorities.contains(100)){
 			priorities.add(100);
 		}
@@ -108,6 +99,7 @@ public class GrammarGenerator {
 				String nextPriorityAsString = Integer.toString(priorities.get(i+1));
 				
 				sb.append("level"+priorityAsString+" : ");
+				//Hard-coding the invisible times
 				if(priority==100){
 					sb.append("level"+priorityAsString+" "+"level"+nextPriorityAsString+" #INVISIBLETIMES\n|");
 				}
@@ -127,6 +119,8 @@ public class GrammarGenerator {
 			Integer lastPriority = priorities.get(i);
 			String priorityAsString = Integer.toString(lastPriority);
 			sb.append("level"+priorityAsString+": ");
+			
+			//Invisible times check
 			if(lastPriority==100){
 				sb.append("level"+priorityAsString+" level101"+" #INVISIBLETIMES\n|");
 			}
