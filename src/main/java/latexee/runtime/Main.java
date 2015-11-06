@@ -18,6 +18,7 @@ import main.java.latexee.utils.DocumentParser;
 import main.java.latexee.utils.FormulaParser;
 import main.java.latexee.utils.GrammarCompiler;
 import main.java.latexee.utils.GrammarGenerator;
+import main.java.latexee.utils.OpenMathTranslator;
 import main.java.latexee.utils.OutputWriter;
 
 import org.apache.commons.cli.*;
@@ -113,6 +114,6 @@ public class Main {
             System.out.println(AST.toString()+"\n");
             OutputWriter.formulasToTXT(AST, outputFile);
             FormulaParser.parse(AST, new ArrayList<DeclareNode>());
-        }
+		}
 	}
 }

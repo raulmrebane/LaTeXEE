@@ -12,6 +12,9 @@ import main.java.latexee.logging.Logger;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
+import org.symcomp.openmath.OpenMathBase;
+
+import com.sun.corba.se.impl.protocol.MinimalServantCacheLocalCRDImpl;
 
 import fr.inria.openmath.omapi.Node;
 import fr.inria.openmath.omapi.Symbol;
@@ -32,7 +35,7 @@ public class OpenMathTranslator {
 		if(treeName.contains("DEFAULT")){
 			return parseToOM(tree.getChild(0), declarations, brackets);
 		}
-		else if(treeName.equals("BRACKETContext")){
+		else if(treeName.equalsIgnoreCase("BRACKETSContext")){
 			return parseToOM(tree.getChild(1),declarations, true);
 		}
 		else{
@@ -72,15 +75,39 @@ public class OpenMathTranslator {
 				Node cdNode = new SymbolNodeImpl(cdSymbol);
 				root.appendChild(cdNode);
 				
-				
-				//TODO: Add non-semantic data
-				//TODO: Add parenthesis
 				HashMap<String,String> miscellaneous = declaration.getMiscellaneous();
-				//This is where adding that would go.
+				
+				//If there is nonsemantic data
+				if(miscellaneous.size()>0){
+					
+					//Label the node where we put the nonsemantic data
+					Symbol latexeeCD = new Symbol("LaTeXEE","nonsemantic");
+					
+					//OMA root node of all OMS'es that come from the misc. 
+					//Could be made prettier in that if there is just one we can make just one OMS.
+					Node omaNode = new NodeImpl(Node.OM_APP);
+					
+					for(String key:miscellaneous.keySet()){
+						//Adding OMS'es for each data pair
+						String value = miscellaneous.get(key);
+						Node tmp = new SymbolNodeImpl(new Symbol(key,value));
+						omaNode.appendChild(tmp);
+					}
+					//Adding this attribute to the operation
+					root.setAttribute(latexeeCD, omaNode);
+				}
+				
 				
 				if(brackets){
-					//TODO: do stuff with brackets
+					//Labeling the attribute again
+					Symbol latexeeCD = new Symbol("LaTeXEE","nonsemantic");
+					
+					//Setting parens and type. Currently only one type of parens exist 
+					Symbol braceCDSymbol = new Symbol("parens","brace");
+					Node braceNode = new SymbolNodeImpl(braceCDSymbol);
+					root.setAttribute(latexeeCD, braceNode);
 				}
+
 				List<Node> children = new ArrayList<Node>();
 				if(declaration instanceof OperatorDeclaration){
 					OperatorDeclaration castDeclaration = (OperatorDeclaration) declaration;
