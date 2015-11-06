@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import fr.inria.openmath.omapi.Node;
 import fr.inria.openmath.omapi.implementation.TreePrinterImpl;
 import fr.inria.openmath.omapi.implementation.XMLPrinter;
+import main.java.latexee.declareast.DeclarationInitialisationException;
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.declareast.MacroDeclaration;
 import main.java.latexee.declareast.OperatorDeclaration;
@@ -37,13 +38,24 @@ public class FormulaParser {
 			
 			DeclareNode node = null;
 			
-			if(operatorStyle){
-				node = new OperatorDeclaration(parseTree);
-			}else{
-				node = new MacroDeclaration(parseTree);
+			if (operatorStyle){
+				try {
+					node = new OperatorDeclaration(parseTree);
+					declarations.add(node);
+				}
+				catch (DeclarationInitialisationException die) {
+				}
+			}
+			else {
+				try {
+					node = new MacroDeclaration(parseTree);
+					declarations.add(node);
+				}
+				catch (DeclarationInitialisationException die) {
+				}
 			}
 			
-			declarations.add(node);
+			
 			
 		}
 		else if(root instanceof FormulaStatement){

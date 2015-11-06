@@ -3,6 +3,7 @@ package main.java.latexee.declareast;
 import main.java.antlrgen.DeclarationGrammarParser.ImportantPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.MiscPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.PairContext;
+import main.java.latexee.logging.Logger;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -21,20 +22,24 @@ public class MacroDeclaration extends DeclareNode {
 		identifier++;
 	}
 	
-	public MacroDeclaration(ParseTree tree){
+	public MacroDeclaration(ParseTree tree) throws DeclarationInitialisationException{
 		fillAttributes(tree);
 		if(		this.meaning == null || this.contentDictionary==null){
 			//Yesterday, this was a formality. Today it guards us from the hell of nullpointers.
-			throw new RuntimeException("OpenMath meaning was not instantiated on macro declaration: "+tree.getText());
+			Logger.log("OpenMath meaning was not instantiated on macro declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
 		if(this.arguments==null){
-			throw new RuntimeException("Number of arguments was not instantiated on macro declaration: "+tree.getText());
+			Logger.log("Number of arguments was not instantiated on macro declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
 		if(this.macroName==null){
-			throw new RuntimeException("Macro name was not instantiated on macro declaration: "+tree.getText());
+			Logger.log("Macro name was not instantiated on macro declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
 		if(this.arguments<0){
-			throw new RuntimeException("Negative amount of arguments given for macro declaration: "+tree.getText());
+			Logger.log("Negative amount of arguments given for macro declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
 		this.id="MACRO"+Integer.toString(identifier);
 		identifier++;

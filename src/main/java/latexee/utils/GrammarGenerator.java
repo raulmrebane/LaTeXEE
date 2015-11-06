@@ -82,7 +82,7 @@ public class GrammarGenerator {
 		
 		//Edge case where we have no symbol operators defined, we jump to where the macro levels are
 		if(priorities.size()==0){
-			sb.append("highestNumber : lowestlevel #DEFAULT"+Integer.toString(defaultCounter)+";\n");
+			sb.append("highestNumber : lowestLevel #DEFAULT"+Integer.toString(defaultCounter)+";\n");
 			defaultCounter++;
 		}
 		else{
