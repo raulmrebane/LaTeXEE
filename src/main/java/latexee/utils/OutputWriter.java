@@ -1,8 +1,5 @@
 package main.java.latexee.utils;
 
-
-
-
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -11,9 +8,7 @@ import java.io.Writer;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 
-import main.java.latexee.docast.DeclareStatement;
 import main.java.latexee.docast.FormulaStatement;
-import main.java.latexee.docast.IncludeStatement;
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.logging.Logger;
 

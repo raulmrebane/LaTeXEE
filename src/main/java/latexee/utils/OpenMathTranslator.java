@@ -12,9 +12,6 @@ import main.java.latexee.logging.Logger;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
-import org.symcomp.openmath.OpenMathBase;
-
-import com.sun.corba.se.impl.protocol.MinimalServantCacheLocalCRDImpl;
 
 import fr.inria.openmath.omapi.Node;
 import fr.inria.openmath.omapi.Symbol;

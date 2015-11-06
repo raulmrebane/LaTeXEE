@@ -15,8 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -32,8 +30,6 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import main.java.latexee.declareast.DeclareNode;
-import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.logging.Logger;
 
 public class GrammarCompiler {

@@ -1,7 +1,5 @@
 package main.java.latexee.docast;
 
-import java.util.ArrayList;
-
 import main.java.latexee.declareast.DeclareNode;
 
 public class DeclareStatement extends ParsedStatement {

@@ -1,13 +1,10 @@
 package main.java.latexee.utils;
 
-import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -26,7 +23,6 @@ import main.java.latexee.docast.TheoremStatement;
 import main.java.latexee.logging.Logger;
 
 public class FormulaParser {
-	private static OutputStream out = new DataOutputStream(System.out);
 	private static TreePrinterImpl treePrinter;
 	
 	public static void parse(ParsedStatement root,List<DeclareNode> declarations){
