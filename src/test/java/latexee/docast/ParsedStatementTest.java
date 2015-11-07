@@ -127,7 +127,6 @@ public class ParsedStatementTest {
 			new ProofStatement("",0)
 		)));
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing5.tex");
-		System.out.println(ps2.toString());
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -331,7 +330,6 @@ public class ParsedStatementTest {
 		)));
 		
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/LaTeX_file_4.tex");
-		System.out.println(ps2);
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
