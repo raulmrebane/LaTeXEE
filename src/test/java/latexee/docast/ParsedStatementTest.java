@@ -123,10 +123,11 @@ public class ParsedStatementTest {
 	public void ParsingTest5() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new FormulaStatement("something{here}", 0),
-			new FormulaStatement("{{_d}}}", 0)
+			new FormulaStatement("{{sd}}}", 0),
+			new ProofStatement("",0)
 		)));
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing5.tex");
-
+		System.out.println(ps2.toString());
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
@@ -325,10 +326,12 @@ public class ParsedStatementTest {
 			))),
 			new FormulaStatement("Neljas!", 0),
 			new FormulaStatement("valem", 0),
-			new FormulaStatement("\\$", 0)
+			new FormulaStatement("\\$", 0),
+			new IncludeStatement("src/test/antlr/LaTeX_file_4.tex", 0)
 		)));
-
+		
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/LaTeX_file_4.tex");
+		System.out.println(ps2);
 		assertTrue(compareTrees(ps, ps2));
 	}
 	
