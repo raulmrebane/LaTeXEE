@@ -3,7 +3,7 @@ package main.java.latexee.declareast;
 import java.util.HashMap;
 
 public abstract class DeclareNode {
-	protected static int identifier = 0;
+	public static int identifier = 0;
 	protected String contentDictionary;
 	protected String meaning;
 	protected HashMap<String,String> miscellaneous = new HashMap<String,String>();
@@ -22,5 +22,7 @@ public abstract class DeclareNode {
 	public String getId() {
 		return id;
 	}
-	
+	public void resetIdentifier(){
+		identifier = 0;
+	}
 }

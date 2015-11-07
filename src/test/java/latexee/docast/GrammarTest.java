@@ -23,7 +23,6 @@ import fr.inria.openmath.omapi.implementation.TreePrinterImpl;
 
 import static org.junit.Assert.*;
 
-import org.apache.commons.lang3.StringUtils;
 
 
 public class GrammarTest {
@@ -31,6 +30,7 @@ public class GrammarTest {
 	
 	@Test
 	public void Parsing1Test(){
+		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/parsing1.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -54,6 +54,7 @@ public class GrammarTest {
 
 	@Test
 	public void Parsing8Test(){
+		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/parsing8.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -64,8 +65,8 @@ public class GrammarTest {
 		String grammar = "grammarRuntimeGrammar;"
 				+ "highestLevel : highestNumber #DEFAULT0;"
 				+ "highestNumber : level7 #DEFAULT1;"
-				+ "level7 : level7'/'level100 #Op2"
-				+ "|level7'/'level100 #Op3"
+				+ "level7 : level7'/'level100 #Op0"
+				+ "|level7'/'level100 #Op1"
 				+ "|level100 #DEFAULT2;"
 				+ "level100 : level100 level101 #INVISIBLETIMES"
 				+ "|level101 #DEFAULT3;"
@@ -75,11 +76,13 @@ public class GrammarTest {
 				+ "LEXERRULE : [0-9]+|[a-z];";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
+		
 		assertTrue(generatedGrammar.equals(grammar));
 	}
 	
 	@Test
 	public void Parsing9Test(){
+		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/parsing9.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -103,6 +106,7 @@ public class GrammarTest {
 	}
 	@Test
 	public void BasicWithAllDeclaresTest(){
+		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/basic_with_all_declares.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -133,6 +137,7 @@ public class GrammarTest {
 	}
 	@Test
 	public void BasicWithNonsemanticTest(){
+		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/basic_with_nonsemantic.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -161,8 +166,10 @@ public class GrammarTest {
 		grammar = grammar.replaceAll("\n", "");
 		assertTrue(generatedGrammar.equals(grammar));
 	}
+	
 	@Test
 	public void BasicWithScopingTest(){
+		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/basic_with_scoping.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -195,6 +202,7 @@ public class GrammarTest {
 	
 	@Test
 	public void GrammarGeneratorTest(){
+		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/grammar_generator.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -221,7 +229,6 @@ public class GrammarTest {
 				+ "LEXERRULE:[0-9]+|[a-z];";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
-		System.out.println(generatedGrammar);
 		assertTrue(generatedGrammar.equals(grammar));
 	}
 	
