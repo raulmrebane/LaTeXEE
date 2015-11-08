@@ -70,13 +70,13 @@ public class GrammarCompiler {
 			parser = (Parser) parserCtor.newInstance(tokens);
 			
 			foundErrors = false;
-			DescriptiveErrorListener.locationData = new ArrayList<Object[]>();
+			FormulaErrorListener.locationData = new ArrayList<Object[]>();
 			
 			//This lets us handle any ANTLR errors that occur during parsing/lexing
 			parser.removeErrorListeners();
 			lexer.removeErrorListeners();
-			parser.addErrorListener(DescriptiveErrorListener.INSTANCE);
-			lexer.addErrorListener(DescriptiveErrorListener.INSTANCE);
+			parser.addErrorListener(FormulaErrorListener.INSTANCE);
+			lexer.addErrorListener(FormulaErrorListener.INSTANCE);
 			
 			//The method we're invoking takes no parameters
 			Class[] params = {};
@@ -87,11 +87,10 @@ public class GrammarCompiler {
 				//TODO: Make our own exception type for this purpose
 				Logger.log("Error in formula: "+formula+"\n");
 				System.out.println("Error in formula: "+formula+":");
-				for (Object[] data : DescriptiveErrorListener.locationData) {
-					Integer line = (Integer) data[0];
-					Integer charPositionInLine = (Integer) data[1];
-					String msg = (String) data[2];
-					System.out.println("Syntax error on line " + line + " character " + charPositionInLine + ": " + msg);
+				for (Object[] data : FormulaErrorListener.locationData) {
+					Integer charPositionInLine = (Integer) data[0];
+					String msg = (String) data[1];
+					System.out.println("Syntax error at character " + charPositionInLine + ": " + msg);
 				}
 				return null;
 			}
