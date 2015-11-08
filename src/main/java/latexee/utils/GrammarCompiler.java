@@ -106,9 +106,9 @@ public class GrammarCompiler {
 		} catch (SecurityException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} finally {
+			markForDeletion(tempDir.toFile());
 		}
-		
-        //tempDir.toFile().deleteOnExit();
         
         return tree;
 	}
@@ -203,7 +203,17 @@ public class GrammarCompiler {
 		}
 		return pair;
 	}
+	private static void markForDeletion(File file) {
+		file.deleteOnExit();
+	    File[] contents = file.listFiles();
+	    if (contents != null) {
+	        for (File f : contents) {
+	            markForDeletion(f);
+	        }
+	    }	    
+	}
 }
+
 
 class ClassInfo{
 	private Constructor parserCtor;

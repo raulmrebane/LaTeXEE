@@ -98,7 +98,6 @@ public class Main {
 		//String inputFile = args[0];
 		if (inputFile != null) {
             ParsedStatement AST = DocumentParser.parse(inputFile);
-            DeclarationParser.declarationFinder(AST);
             FormulaParser.setFilename(outputFile);
             FormulaParser.parse(AST, new ArrayList<DeclareNode>());
             FormulaParser.donePrinting();

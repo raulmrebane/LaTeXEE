@@ -1,0 +1,32 @@
+
+<OMA>
+  <OMS cd="arith1" name="sum"/>
+  <OMI>2</OMI>
+  <OMA>
+    <OMS cd="arith1" name="times"/>
+    <OMI>2</OMI>
+    <OMI>3</OMI>
+  </OMA>
+</OMA>
+<OMATTR>
+  <OMATP>
+    <OMS cd="LaTeXEE" name="nonsemantic"/>
+    <OMA>
+      <OMS cd="code" name="{"/>
+    </OMA>
+  </OMATP>
+  <OMA>
+    <OMS cd="arith1" name="gcd"/>
+    <OMA>
+      <OMS cd="arith1" name="sum"/>
+      <OMI>2</OMI>
+      <OMV name="a"/>
+    </OMA>
+    <OMI>8</OMI>
+  </OMA>
+</OMATTR>
+<OMA>
+  <OMS cd="arith1" name="sum"/>
+  <OMI>2</OMI>
+  <OMI>2</OMI>
+</OMA>
