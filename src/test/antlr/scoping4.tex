@@ -1,0 +1,14 @@
+\documentclass[11pt]{article}
+\begin{document}
+$1+2$
+\declare{syntax={infix,5,"+",l}, meaning=arith1.sum, misc="abc"}
+$1+(2+3)$
+\begin{theorem}
+\declare{syntax={infix,7,"*",l}, meaning=arith1.times}
+$5+4$
+$5*4$
+$1+(2*(3+4)+5)*6+7*8$
+\end{theorem}
+$a*b$
+$$(34+(8+6))$$
+\end{document}
