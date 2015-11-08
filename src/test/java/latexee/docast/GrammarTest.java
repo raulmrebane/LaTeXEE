@@ -36,8 +36,10 @@ public class GrammarTest {
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
 
 		String generatedGrammar = GrammarGenerator.createGrammar(nodes);
+		
 		generatedGrammar = generatedGrammar.replaceAll(" ", "");
 		generatedGrammar = generatedGrammar.replaceAll("\n", "");
+		System.out.println(generatedGrammar);
 		String grammar = "grammarRuntimeGrammar;"+
 		"highestLevel:highestNumber#DEFAULT0;"+
 		"highestNumber:level100#DEFAULT1;"
@@ -47,7 +49,8 @@ public class GrammarTest {
 		+ "lowestLevel:'{'highestLevel'}'#BRACES"
 		+ "|'('highestLevel')'#PARENS"
 		+ "|LEXERRULE#DEFAULT4;"
-		+ "LEXERRULE:[0-9]+|[a-z];";
+		+ "LEXERRULE:[0-9]+|[a-z];"
+		+ "WS : [\\t\\n\\r]+ -> skip;";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		assertTrue(generatedGrammar.equals(grammar));
@@ -75,7 +78,8 @@ public class GrammarTest {
 				+ "lowestLevel:'{'highestLevel'}'#BRACES"
 				+ "|'('highestLevel')'#PARENS"
 				+ "|LEXERRULE #DEFAULT5;"
-				+ "LEXERRULE : [0-9]+|[a-z];";
+				+ "LEXERRULE : [0-9]+|[a-z];"
+				+ "WS : [\\t\\n\\r]+ -> skip;";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		
@@ -101,7 +105,8 @@ public class GrammarTest {
 				+ "lowestLevel:'{'highestLevel'}'#BRACES"
 				+ "|'('highestLevel')'#PARENS"
 				+ "|LEXERRULE #DEFAULT4;"
-				+ "LEXERRULE : [0-9]+|[a-z];";
+				+ "LEXERRULE : [0-9]+|[a-z];"
+				+ "WS : [\\t\\n\\r]+ -> skip;";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		
@@ -134,7 +139,8 @@ public class GrammarTest {
 				+ "|'('highestLevel')'#PARENS"
 				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
 				+ "|LEXERRULE#DEFAULT6;"
-				+ "LEXERRULE:[0-9]+|[a-z];";
+				+ "LEXERRULE:[0-9]+|[a-z];"
+				+ "WS : [\\t\\n\\r]+ -> skip;";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		assertTrue(generatedGrammar.equals(grammar));
@@ -166,7 +172,8 @@ public class GrammarTest {
 				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
 				+ "|'\\\\gcd2''{'highestLevel'}''{'highestLevel'}' #MACRO5"
 				+ "|LEXERRULE #DEFAULT5;"
-				+ "LEXERRULE:[0-9]+|[a-z];";
+				+ "LEXERRULE:[0-9]+|[a-z];"
+				+ "WS : [\\t\\n\\r]+ -> skip;";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		assertTrue(generatedGrammar.equals(grammar));
@@ -180,7 +187,7 @@ public class GrammarTest {
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
 
 		String generatedGrammar = GrammarGenerator.createGrammar(nodes);
-		
+		System.out.println(generatedGrammar);
 		generatedGrammar = generatedGrammar.replaceAll(" ", "");
 		generatedGrammar = generatedGrammar.replaceAll("\n", "");
 		String grammar = "grammarRuntimeGrammar;"
@@ -200,7 +207,8 @@ public class GrammarTest {
 				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
 				+ "|'\\\\gcd2''{'highestLevel'}''{'highestLevel'}' #MACRO5"
 				+ "|LEXERRULE#DEFAULT6;"
-				+ "LEXERRULE:[0-9]+|[a-z];";
+				+ "LEXERRULE:[0-9]+|[a-z];"
+				+ "WS : [\\t\\n\\r]+ -> skip;";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		assertTrue(generatedGrammar.equals(grammar));
@@ -214,7 +222,6 @@ public class GrammarTest {
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
 
 		String generatedGrammar = GrammarGenerator.createGrammar(nodes);
-		System.out.println(generatedGrammar);
 		generatedGrammar = generatedGrammar.replaceAll(" ", "");
 		generatedGrammar = generatedGrammar.replaceAll("\n", "");
 		String grammar = "grammarRuntimeGrammar;"
@@ -234,7 +241,8 @@ public class GrammarTest {
 				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
 				+ "|'\\\\gcd2''{'highestLevel'}''{'highestLevel'}' #MACRO5"
 				+ "|LEXERRULE #DEFAULT6;"
-				+ "LEXERRULE:[0-9]+|[a-z];";
+				+ "LEXERRULE:[0-9]+|[a-z];"
+				+ "WS : [\\t\\n\\r]+ -> skip;";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		assertTrue(generatedGrammar.equals(grammar));

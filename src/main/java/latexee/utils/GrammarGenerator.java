@@ -138,7 +138,7 @@ public class GrammarGenerator {
 			sb.append("level"+Integer.toString(lastPriority+1)+ " : lowestLevel #DEFAULT"+Integer.toString(defaultCounter)+"; \n");
 			defaultCounter++;
 			
-			sb.append("WS :	[ \\t\\n\\r]+ -> skip; \n");
+			
 		}
 		
 		//The last level includes brackets and macro operators
@@ -159,7 +159,7 @@ public class GrammarGenerator {
 		sb.append("LEXERRULE #DEFAULT"+Integer.toString(defaultCounter)+";\n");
 		defaultCounter++;
 		sb.append("LEXERRULE : [0-9]+ | [a-z];\n");
-		
+		sb.append("WS : [\\t\\n\\r]+ -> skip; \n");
 		return sb.toString();
 	}
 	
