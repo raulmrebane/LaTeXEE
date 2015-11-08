@@ -2,14 +2,13 @@ package main.java.latexee.declareast;
 
 import main.java.antlrgen.DeclarationGrammarParser.ImportantPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.MiscPairContext;
-import main.java.antlrgen.DeclarationGrammarParser.PairContext;
 import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
+import main.java.latexee.logging.Logger;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class OperatorDeclaration extends DeclareNode {
-	private static int identifier = 0;
-	private String id;
+	
 	private String type; //infix/prefix/etc
 	private Integer priority; //parsing priority
 	private String operator; //The actual character, for example "+"
@@ -24,25 +23,30 @@ public class OperatorDeclaration extends DeclareNode {
 		this.operator = operator;
 		this.associativity = associativity;
 	}
-	public OperatorDeclaration(ParseTree tree){
+	public OperatorDeclaration(ParseTree tree) throws DeclarationInitialisationException{
 		fillAttributes(tree);
-		this.id = "op"+Integer.toString(identifier);
+		this.id = "Op"+Integer.toString(identifier);
 		identifier++;
 		//Yesterday, this was a formality. Today it guards us from the hell of nullpointers.
 		if(this.type == null){
-			throw new RuntimeException("Type field was not instantiated on operator declaration: "+tree.getText());
+			Logger.log("Type field was not instantiated on operator declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
 		if(this.priority == null){
-			throw new RuntimeException("Priority field was not instantiated on operator declaration: "+tree.getText());
+			Logger.log("Priority field was not instantiated on operator declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
 		if(this.meaning == null || this.contentDictionary == null){
-			throw new RuntimeException("OpenMath meaning field was not instantiated on operator declaration: "+tree.getText());
+			Logger.log("OpenMath meaning field was not instantiated on operator declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
 		if(this.operator == null){
-			throw new RuntimeException("Operator character field was not instantiated on operator declaration: "+tree.getText());
+			Logger.log("Operator character field was not instantiated on operator declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
 		if(this.associativity == null && type.equals("infix")){
-			throw new RuntimeException("Associativity field was not instantiated on infix operator declaration: "+tree.getText());
+			Logger.log("Associativity field was not instantiated on infix operator declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
 			
 			
@@ -139,5 +143,7 @@ public class OperatorDeclaration extends DeclareNode {
 	public Integer getPriority() {
 		return priority;
 	}
-
+	public String getType() {
+		return type;
+	}
 }

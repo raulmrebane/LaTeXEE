@@ -1,14 +1,7 @@
 package main.java.latexee.runtime;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
 
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.docast.ParsedStatement;
@@ -16,21 +9,8 @@ import main.java.latexee.logging.Logger;
 import main.java.latexee.utils.DeclarationParser;
 import main.java.latexee.utils.DocumentParser;
 import main.java.latexee.utils.FormulaParser;
-import main.java.latexee.utils.GrammarCompiler;
-import main.java.latexee.utils.GrammarGenerator;
-import main.java.latexee.utils.OutputWriter;
 
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.PosixParser; // Default or posix?
-//import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-//import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.ParseException;
-
+import org.apache.commons.cli.*;
 
 
 public class Main {
@@ -40,26 +20,23 @@ public class Main {
     
     
     /* Construct options for the command line parser. */
-    private static Options constructOptions() {
+
+    private
+    static Options constructOptions() {
         final Options options = new Options();
-        
-        Option o = OptionBuilder.withArgName( "file" )
-                                .hasArg()
-                                .withDescription( "output will be here")
-                                .create( "o" );
-        
+        Option o = Option.builder("o").hasArg().desc("output file name").longOpt("output").build();
         options.addOption(o);
-        options.addOption("v", "be verbose");
-        options.addOption("h", "do you need help?");
+        options.addOption("v", "add verbosity to output");
+        options.addOption("h", "display this menu");
         
         return options;
     }
     /* Use the command line parser */
     private static void useParser(final String[] args) {
-        final CommandLineParser parser = new PosixParser();    
+        final CommandLineParser parser = new DefaultParser();
         final Options options = constructOptions();  
 
-        CommandLine cmd;     
+        CommandLine cmd;
         try {
             cmd = parser.parse(options, args);
             // If asked for help or there are no arguments.
@@ -76,9 +53,9 @@ public class Main {
                     // If verbose is enabled
                     if (cmd.hasOption("v")) {
                         verbose = true;
-                        System.out.println("Verbose option enable. Enjoy your text");
+                        System.out.println("Verbose option is enabled.");
                     }
-                                
+
                     if (cmd.hasOption ("o")) {
                         // Check if can write there, etc... Legal path, warning
                         outputFile = cmd.getOptionValue("o");
@@ -88,9 +65,9 @@ public class Main {
                         // Default outputfile is the same as input file, but change extension.
                         // If no extension, then just add extension
                         if (inputFile.indexOf('.') == -1) {
-                            outputFile = inputFile + ".txt";
+                            outputFile = inputFile + ".xml3";
                         } else {
-                            outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + ".txt";
+                            outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + ".xml";
                         }
                         //System.out.println("Outputfile is: " + outputFile);
                     }
@@ -121,11 +98,9 @@ public class Main {
 		//String inputFile = args[0];
 		if (inputFile != null) {
             ParsedStatement AST = DocumentParser.parse(inputFile);
-            System.out.println("AST: \n");
-            DeclarationParser.declarationFinder(AST);
-            System.out.println(AST.toString()+"\n");
-            OutputWriter.formulasToTXT(AST, outputFile);
+            FormulaParser.setFilename(outputFile);
             FormulaParser.parse(AST, new ArrayList<DeclareNode>());
-        }
+            FormulaParser.donePrinting();
+		}
 	}
 }

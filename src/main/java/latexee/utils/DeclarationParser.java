@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import main.java.antlrgen.DeclarationGrammarLexer;
 import main.java.antlrgen.DeclarationGrammarParser;
 import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
+import main.java.latexee.declareast.DeclarationInitialisationException;
 import main.java.latexee.declareast.MacroDeclaration;
 import main.java.latexee.declareast.OperatorDeclaration;
 import main.java.latexee.docast.DeclareStatement;
@@ -28,11 +29,20 @@ public class DeclarationParser {
 			DeclareStatement castNode = (DeclareStatement) node;
 			ParseTree parseTree = parseDeclaration(castNode.getContent());
 			boolean operatorStyle = isOperatorSyntax(parseTree);
-			if(operatorStyle){
-				OperatorDeclaration opDec = new OperatorDeclaration(parseTree);
-				castNode.setNode(opDec);
-			}else{
-				castNode.setNode(new MacroDeclaration(parseTree));
+			if (operatorStyle){
+				try {
+					OperatorDeclaration opDec = new OperatorDeclaration(parseTree);
+					castNode.setNode(opDec);
+				}
+				catch (DeclarationInitialisationException die) {
+				}
+			}
+			else {
+				try {
+					castNode.setNode(new MacroDeclaration(parseTree));
+				}
+				catch (DeclarationInitialisationException die) {
+				}
 			}			
 		}
 		ArrayList<ParsedStatement> children = node.getChildren();

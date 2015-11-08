@@ -1,0 +1,19 @@
+\documentclass[11pt]{article}
+
+\begin{document}
+
+\declare{syntax={infix,5,"+",l}, meaning=arith1.sum}
+$1+(2+3)$
+\begin{theorem}
+\declare{syntax={infix,7,"*",l}, meaning=arith1.times}
+$5+4$
+$5*4$
+$1+(2*(3+4)+5)*6+7*8$
+\begin{lemma}
+\declare{syntax={infix,7,"/",l}, meaning=arith1.divide}
+$$1/2$$
+$(a+8)/6*17$
+\end{lemma}
+\end{theorem}
+$$(34+(8+6))$$
+\end{document}

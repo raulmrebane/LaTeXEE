@@ -11,3 +11,4 @@ LaTeXEE.iml
 /src/main/java/antlrgen
 /src/main/antlrgen
 *.txt
+*.xml

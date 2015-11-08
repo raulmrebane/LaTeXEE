@@ -1,15 +1,15 @@
 \documentclass{article}\begin{document}
+\declare{syntax={infix,5,"+",l}, meaning=arith1.sum}
 \begin{theorem}
 \declare{syntax={infix,7,"/",l}, meaning=artih1.divide}
-\declare{syntax={infix,5,"+",l}, meaning=arith1.sum}
 \declare{syntax={infix,5,"-",l}, meaning=arith1.minus}
 \declare{syntax={infix,7,"*",l}, meaning=arith1.times}
-$2+3$
-$$2+5$$
+$2+2*3$
 \end{theorem}
 \begin{proof}
 \declare{macro=\gcd, meaning=arith1.gcd, argspec=[2], code={...}}
-$1+1$
+\declare{macro=\gcd2, meaning=arith1.gcd2, argspec=[2], code={...}}
+$\gcd{2+a}{8}$
 \end{proof}
 \begin{lemma}
 $2+2$

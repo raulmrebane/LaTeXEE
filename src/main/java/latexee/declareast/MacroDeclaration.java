@@ -3,11 +3,11 @@ package main.java.latexee.declareast;
 import main.java.antlrgen.DeclarationGrammarParser.ImportantPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.MiscPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.PairContext;
+import main.java.latexee.logging.Logger;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class MacroDeclaration extends DeclareNode {
-	
 	private String macroName; //the name of the macro - the characters following \
 	private Integer arguments;
 	private boolean hasOptionalArgument = false;
@@ -18,23 +18,31 @@ public class MacroDeclaration extends DeclareNode {
 		this.meaning=meaning;
 		this.macroName=macroname;
 		this.arguments=arguments;
+		this.id="MACRO"+Integer.toString(identifier);
+		identifier++;
 	}
 	
-	public MacroDeclaration(ParseTree tree){
+	public MacroDeclaration(ParseTree tree) throws DeclarationInitialisationException{
 		fillAttributes(tree);
 		if(		this.meaning == null || this.contentDictionary==null){
 			//Yesterday, this was a formality. Today it guards us from the hell of nullpointers.
-			throw new RuntimeException("OpenMath meaning was not instantiated on macro declaration: "+tree.getText());
+			Logger.log("OpenMath meaning was not instantiated on macro declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
 		if(this.arguments==null){
-			throw new RuntimeException("Number of arguments was not instantiated on macro declaration: "+tree.getText());
+			Logger.log("Number of arguments was not instantiated on macro declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
 		if(this.macroName==null){
-			throw new RuntimeException("Macro name was not instantiated on macro declaration: "+tree.getText());
+			Logger.log("Macro name was not instantiated on macro declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
 		if(this.arguments<0){
-			throw new RuntimeException("Negative amount of arguments given for macro declaration: "+tree.getText());
+			Logger.log("Negative amount of arguments given for macro declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
 		}
+		this.id="MACRO"+Integer.toString(identifier);
+		identifier++;
 	}
 	
 	private void fillAttributes(ParseTree tree){
@@ -81,7 +89,9 @@ public class MacroDeclaration extends DeclareNode {
 	public String getOptionalValue() {
 		return optionalValue;
 	}
-
+	public Integer getArguments() {
+		return arguments;
+	}
 	@Override
 	public String toGrammarRule() {
 		String highestLevelRule = "highestLevel";
@@ -92,7 +102,7 @@ public class MacroDeclaration extends DeclareNode {
 			sb.append(highestLevelRule);
 			sb.append("\'}\'");
 		}
-		sb.append(" #"+this.macroName+"AllArgs\n");
+		sb.append(" #"+this.id+"\n");
 		if(this.hasOptionalArgument){
 			sb.append("|\'\\\\"+this.macroName+"\'");
 			for(int i=0;i<arguments-1;i++){
@@ -100,7 +110,7 @@ public class MacroDeclaration extends DeclareNode {
 				sb.append(highestLevelRule);
 				sb.append("\'}\'");
 			}
-			sb.append(" #"+this.macroName+"Optional\n");
+			sb.append(" #"+this.id+"Optional\n");
 		}
 		return sb.toString();
 	}
