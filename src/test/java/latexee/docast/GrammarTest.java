@@ -39,7 +39,6 @@ public class GrammarTest {
 		
 		generatedGrammar = generatedGrammar.replaceAll(" ", "");
 		generatedGrammar = generatedGrammar.replaceAll("\n", "");
-		System.out.println(generatedGrammar);
 		String grammar = "grammarRuntimeGrammar;"+
 		"highestLevel:highestNumber#DEFAULT0;"+
 		"highestNumber:level100#DEFAULT1;"
@@ -187,7 +186,6 @@ public class GrammarTest {
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
 
 		String generatedGrammar = GrammarGenerator.createGrammar(nodes);
-		System.out.println(generatedGrammar);
 		generatedGrammar = generatedGrammar.replaceAll(" ", "");
 		generatedGrammar = generatedGrammar.replaceAll("\n", "");
 		String grammar = "grammarRuntimeGrammar;"
