@@ -44,7 +44,8 @@ public class GrammarTest {
 		+ "level100:level100level101#INVISIBLETIMES"
 		+ "|level101#DEFAULT2;"
 		+ "level101:lowestLevel#DEFAULT3;"
-		+ "lowestLevel:'{'highestLevel'}'#BRACKETS"
+		+ "lowestLevel:'{'highestLevel'}'#BRACES"
+		+ "|'('highestLevel')'#PARENS"
 		+ "|LEXERRULE#DEFAULT4;"
 		+ "LEXERRULE:[0-9]+|[a-z];";
 		grammar = grammar.replaceAll(" ", "");
@@ -71,7 +72,8 @@ public class GrammarTest {
 				+ "level100 : level100 level101 #INVISIBLETIMES"
 				+ "|level101 #DEFAULT3;"
 				+ "level101 : lowestLevel #DEFAULT4;"
-				+ "lowestLevel : '{'highestLevel'}' #BRACKETS"
+				+ "lowestLevel:'{'highestLevel'}'#BRACES"
+				+ "|'('highestLevel')'#PARENS"
 				+ "|LEXERRULE #DEFAULT5;"
 				+ "LEXERRULE : [0-9]+|[a-z];";
 		grammar = grammar.replaceAll(" ", "");
@@ -96,7 +98,8 @@ public class GrammarTest {
 				+ "level100 : level100 level101 #INVISIBLETIMES"
 				+ "|level101 #DEFAULT2;"
 				+ "level101 : lowestLevel #DEFAULT3;"
-				+ "lowestLevel : '{'highestLevel'}' #BRACKETS"
+				+ "lowestLevel:'{'highestLevel'}'#BRACES"
+				+ "|'('highestLevel')'#PARENS"
 				+ "|LEXERRULE #DEFAULT4;"
 				+ "LEXERRULE : [0-9]+|[a-z];";
 		grammar = grammar.replaceAll(" ", "");
@@ -127,7 +130,8 @@ public class GrammarTest {
 				+ "level100:level100 level101 #INVISIBLETIMES"
 				+ "|level101 #DEFAULT4;"
 				+ "level101 : lowestLevel #DEFAULT5;"
-				+ "lowestLevel : '{'highestLevel'}' #BRACKETS"
+				+ "lowestLevel:'{'highestLevel'}'#BRACES"
+				+ "|'('highestLevel')'#PARENS"
 				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
 				+ "|LEXERRULE#DEFAULT6;"
 				+ "LEXERRULE:[0-9]+|[a-z];";
@@ -157,7 +161,8 @@ public class GrammarTest {
 				+ "|level100'*'level10 1#Op3"
 				+ "|level101 #DEFAULT3"
 				+ ";level101 : lowestLevel #DEFAULT4;"
-				+ "lowestLevel:'{'highestLevel'}' #BRACKETS"
+				+ "lowestLevel:'{'highestLevel'}'#BRACES"
+				+ "|'('highestLevel')'#PARENS"
 				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
 				+ "|'\\\\gcd2''{'highestLevel'}''{'highestLevel'}' #MACRO5"
 				+ "|LEXERRULE #DEFAULT5;"
@@ -190,7 +195,8 @@ public class GrammarTest {
 				+ "level100 : level100 level101 #INVISIBLETIMES"
 				+ "|level101 #DEFAULT4;"
 				+ "level101 : lowestLevel #DEFAULT5;"
-				+ "lowestLevel : '{'highestLevel'}' #BRACKETS"
+				+ "lowestLevel:'{'highestLevel'}'#BRACES"
+				+ "|'('highestLevel')'#PARENS"
 				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
 				+ "|'\\\\gcd2''{'highestLevel'}''{'highestLevel'}' #MACRO5"
 				+ "|LEXERRULE#DEFAULT6;"
@@ -208,6 +214,7 @@ public class GrammarTest {
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
 
 		String generatedGrammar = GrammarGenerator.createGrammar(nodes);
+		System.out.println(generatedGrammar);
 		generatedGrammar = generatedGrammar.replaceAll(" ", "");
 		generatedGrammar = generatedGrammar.replaceAll("\n", "");
 		String grammar = "grammarRuntimeGrammar;"
@@ -222,7 +229,8 @@ public class GrammarTest {
 				+ "level101 : level101'/'level102 #Op1"
 				+ "|level102 #DEFAULT4;"
 				+ "level102 : lowestLevel #DEFAULT5;"
-				+ "lowestLevel : '{'highestLevel'}' #BRACKETS"
+				+ "lowestLevel:'{'highestLevel'}'#BRACES"
+				+ "|'('highestLevel')'#PARENS"
 				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
 				+ "|'\\\\gcd2''{'highestLevel'}''{'highestLevel'}' #MACRO5"
 				+ "|LEXERRULE #DEFAULT6;"
