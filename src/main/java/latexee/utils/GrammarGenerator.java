@@ -140,7 +140,8 @@ public class GrammarGenerator {
 		}
 		
 		//The last level includes brackets and macro operators
-		sb.append("lowestLevel : '{' highestLevel '}' #BRACKETS\n|");
+		sb.append("lowestLevel : '{' highestLevel '}' #BRACES\n|");
+		sb.append("'(' highestLevel ')' #PARENS\n|");
 		
 		for (DeclareNode node : macroNodes){
 			sb.append(node.toGrammarRule()+"|");

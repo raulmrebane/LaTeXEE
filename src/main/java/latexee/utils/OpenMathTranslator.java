@@ -1,6 +1,7 @@
 package main.java.latexee.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -26,20 +27,22 @@ public class OpenMathTranslator {
 
 	//TODO: Possibly change List<DeclareNode> to HashMap<String,DeclareNode> where String=ID (with optional identifier for macronames)
 	//For now, it'll be O(n) to look for a matching ID.
+	private static List<String> supportedBrackets = Arrays.asList("BRACESContext","PARENSContext");
+	public static ArrayList<String> bracketFlags = new ArrayList<String>();
 	
-	//TODO: Currently the brackets boolean is being passed, but is not used. Need to add bracket info.
-	
-	public static Node parseToOM(ParseTree tree, List<DeclareNode> declarations, boolean brackets){
+	public static Node parseToOM(ParseTree tree, List<DeclareNode> declarations){
 		String treeName = tree.getClass().getSimpleName();
 		if(treeName.contains("DEFAULT")){
-			return parseToOM(tree.getChild(0), declarations, brackets);
+			return parseToOM(tree.getChild(0), declarations);
 		}
-		else if(treeName.equalsIgnoreCase("BRACKETSContext")){
-			return parseToOM(tree.getChild(1),declarations, true);
+		else if(supportedBrackets.contains(treeName)){
+			String bracketName = treeName.substring(0, treeName.length()-7).toLowerCase();
+			bracketFlags.add(bracketName);
+			return parseToOM(tree.getChild(1),declarations);
 		}
 		else if(treeName.equalsIgnoreCase("invisibletimescontext")){
 			Node root = new NodeImpl(Node.OM_APP);
-			if(brackets){
+			if(!bracketFlags.isEmpty()){
 				addParens(root);
 			}
 			
@@ -51,8 +54,8 @@ public class OpenMathTranslator {
 			ParseTree leftChild = tree.getChild(0);
 			ParseTree rightChild = tree.getChild(1);
 			
-			Node leftNode = parseToOM(leftChild,declarations,false);
-			Node rightNode = parseToOM(rightChild,declarations,false);
+			Node leftNode = parseToOM(leftChild,declarations);
+			Node rightNode = parseToOM(rightChild,declarations);
 			
 			root.appendChild(omsNode);
 			root.appendChild(leftNode);
@@ -121,7 +124,7 @@ public class OpenMathTranslator {
 				}
 				
 				
-				if(brackets){
+				if(!bracketFlags.isEmpty()){
 					addParens(root);
 				}
 
@@ -153,17 +156,17 @@ public class OpenMathTranslator {
 		List<Node> children = new ArrayList<Node>();
 		String type = declaration.getType();
 		if(type.equals("infix")){
-			Node leftChild = parseToOM(tree.getChild(0), declarations, false);
-			Node rightChild = parseToOM(tree.getChild(2), declarations, false);
+			Node leftChild = parseToOM(tree.getChild(0), declarations);
+			Node rightChild = parseToOM(tree.getChild(2), declarations);
 			children.add(leftChild);
 			children.add(rightChild);
 		}
 		if(type.equals("prefix")){
-			Node child = parseToOM(tree.getChild(1), declarations, false);
+			Node child = parseToOM(tree.getChild(1), declarations);
 			children.add(child);
 		}
 		if(type.equals("postfix")){
-			Node child = parseToOM(tree.getChild(0), declarations, false);
+			Node child = parseToOM(tree.getChild(0), declarations);
 			children.add(child);
 		}
 		return children;
@@ -173,7 +176,7 @@ public class OpenMathTranslator {
 		List<Node> children = new ArrayList<Node>();
 		
 		for(int i=2;i<tree.getChildCount();i=i+3){
-			Node child = parseToOM(tree.getChild(i), declarations, false);
+			Node child = parseToOM(tree.getChild(i), declarations);
 			children.add(child);
 		}
 		
@@ -184,10 +187,25 @@ public class OpenMathTranslator {
 		//Labeling the attribute again
 		Symbol latexeeCD = new Symbol("LaTeXEE","nonsemantic");
 		
-		//Setting parens and type. Currently only one type of parens exist 
-		Symbol braceCDSymbol = new Symbol("LATEXEE","brace");
-		Node braceNode = new SymbolNodeImpl(braceCDSymbol);
-		root.setAttribute(latexeeCD, braceNode);
+		//If there are multiple brackets, we put them in an OMA
+		if(bracketFlags.size()>1){
+			Node omaNode = new NodeImpl(Node.OM_APP);
+			for(String bracketType:bracketFlags){
+				Symbol braceCDSymbol = new Symbol("LATEXEE",bracketType);
+				Node braceNode = new SymbolNodeImpl(braceCDSymbol);
+				omaNode.appendChild(braceNode);
+			}
+			root.setAttribute(latexeeCD, omaNode);
+		}
+		//Otherwise just one OMS is sufficient
+		else{
+			String bracketType = bracketFlags.get(0);
+			Symbol braceCDSymbol = new Symbol("LATEXEE",bracketType);
+			Node braceNode = new SymbolNodeImpl(braceCDSymbol);
+			root.setAttribute(latexeeCD, braceNode);
+		}
+		//Clear any bracket flags in the end 
+		bracketFlags.clear();
 	}
 	
 	
