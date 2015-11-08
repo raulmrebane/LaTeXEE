@@ -9,6 +9,7 @@ import java.util.List;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import fr.inria.openmath.omapi.Node;
+import fr.inria.openmath.omapi.implementation.NodeImpl;
 import fr.inria.openmath.omapi.implementation.TreePrinterImpl;
 import fr.inria.openmath.omapi.implementation.XMLPrinter;
 import main.java.latexee.declareast.DeclarationInitialisationException;
@@ -60,8 +61,10 @@ public class FormulaParser {
 			String grammar = GrammarGenerator.createGrammar(declarations);
 			try {
 				ParseTree formulaTree = GrammarCompiler.compile(grammar, root.getContent());
-				Node a = OpenMathTranslator.parseToOM(formulaTree, declarations);
-				treePrinter.printTree(a);
+				Node formulaNode = OpenMathTranslator.parseToOM(formulaTree, declarations);
+				Node formulaRootNode = new NodeImpl(Node.OM_OBJECT);
+				formulaRootNode.appendChild(formulaNode);
+				treePrinter.printTree(formulaRootNode);
 			} catch (IOException e) {
 				Logger.log("IO exception when parsing formula: "+root.getContent());
 				e.printStackTrace();
