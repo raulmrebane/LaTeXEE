@@ -1,0 +1,25 @@
+
+<OMA>
+  <OMS cd="arith1" name="times"/>
+  <OMI>2</OMI>
+  <OMI>3</OMI>
+</OMA>
+<OMA>
+  <OMS cd="arith1" name="sum"/>
+  <OMI>2</OMI>
+  <OMA>
+    <OMS cd="artih1" name="divide"/>
+    <OMI>5</OMI>
+    <OMI>2</OMI>
+  </OMA>
+</OMA>
+<OMA>
+  <OMS cd="arith1" name="sum"/>
+  <OMI>1</OMI>
+  <OMI>1</OMI>
+</OMA>
+<OMA>
+  <OMS cd="arith1" name="sum"/>
+  <OMI>2</OMI>
+  <OMI>2</OMI>
+</OMA>
