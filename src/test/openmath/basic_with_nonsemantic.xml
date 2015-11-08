@@ -1,23 +1,70 @@
 
-<OMATTR>
-  <OMATP>
-    <OMS cd="LaTeXEE" name="nonsemantic"/>
-    <OMA>
-      <OMS cd="thisis" name="nonsemanticdata"/>
-    </OMA>
-  </OMATP>
-  <OMA>
-    <OMS cd="arith1" name="times"/>
-    <OMI>2</OMI>
-    <OMI>3</OMI>
-  </OMA>
-</OMATTR>
-<OMA>
-  <OMS cd="artih1" name="divide"/>
+<OMOBJ>
   <OMATTR>
     <OMATP>
       <OMS cd="LaTeXEE" name="nonsemantic"/>
-      <OMS cd="LATEXEE" name="brace"/>
+      <OMS cd="LATEXEE" name="parens"/>
+      <OMS cd="LaTeXEE" name="nonsemantic"/>
+      <OMA>
+        <OMS cd="thisis" name="nonsemanticdata"/>
+      </OMA>
+    </OMATP>
+    <OMA>
+      <OMS cd="arith1" name="times"/>
+      <OMI>2</OMI>
+      <OMI>3</OMI>
+    </OMA>
+  </OMATTR>
+</OMOBJ>
+<OMOBJ>
+  <OMA>
+    <OMS cd="artih1" name="divide"/>
+    <OMATTR>
+      <OMATP>
+        <OMS cd="LaTeXEE" name="nonsemantic"/>
+        <OMS cd="LATEXEE" name="braces"/>
+        <OMS cd="LaTeXEE" name="nonsemantic"/>
+        <OMA>
+          <OMS cd="thisis" name="nonsemanticdata"/>
+        </OMA>
+      </OMATP>
+      <OMA>
+        <OMS cd="arith1" name="sum"/>
+        <OMI>2</OMI>
+        <OMATTR>
+          <OMATP>
+            <OMS cd="LaTeXEE" name="nonsemantic"/>
+            <OMS cd="LATEXEE" name="braces"/>
+          </OMATP>
+          <OMA>
+            <OMS cd="arith1" name="times"/>
+            <OMV name="a"/>
+            <OMV name="b"/>
+          </OMA>
+        </OMATTR>
+      </OMA>
+    </OMATTR>
+    <OMI>2</OMI>
+  </OMA>
+</OMOBJ>
+<OMOBJ>
+  <OMATTR>
+    <OMATP>
+      <OMS cd="LaTeXEE" name="nonsemantic"/>
+      <OMA>
+        <OMS cd="thisis" name="nonsemanticdata"/>
+      </OMA>
+    </OMATP>
+    <OMA>
+      <OMS cd="arith1" name="sum"/>
+      <OMI>1</OMI>
+      <OMI>1</OMI>
+    </OMA>
+  </OMATTR>
+</OMOBJ>
+<OMOBJ>
+  <OMATTR>
+    <OMATP>
       <OMS cd="LaTeXEE" name="nonsemantic"/>
       <OMA>
         <OMS cd="thisis" name="nonsemanticdata"/>
@@ -26,44 +73,7 @@
     <OMA>
       <OMS cd="arith1" name="sum"/>
       <OMI>2</OMI>
-      <OMATTR>
-        <OMATP>
-          <OMS cd="LaTeXEE" name="nonsemantic"/>
-          <OMS cd="LATEXEE" name="brace"/>
-        </OMATP>
-        <OMA>
-          <OMS cd="arith1" name="times"/>
-          <OMV name="a"/>
-          <OMV name="b"/>
-        </OMA>
-      </OMATTR>
+      <OMI>2</OMI>
     </OMA>
   </OMATTR>
-  <OMI>2</OMI>
-</OMA>
-<OMATTR>
-  <OMATP>
-    <OMS cd="LaTeXEE" name="nonsemantic"/>
-    <OMA>
-      <OMS cd="thisis" name="nonsemanticdata"/>
-    </OMA>
-  </OMATP>
-  <OMA>
-    <OMS cd="arith1" name="sum"/>
-    <OMI>1</OMI>
-    <OMI>1</OMI>
-  </OMA>
-</OMATTR>
-<OMATTR>
-  <OMATP>
-    <OMS cd="LaTeXEE" name="nonsemantic"/>
-    <OMA>
-      <OMS cd="thisis" name="nonsemanticdata"/>
-    </OMA>
-  </OMATP>
-  <OMA>
-    <OMS cd="arith1" name="sum"/>
-    <OMI>2</OMI>
-    <OMI>2</OMI>
-  </OMA>
-</OMATTR>
+</OMOBJ>
