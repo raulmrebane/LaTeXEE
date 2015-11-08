@@ -159,7 +159,6 @@ public class GrammarGenerator {
 		sb.append("LEXERRULE #DEFAULT"+Integer.toString(defaultCounter)+";\n");
 		defaultCounter++;
 		sb.append("LEXERRULE : [0-9]+ | [a-z];\n");
-		sb.append("WS : [\\t\\n\\r]+ -> skip; \n");
 		return sb.toString();
 	}
 	

@@ -48,8 +48,7 @@ public class GrammarTest {
 		+ "lowestLevel:'{'highestLevel'}'#BRACES"
 		+ "|'('highestLevel')'#PARENS"
 		+ "|LEXERRULE#DEFAULT4;"
-		+ "LEXERRULE:[0-9]+|[a-z];"
-		+ "WS : [\\t\\n\\r]+ -> skip;";
+		+ "LEXERRULE:[0-9]+|[a-z];";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		assertTrue(generatedGrammar.equals(grammar));
@@ -77,8 +76,7 @@ public class GrammarTest {
 				+ "lowestLevel:'{'highestLevel'}'#BRACES"
 				+ "|'('highestLevel')'#PARENS"
 				+ "|LEXERRULE #DEFAULT5;"
-				+ "LEXERRULE : [0-9]+|[a-z];"
-				+ "WS : [\\t\\n\\r]+ -> skip;";
+				+ "LEXERRULE : [0-9]+|[a-z];";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		
@@ -104,8 +102,7 @@ public class GrammarTest {
 				+ "lowestLevel:'{'highestLevel'}'#BRACES"
 				+ "|'('highestLevel')'#PARENS"
 				+ "|LEXERRULE #DEFAULT4;"
-				+ "LEXERRULE : [0-9]+|[a-z];"
-				+ "WS : [\\t\\n\\r]+ -> skip;";
+				+ "LEXERRULE : [0-9]+|[a-z];";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		
@@ -138,8 +135,7 @@ public class GrammarTest {
 				+ "|'('highestLevel')'#PARENS"
 				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
 				+ "|LEXERRULE#DEFAULT6;"
-				+ "LEXERRULE:[0-9]+|[a-z];"
-				+ "WS : [\\t\\n\\r]+ -> skip;";
+				+ "LEXERRULE:[0-9]+|[a-z];";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		assertTrue(generatedGrammar.equals(grammar));
@@ -171,8 +167,7 @@ public class GrammarTest {
 				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
 				+ "|'\\\\gcd2''{'highestLevel'}''{'highestLevel'}' #MACRO5"
 				+ "|LEXERRULE #DEFAULT5;"
-				+ "LEXERRULE:[0-9]+|[a-z];"
-				+ "WS : [\\t\\n\\r]+ -> skip;";
+				+ "LEXERRULE:[0-9]+|[a-z];";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		assertTrue(generatedGrammar.equals(grammar));
@@ -205,8 +200,7 @@ public class GrammarTest {
 				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
 				+ "|'\\\\gcd2''{'highestLevel'}''{'highestLevel'}' #MACRO5"
 				+ "|LEXERRULE#DEFAULT6;"
-				+ "LEXERRULE:[0-9]+|[a-z];"
-				+ "WS : [\\t\\n\\r]+ -> skip;";
+				+ "LEXERRULE:[0-9]+|[a-z];";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		assertTrue(generatedGrammar.equals(grammar));
@@ -239,8 +233,7 @@ public class GrammarTest {
 				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
 				+ "|'\\\\gcd2''{'highestLevel'}''{'highestLevel'}' #MACRO5"
 				+ "|LEXERRULE #DEFAULT6;"
-				+ "LEXERRULE:[0-9]+|[a-z];"
-				+ "WS : [\\t\\n\\r]+ -> skip;";
+				+ "LEXERRULE:[0-9]+|[a-z];";
 		grammar = grammar.replaceAll(" ", "");
 		grammar = grammar.replaceAll("\n", "");
 		assertTrue(generatedGrammar.equals(grammar));
