@@ -91,6 +91,7 @@ public class GrammarCompiler {
 					Integer charPositionInLine = (Integer) data[0];
 					String msg = (String) data[1];
 					System.out.println("Syntax error at character " + charPositionInLine + ": " + msg);
+					Logger.log("Syntax error at character " + charPositionInLine + ": " + msg);
 				}
 				return null;
 			}
