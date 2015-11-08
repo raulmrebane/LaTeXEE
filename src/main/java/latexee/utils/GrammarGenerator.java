@@ -137,6 +137,8 @@ public class GrammarGenerator {
 			defaultCounter++;
 			sb.append("level"+Integer.toString(lastPriority+1)+ " : lowestLevel #DEFAULT"+Integer.toString(defaultCounter)+"; \n");
 			defaultCounter++;
+			
+			sb.append("WS :	[ \\t\\n\\r]+ -> skip; \n");
 		}
 		
 		//The last level includes brackets and macro operators
