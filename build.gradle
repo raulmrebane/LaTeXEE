@@ -32,6 +32,7 @@ dependencies {
     compile files("resources/openmath-1.5.0.jar")
     antlr4 group: "org.antlr", name: "antlr4", version: "4.5.1"
     testCompile group: "junit", name: "junit", version: versions.junit
+    testCompile group: "commons-io", name:"commons-io", version:"2.4"
     
 }
 
