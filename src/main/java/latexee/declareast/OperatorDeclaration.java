@@ -146,4 +146,10 @@ public class OperatorDeclaration extends DeclareNode {
 	public String getType() {
 		return type;
 	}
+	public String getOperator() {
+		return operator;
+	}
+	public String getAssociativity() {
+		return associativity;
+	}
 }
