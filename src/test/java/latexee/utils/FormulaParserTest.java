@@ -21,8 +21,10 @@ import static org.junit.Assert.*;
 public class FormulaParserTest {
 
     /* Tests: FormulaString -> ParseTree*/
+    
     @Test
     public void FormulaStringToParsetree1() {
+		DeclareNode.identifier = 0;
 
 
         String formulaSt = "└──DEFAULT0Context└──DEFAULT1Context└──Op0Context├──Op0Context│├──DEFAULT2Context││└──DEFAULT3Context││└──DEFAULT4Context││└──DEFAULT5Context││└──TerminalNodeImpl:1│├──TerminalNodeImpl:+│└──DEFAULT3Context│└──DEFAULT4Context│└──DEFAULT5Context│└──TerminalNodeImpl:1├──TerminalNodeImpl:+└──DEFAULT3Context└──DEFAULT4Context└──DEFAULT5Context└──TerminalNodeImpl:1";
@@ -43,11 +45,12 @@ public class FormulaParserTest {
         } catch (IOException r)  {
             System.out.println("FormulaParserTest failed to IO");
         }
-        assertTrue(formulaSt.equals(ans));
+        assertTrue(ans.replaceAll("\\s+","").equals(formulaSt.replaceAll("\\s+","")));
 
     }
     @Test
     public void FormulaStringToParsetree2() {
+		DeclareNode.identifier = 0;
 
 
         String formulaSt = "└──DEFAULT0Context└──DEFAULT1Context└──Op0Context├──Op0Context│├──Op0Context││├──DEFAULT2Context│││└──DEFAULT3Context│││└──DEFAULT4Context│││└──DEFAULT5Context│││└──TerminalNodeImpl:1││├──TerminalNodeImpl:/││└──DEFAULT3Context││└──DEFAULT4Context││└──PARENSContext││├──TerminalNodeImpl:(││├──DEFAULT0Context│││└──DEFAULT1Context│││└──Op0Context│││├──DEFAULT2Context││││└──DEFAULT3Context││││└──DEFAULT4Context││││└──DEFAULT5Context││││└──TerminalNodeImpl:1│││├──TerminalNodeImpl:/│││└──DEFAULT3Context│││└──DEFAULT4Context│││└──DEFAULT5Context│││└──TerminalNodeImpl:1││└──TerminalNodeImpl:)│├──TerminalNodeImpl:/│└──DEFAULT3Context│└──DEFAULT4Context│└──DEFAULT5Context│└──TerminalNodeImpl:a├──TerminalNodeImpl:/└──DEFAULT3Context└──DEFAULT4Context└──DEFAULT5Context└──TerminalNodeImpl:x";
@@ -67,13 +70,15 @@ public class FormulaParserTest {
         } catch (IOException r)  {
             System.out.println("FormulaParserTest failed to IO");
         }
-        assertTrue(formulaSt.equals(ans));
+
+        assertTrue(ans.replaceAll("\\s+","").equals(formulaSt.replaceAll("\\s+","")));
 
     }
 
     @Test
     public void FormulaStringToParsetree3() {
 
+		DeclareNode.identifier = 0;
 
         String formulaSt = "└──DEFAULT0Context└──DEFAULT1Context└──Op4Context├──DEFAULT2Context│└──Op1Context│├──Op2Context││├──DEFAULT3Context│││└──DEFAULT4Context│││└──DEFAULT5Context│││└──DEFAULT6Context│││└──DEFAULT7Context│││└──TerminalNodeImpl:1││├──TerminalNodeImpl:+││└──Op0Context││├──DEFAULT4Context│││└──DEFAULT5Context│││└──DEFAULT6Context│││└──PARENSContext│││├──TerminalNodeImpl:(│││├──DEFAULT0Context││││└──DEFAULT1Context││││└──DEFAULT2Context││││└──DEFAULT3Context││││└──Op3Context││││├──DEFAULT4Context│││││└──DEFAULT5Context│││││└──DEFAULT6Context│││││└──DEFAULT7Context│││││└──TerminalNodeImpl:5││││├──TerminalNodeImpl:/││││└──DEFAULT5Context││││└──DEFAULT6Context││││└──DEFAULT7Context││││└──TerminalNodeImpl:a│││└──TerminalNodeImpl:)││├──TerminalNodeImpl:*││└──DEFAULT5Context││└──DEFAULT6Context││└──DEFAULT7Context││└──TerminalNodeImpl:4│├──TerminalNodeImpl:-│└──DEFAULT4Context│└──DEFAULT5Context│└──DEFAULT6Context│└──DEFAULT7Context│└──TerminalNodeImpl:199├──TerminalNodeImpl:=└──DEFAULT3Context└──DEFAULT4Context└──INVISIBLETIMESContext├──DEFAULT5Context│└──DEFAULT6Context│└──DEFAULT7Context│└──TerminalNodeImpl:r└──DEFAULT6Context└──DEFAULT7Context└──TerminalNodeImpl:a";
         ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
@@ -91,18 +96,19 @@ public class FormulaParserTest {
         String grammar = GrammarGenerator.createGrammar(nodes);
         String ans = "";
         try {
-            ParseTree formulaTree = GrammarCompiler.compile(grammar, "1+(5/a)*4-199 = ra");
+            ParseTree formulaTree = GrammarCompiler.compile(grammar, "1+(5/a)*4-199=ra");
             ans = OutputWriter.prettyParseTree(formulaTree).replaceAll(" ", "").replaceAll("\n", "");
         } catch (IOException r)  {
             System.out.println("FormulaParserTest failed to IO");
         }
-        assertTrue(formulaSt.equals(ans));
+        assertTrue(ans.replaceAll("\\s+","").equals(formulaSt.replaceAll("\\s+","")));
 
     }
     /* More complex test */
     @Test
     public void FormulaStringToParsetree4() {
 
+		DeclareNode.identifier = 0;
 
         String formulaSt = "└──DEFAULT0Context└──DEFAULT1Context└──Op3Context├──DEFAULT2Context│└──DEFAULT3Context│└──DEFAULT4Context│└──Op5Context│├──DEFAULT6Context││└──DEFAULT7Context││└──MACRO4Context││├──TerminalNodeImpl:\\frac││├──TerminalNodeImpl:{││├──DEFAULT0Context│││└──DEFAULT1Context│││└──DEFAULT2Context│││└──DEFAULT3Context│││└──DEFAULT4Context│││└──DEFAULT5Context│││└──DEFAULT6Context│││└──DEFAULT7Context│││└──DEFAULT8Context│││└──TerminalNodeImpl:5││├──TerminalNodeImpl:}││├──TerminalNodeImpl:{││├──DEFAULT0Context│││└──DEFAULT1Context│││└──DEFAULT2Context│││└──DEFAULT3Context│││└──DEFAULT4Context│││└──DEFAULT5Context│││└──DEFAULT6Context│││└──DEFAULT7Context│││└──DEFAULT8Context│││└──TerminalNodeImpl:2││└──TerminalNodeImpl:}│├──TerminalNodeImpl:**│└──DEFAULT5Context│└──DEFAULT6Context│└──DEFAULT7Context│└──DEFAULT8Context│└──TerminalNodeImpl:a├──TerminalNodeImpl:=└──Op1Context├──DEFAULT3Context│└──Op2Context│├──Op0Context││├──DEFAULT4Context│││└──DEFAULT5Context│││└──DEFAULT6Context│││└──DEFAULT7Context│││└──DEFAULT8Context│││└──TerminalNodeImpl:7││├──TerminalNodeImpl:*││└──DEFAULT5Context││└──DEFAULT6Context││└──DEFAULT7Context││└──DEFAULT8Context││└──TerminalNodeImpl:2│├──TerminalNodeImpl:/│└──DEFAULT5Context│└──DEFAULT6Context│└──DEFAULT7Context│└──DEFAULT8Context│└──TerminalNodeImpl:5├──TerminalNodeImpl:+└──DEFAULT4Context└──DEFAULT5Context└──DEFAULT6Context└──DEFAULT7Context└──DEFAULT8Context└──TerminalNodeImpl:o";
         ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
@@ -121,12 +127,15 @@ public class FormulaParserTest {
         String grammar = GrammarGenerator.createGrammar(nodes);
         String ans = "";
         try {
-            ParseTree formulaTree = GrammarCompiler.compile(grammar, "\\frac{5}{2}**a = 7*2/5 + o");
+            ParseTree formulaTree = GrammarCompiler.compile(grammar, "\\frac{5}{2}**a=7*2/5+o");
             ans = OutputWriter.prettyParseTree(formulaTree).replaceAll(" ", "").replaceAll("\n", "");
-        } catch (IOException r)  {
+        } catch (IOException r) {
             System.out.println("FormulaParserTest failed to IO");
         }
-        assertTrue(formulaSt.equals(ans));
+
+       
+
+        assertTrue(ans.replaceAll("\\s+","").equals(formulaSt.replaceAll("\\s+","")));
 
     }
 
