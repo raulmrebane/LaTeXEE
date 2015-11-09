@@ -2,6 +2,7 @@ package test.java.latexee.docast;
 
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import main.java.latexee.declareast.DeclareNode;
@@ -14,7 +15,8 @@ import org.junit.Test;
 public class ScopingTest {
 
 	@Test
-	public void scopingTest1() {
+	public void scopingTest1() throws FileNotFoundException {
+		FormulaParser.setFilename("output.xml");
 		ParsedStatement AST = DocumentParser.parse("src/test/antlr/scoping1.tex");
 		FormulaParser.parse(AST, new ArrayList<DeclareNode>());
 		FormulaParser.donePrinting();
@@ -22,7 +24,8 @@ public class ScopingTest {
 	}
 	
 	@Test
-	public void scopingTest2() {
+	public void scopingTest2() throws FileNotFoundException {
+		FormulaParser.setFilename("output.xml");
 		ParsedStatement AST = DocumentParser.parse("src/test/antlr/scoping2.tex");
 		FormulaParser.parse(AST, new ArrayList<DeclareNode>());
 		FormulaParser.donePrinting();
@@ -30,7 +33,8 @@ public class ScopingTest {
 	}
 	
 	@Test
-	public void scopingTest3() {
+	public void scopingTest3() throws FileNotFoundException {
+		FormulaParser.setFilename("output.xml");
 		ParsedStatement AST = DocumentParser.parse("src/test/antlr/scoping3.tex");
 		FormulaParser.parse(AST, new ArrayList<DeclareNode>());
 		FormulaParser.donePrinting();
@@ -38,7 +42,8 @@ public class ScopingTest {
 	}
 	
 	@Test
-	public void scopingTest4() {
+	public void scopingTest4() throws FileNotFoundException {
+		FormulaParser.setFilename("output.xml");
 		ParsedStatement AST = DocumentParser.parse("src/test/antlr/scoping4.tex");
 		FormulaParser.parse(AST, new ArrayList<DeclareNode>());
 		FormulaParser.donePrinting();

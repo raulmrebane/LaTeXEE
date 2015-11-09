@@ -45,6 +45,14 @@ public class MacroDeclaration extends DeclareNode {
 		identifier++;
 	}
 	
+	public String getMacroName() {
+		return macroName;
+	}
+
+	public boolean isHasOptionalArgument() {
+		return hasOptionalArgument;
+	}
+
 	private void fillAttributes(ParseTree tree){
 		if(tree instanceof ImportantPairContext){
 			
