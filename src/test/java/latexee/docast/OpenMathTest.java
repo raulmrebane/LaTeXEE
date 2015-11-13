@@ -67,5 +67,15 @@ public void GrammarGenerator() throws IOException{
      File expectedOutputFile = new File("src/test/openmath/grammar_generator.xml");
      assertTrue(FileUtils.contentEqualsIgnoreEOL(outputFile, expectedOutputFile, null));
 }
-
+     @Test
+     public void CommentTest() throws IOException{
+          ParsedStatement AST = DocumentParser.parse("src/test/antlr/grammar_comment.tex");
+          DeclarationParser.declarationFinder(AST);
+          FormulaParser.setFilename("output.xml");
+          FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+          FormulaParser.donePrinting();
+          File outputFile = new File("output.xml");
+          File expectedOutputFile = new File("src/test/openmath/grammar_generator.xml");
+          assertTrue(FileUtils.contentEqualsIgnoreEOL(outputFile, expectedOutputFile, null));
+     }
 }
