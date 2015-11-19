@@ -238,5 +238,39 @@ public class GrammarTest {
 		grammar = grammar.replaceAll("\n", "");
 		assertTrue(generatedGrammar.equals(grammar));
 	}
-	
+
+
+
+	@Test
+	public void CommentsTest(){
+		DeclareNode.identifier = 0;
+		ParsedStatement tree = DocumentParser.parse("src/test/antlr/grammar_comment.tex");
+		DeclarationParser.declarationFinder(tree);
+		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
+
+		String generatedGrammar = GrammarGenerator.createGrammar(nodes);
+		generatedGrammar = generatedGrammar.replaceAll(" ", "");
+		generatedGrammar = generatedGrammar.replaceAll("\n", "");
+		String grammar = "grammarRuntimeGrammar;"
+				+ "highestLevel : highestNumber #DEFAULT0;"
+				+ "highestNumber : level7 #DEFAULT1;"
+				+ "level7 : level7'*'level100 #Op3"
+				+ "|level100 #DEFAULT2;"
+				+ "level100 : level100 level101 #INVISIBLETIMES"
+				+ "|level100'+'level101 #Op0"
+				+ "|level100'-'level101 #Op2"
+				+ "|level101 #DEFAULT3;"
+				+ "level101 : level101'/'level102 #Op1"
+				+ "|level102 #DEFAULT4;"
+				+ "level102 : lowestLevel #DEFAULT5;"
+				+ "lowestLevel:'{'highestLevel'}'#BRACES"
+				+ "|'('highestLevel')'#PARENS"
+				+ "|'\\\\gcd''{'highestLevel'}''{'highestLevel'}' #MACRO4"
+				+ "|'\\\\gcd2''{'highestLevel'}''{'highestLevel'}' #MACRO5"
+				+ "|LEXERRULE #DEFAULT6;"
+				+ "LEXERRULE:[0-9]+|[a-z];";
+		grammar = grammar.replaceAll(" ", "");
+		grammar = grammar.replaceAll("\n", "");
+		assertTrue(generatedGrammar.equals(grammar));
+	}
 }

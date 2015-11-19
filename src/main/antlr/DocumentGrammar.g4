@@ -17,6 +17,12 @@ lemma
 	:	'\\begin{lemma}' (formula | declaration | .)*? '\\end{lemma}'
 	;
 
+BLOCK_COMMENT
+	:	'\\begin{comment}' .*? '\\end{comment}' -> skip
+	;
+
+LINE_COMMENT: '%' ~('\r'|'\n') -> skip;
+
 formula
 	: FormulaLiteral
 	| MACROFORMULA
