@@ -61,15 +61,15 @@ public class FormulaParser {
 			String grammar = GrammarGenerator.createGrammar(declarations);
 			try {
 				ParseTree formulaTree = GrammarCompiler.compile(grammar, root.getContent());
-				Node formulaNode = OpenMathTranslator.parseToOM(formulaTree, declarations);
-				Node formulaRootNode = new NodeImpl(Node.OM_OBJECT);
-				formulaRootNode.appendChild(formulaNode);
-				treePrinter.printTree(formulaRootNode);
+				if (formulaTree != null) {
+					Node formulaNode = OpenMathTranslator.parseToOM(formulaTree, declarations);
+					Node formulaRootNode = new NodeImpl(Node.OM_OBJECT);
+					formulaRootNode.appendChild(formulaNode);
+					treePrinter.printTree(formulaRootNode);
+				}
 			} catch (IOException e) {
 				Logger.log("IO exception when parsing formula: "+root.getContent());
 				e.printStackTrace();
-			} catch (NullPointerException e) {
-				//Do nothing, logging errors already covered
 			} finally{
 				OpenMathTranslator.bracketFlags.clear();
 			}
