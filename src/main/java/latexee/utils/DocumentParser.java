@@ -150,8 +150,9 @@ public class DocumentParser {
 			}
 			
 			else if (tree instanceof DeclarationContext) {
-				String text = tree.getChild(1).getText();				
-				return new DeclareStatement(text, startIndex);
+				String text = tree.getChild(1).getText();
+				String cutBraces = text.substring(1, text.length()-1);
+				return new DeclareStatement(cutBraces, startIndex);
 			}
 			
 			else if (tree instanceof FileInclusionContext) {

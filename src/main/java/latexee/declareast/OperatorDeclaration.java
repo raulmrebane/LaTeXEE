@@ -1,10 +1,19 @@
 package main.java.latexee.declareast;
 
+import javax.swing.plaf.synth.SynthViewportUI;
+
+import main.java.antlrgen.DeclarationGrammarLexer;
+import main.java.antlrgen.DeclarationGrammarParser;
 import main.java.antlrgen.DeclarationGrammarParser.ImportantPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.MiscPairContext;
-import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
+import main.java.antlrgen.DeclarationGrammarParser.SyntaxpairContext;
+import main.java.antlrgen.SyntaxBracketGrammarLexer;
+import main.java.antlrgen.SyntaxBracketGrammarParser;
 import main.java.latexee.logging.Logger;
+import main.java.latexee.utils.OutputWriter;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class OperatorDeclaration extends DeclareNode {
@@ -55,13 +64,25 @@ public class OperatorDeclaration extends DeclareNode {
 		return id;
 	}
 	private void fillAttributes(ParseTree tree){
-		if(tree instanceof SyntaxBracketContext){
-			this.type = tree.getChild(1).getText();
-			this.priority = Integer.parseInt(tree.getChild(3).getText());
-			String roughOp = tree.getChild(5).getText();
+		if(tree instanceof SyntaxpairContext){
+			
+			String syntaxText = tree.getText().substring(tree.getText().indexOf('{'));
+			syntaxText = syntaxText.substring(0, syntaxText.indexOf('"')).replaceAll(" ", "")
+					+ syntaxText.substring(syntaxText.indexOf('"'), syntaxText.lastIndexOf('"')+1)
+					+ syntaxText.substring(syntaxText.lastIndexOf('"')+1).replaceAll(" ", "");
+			
+			ANTLRInputStream antlrInput = new ANTLRInputStream(syntaxText);
+		    SyntaxBracketGrammarLexer lexer = new SyntaxBracketGrammarLexer(antlrInput);
+		    CommonTokenStream tokens = new CommonTokenStream(lexer);
+		    SyntaxBracketGrammarParser parser = new SyntaxBracketGrammarParser(tokens);
+		    ParseTree braceContents = parser.syntaxBracket();
+
+			this.type = braceContents.getChild(1).getText();
+			this.priority = Integer.parseInt(braceContents.getChild(3).getText());
+			String roughOp = braceContents.getChild(5).getText();
 			this.operator = roughOp.substring(1, roughOp.length()-1);
-			if(tree.getChildCount()==9){
-				this.associativity = tree.getChild(7).getText();
+			if(braceContents.getChildCount()==9){
+				this.associativity = braceContents.getChild(7).getText();
 			}
 		}
 		else if(tree instanceof ImportantPairContext){

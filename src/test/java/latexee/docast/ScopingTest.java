@@ -47,7 +47,7 @@ public class ScopingTest {
 		ParsedStatement AST = DocumentParser.parse("src/test/antlr/scoping4.tex");
 		FormulaParser.parse(AST, new ArrayList<DeclareNode>());
 		FormulaParser.donePrinting();
-		//Expected output: the formulas except for 1+2 and a+b are parsed.
+		//Expected output: the formulas except for 1+2 and a*b are parsed.
 	}
 
 }
