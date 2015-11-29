@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.docast.ParsedStatement;
@@ -24,7 +25,7 @@ public void BasicWithScopingTest() throws IOException{
 	 ParsedStatement AST = DocumentParser.parse("src/test/antlr/basic_with_scoping.tex");
      DeclarationParser.declarationFinder(AST);
      FormulaParser.setFilename("output.xml");
-     FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+     FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
      FormulaParser.donePrinting();
      File outputFile = new File("output.xml"); 
      File expectedOutputFile = new File("src/test/openmath/basic_with_scoping.xml");
@@ -37,7 +38,7 @@ public void BasicWithNonsemanticTest() throws IOException{
 	 ParsedStatement AST = DocumentParser.parse("src/test/antlr/basic_with_nonsemantic.tex");
      DeclarationParser.declarationFinder(AST);
      FormulaParser.setFilename("output.xml");
-     FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+     FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
      FormulaParser.donePrinting();
      File outputFile = new File("output.xml"); 
      File expectedOutputFile = new File("src/test/openmath/basic_with_nonsemantic.xml");
@@ -49,7 +50,7 @@ public void BasicParsingSmall() throws IOException{
 	 ParsedStatement AST = DocumentParser.parse("src/test/antlr/basic_parsing_small.tex");
      DeclarationParser.declarationFinder(AST);
      FormulaParser.setFilename("output.xml");
-     FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+     FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
      FormulaParser.donePrinting();
      File outputFile = new File("output.xml"); 
      File expectedOutputFile = new File("src/test/openmath/basic_parsing_small.xml");
@@ -61,7 +62,7 @@ public void GrammarGenerator() throws IOException{
 	 ParsedStatement AST = DocumentParser.parse("src/test/antlr/grammar_generator.tex");
      DeclarationParser.declarationFinder(AST);
      FormulaParser.setFilename("output.xml");
-     FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+     FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
      FormulaParser.donePrinting();
      File outputFile = new File("output.xml"); 
      File expectedOutputFile = new File("src/test/openmath/grammar_generator.xml");
@@ -72,7 +73,7 @@ public void GrammarGenerator() throws IOException{
           ParsedStatement AST = DocumentParser.parse("src/test/antlr/grammar_comment.tex");
           DeclarationParser.declarationFinder(AST);
           FormulaParser.setFilename("output.xml");
-          FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+          FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
           FormulaParser.donePrinting();
           File outputFile = new File("output.xml");
           File expectedOutputFile = new File("src/test/openmath/grammar_generator.xml");

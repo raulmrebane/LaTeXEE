@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.docast.ParsedStatement;
@@ -18,7 +19,7 @@ public class ScopingTest {
 	public void scopingTest1() throws FileNotFoundException {
 		FormulaParser.setFilename("output.xml");
 		ParsedStatement AST = DocumentParser.parse("src/test/antlr/scoping1.tex");
-		FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+		FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
 		FormulaParser.donePrinting();
 		//Expected output: all formulas parsed
 	}
@@ -27,7 +28,7 @@ public class ScopingTest {
 	public void scopingTest2() throws FileNotFoundException {
 		FormulaParser.setFilename("output.xml");
 		ParsedStatement AST = DocumentParser.parse("src/test/antlr/scoping2.tex");
-		FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+		FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
 		FormulaParser.donePrinting();
 		//Expected output: none of the formulas are parsed.
 	}
@@ -36,7 +37,7 @@ public class ScopingTest {
 	public void scopingTest3() throws FileNotFoundException {
 		FormulaParser.setFilename("output.xml");
 		ParsedStatement AST = DocumentParser.parse("src/test/antlr/scoping3.tex");
-		FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+		FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
 		FormulaParser.donePrinting();
 		//Expected output: the formulas except for 5/5 and 11*90 are parsed.
 	}
@@ -45,7 +46,7 @@ public class ScopingTest {
 	public void scopingTest4() throws FileNotFoundException {
 		FormulaParser.setFilename("output.xml");
 		ParsedStatement AST = DocumentParser.parse("src/test/antlr/scoping4.tex");
-		FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+		FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
 		FormulaParser.donePrinting();
 		//Expected output: the formulas except for 1+2 and a+b are parsed.
 	}

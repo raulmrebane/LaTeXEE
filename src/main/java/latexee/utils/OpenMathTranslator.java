@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import main.java.latexee.declareast.DeclareNode;
@@ -25,12 +26,10 @@ import fr.inria.openmath.omapi.implementation.VariableNodeImpl;
 
 public class OpenMathTranslator {
 
-	//TODO: Possibly change List<DeclareNode> to HashMap<String,DeclareNode> where String=ID (with optional identifier for macronames)
-	//For now, it'll be O(n) to look for a matching ID.
 	private static List<String> supportedBrackets = Arrays.asList("BRACESContext","PARENSContext");
 	public static ArrayList<String> bracketFlags = new ArrayList<String>();
 	
-	public static Node parseToOM(ParseTree tree, List<DeclareNode> declarations){
+	public static Node parseToOM(ParseTree tree, Map<String,DeclareNode> declarations){
 		String treeName = tree.getClass().getSimpleName();
 		if(treeName.contains("DEFAULT")){
 			return parseToOM(tree.getChild(0), declarations);
@@ -86,11 +85,7 @@ public class OpenMathTranslator {
 			
 			//Find appropriate declaration for operation
 			DeclareNode declaration = null;
-			for(DeclareNode i: declarations){
-				if(i.getId().equals(noContext)){
-					declaration = i;
-				}
-			}
+			declaration = declarations.get(noContext);
 			if(declaration!=null){				
 				//Get operation info from declaration
 				String contentDictionary = declaration.getContentDictionary();
@@ -152,7 +147,7 @@ public class OpenMathTranslator {
 		}
 	}
 	
-	private static List<Node> operatorChildren(ParseTree tree, List<DeclareNode> declarations, OperatorDeclaration declaration){
+	private static List<Node> operatorChildren(ParseTree tree, Map<String,DeclareNode> declarations, OperatorDeclaration declaration){
 		List<Node> children = new ArrayList<Node>();
 		String type = declaration.getType();
 		if(type.equals("infix")){
@@ -172,7 +167,7 @@ public class OpenMathTranslator {
 		return children;
 	}
 	
-	private static List<Node> macroChildren(ParseTree tree, List<DeclareNode> declarations, MacroDeclaration declaration){
+	private static List<Node> macroChildren(ParseTree tree, Map<String,DeclareNode> declarations, MacroDeclaration declaration){
 		List<Node> children = new ArrayList<Node>();
 		
 		for(int i=2;i<tree.getChildCount();i=i+3){

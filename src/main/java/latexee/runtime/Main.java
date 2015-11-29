@@ -2,6 +2,7 @@ package main.java.latexee.runtime;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.docast.ParsedStatement;
@@ -99,7 +100,7 @@ public class Main {
 		if (inputFile != null) {
             ParsedStatement AST = DocumentParser.parse(inputFile);
             FormulaParser.setFilename(outputFile);
-            FormulaParser.parse(AST, new ArrayList<DeclareNode>());
+            FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
             FormulaParser.donePrinting();
 		}
 	}

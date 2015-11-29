@@ -4,7 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -27,7 +29,7 @@ import main.java.latexee.logging.Logger;
 public class FormulaParser {
 	private static TreePrinterImpl treePrinter;
 	
-	public static void parse(ParsedStatement root,List<DeclareNode> declarations){
+	public static void parse(ParsedStatement root,Map<String,DeclareNode> declarations){
 		
 		if(root instanceof DeclareStatement){
 			
@@ -40,7 +42,8 @@ public class FormulaParser {
 			if (operatorStyle){
 				try {
 					node = new OperatorDeclaration(parseTree);
-					declarations.add(node);
+					String id = node.getId();
+					declarations.put(id, node);
 				}
 				catch (DeclarationInitialisationException die) {
 				}
@@ -48,7 +51,8 @@ public class FormulaParser {
 			else {
 				try {
 					node = new MacroDeclaration(parseTree);
-					declarations.add(node);
+					String id = node.getId();
+					declarations.put(id, node);
 				}
 				catch (DeclarationInitialisationException die) {
 				}
@@ -58,7 +62,8 @@ public class FormulaParser {
 			
 		}
 		else if(root instanceof FormulaStatement){
-			String grammar = GrammarGenerator.createGrammar(declarations);
+			List<DeclareNode> nodes = new ArrayList<DeclareNode>(declarations.values());
+			String grammar = GrammarGenerator.createGrammar(nodes);
 			try {
 				ParseTree formulaTree = GrammarCompiler.compile(grammar, root.getContent());
 				if (formulaTree != null) {
@@ -77,7 +82,7 @@ public class FormulaParser {
 		else if(root instanceof TheoremStatement ||
 				root instanceof LemmaStatement ||
 				root instanceof ProofStatement){
-			declarations = new ArrayList<DeclareNode>(declarations);
+			declarations = new HashMap<String,DeclareNode>(declarations);
 		}
 		for(ParsedStatement child : root.getChildren()){
 			parse(child,declarations);
