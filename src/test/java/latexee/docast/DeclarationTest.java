@@ -40,12 +40,13 @@ public class DeclarationTest {
 	@Test
 	public void test3() throws DeclarationInitialisationException {
 		ParseTree pt = DeclarationParser.parseDeclaration("{macro=\\frac, meaning=arith1.divide, argspec=[2], code={...}}");
+		System.out.println(pt.getText());
 		MacroDeclaration md = new MacroDeclaration(pt);		
 		assertEquals("frac", md.getMacroName());
 		assertEquals("arith1", md.getContentDictionary());
 		assertEquals("divide", md.getMeaning());
 		assertEquals("false", ""+md.hasOptionalArgument());
-		assertEquals("{code={}", ""+md.getMiscellaneous());
+		assertEquals("{code={...}}", ""+md.getMiscellaneous());
 	}
 	
 	@Test
@@ -56,7 +57,7 @@ public class DeclarationTest {
 		assertEquals("ecc", md.getContentDictionary());
 		assertEquals("Tuple", md.getMeaning());
 		assertEquals("false", ""+md.hasOptionalArgument());
-		assertEquals("{code={}", ""+md.getMiscellaneous());
+		assertEquals("{code={#1,\\ldots,#2}}", ""+md.getMiscellaneous());
 	}
 
 }

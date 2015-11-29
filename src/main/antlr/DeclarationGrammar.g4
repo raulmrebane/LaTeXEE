@@ -25,15 +25,36 @@ importantPair
 	;
 	
 miscPair
-	: .*? '=' .*?
+	: .*? '=' value
 	;
+	
+value
+	: NAME
+	| CHARACTERS
+	| valueInBraces
+	;
+	
+valueInBraces
+	: '{' (valueInBraces|.)*? '}'
+	;
+	
 TYPE
 	: 'infix'
 	| 'prefix'
 	| 'postfix'
 	;
 	
-
+NOTANOPENBRACE
+	: '\\{'
+	;
+	
+NOTACLOSINGBRACE
+	: '\\}'
+	;
+	
+NOTAQUOTATIONMARK
+	: '\\"'
+	;
 NUMBERS
 	: [1-9]|([1-9][0-9]*)
 	;
@@ -47,5 +68,9 @@ CHARACTERS
 NAME
 	: [a-zA-Z0-9]+
 	;
+	
 
 WS : [ \t\n\r] -> skip; 
+OTHER
+	: .
+	;
