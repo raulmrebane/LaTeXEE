@@ -9,7 +9,7 @@ keyValuePairs
 	;
 
 syntaxBracket
-	: '{' WS* TYPE WS* ',' WS* NUMBERS WS* ',' WS* CHARACTERS  WS* ',' WS* ('l'|'r') WS* '}'
+	: '{' WS* TYPE WS* ',' WS* NUMBERS WS* ',' WS* CHARACTERS  WS* (',' WS* ('l'|'r') WS*)? '}'
 	;
 	
 pair
