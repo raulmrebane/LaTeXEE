@@ -15,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -34,30 +36,38 @@ import main.java.latexee.logging.Logger;
 
 public class GrammarCompiler {
 	private static JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-
+	private Map<String,ClassInfo> grammarMap;
 	private int packageIncrement;
 	private boolean foundErrors;
 	public GrammarCompiler(){
 		this.packageIncrement = 0;
 		this.foundErrors = false;
+		this.grammarMap = new HashMap<String,ClassInfo>();
 	}
 	public ParseTree compile(String grammar, String formula) throws IOException{
-        ParseTree tree = null;
-        packageIncrement++;
-        
-        Path tempDir = Files.createTempDirectory("LaTeXEE", new FileAttribute[0]);
-        
-        //Writes the grammar string into a .g4 file in the temp directory.
-        //Calls out ANTLR in the same folder
-        createSource(tempDir,grammar); 
-        
-        //Compiles .java files in that folder
-        compileSourceFolder(tempDir);
+		ClassInfo pair = null;
+		ParseTree tree = null;
+		pair = grammarMap.get(pair);
 		
-        //Loads compiled classes into java, ClassInfo is just a container for stuff we need for reflection
-        //ClassInfo pair = loadClasses(tempDir);
-        ClassInfo pair = loadClasses(tempDir);
-        
+		if (pair==null) {
+	        packageIncrement++;
+	        
+	        Path tempDir = Files.createTempDirectory("LaTeXEE", new FileAttribute[0]);
+	        
+	        //Writes the grammar string into a .g4 file in the temp directory.
+	        //Calls out ANTLR in the same folder
+	        createSource(tempDir,grammar); 
+	        
+	        //Compiles .java files in that folder
+	        compileSourceFolder(tempDir);
+			
+	        //Loads compiled classes into java, ClassInfo is just a container for stuff we need for reflection
+	        //ClassInfo pair = loadClasses(tempDir);
+	        pair = loadClasses(tempDir);
+	        grammarMap.put(grammar, pair);
+	        markForDeletion(tempDir.toFile());
+		}
+		
         //Extracting values from wrapper class
         Constructor lexerCtor = pair.getLexer();
         Constructor parserCtor = pair.getParser();
@@ -112,8 +122,6 @@ public class GrammarCompiler {
 		} catch (SecurityException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} finally {
-			markForDeletion(tempDir.toFile());
 		}
         
         return tree;
