@@ -13,16 +13,15 @@ public class MacroDeclaration extends DeclareNode {
 	private boolean hasOptionalArgument = false;
 	private String optionalValue;
 	
-	public MacroDeclaration(String meaning, String macroname, int arguments) {
+	public MacroDeclaration(String meaning, String macroname, int arguments, int identifier) {
 		super();
 		this.meaning=meaning;
 		this.macroName=macroname;
 		this.arguments=arguments;
 		this.id="MACRO"+Integer.toString(identifier);
-		identifier++;
 	}
 	
-	public MacroDeclaration(ParseTree tree) throws DeclarationInitialisationException{
+	public MacroDeclaration(ParseTree tree, int identifier) throws DeclarationInitialisationException{
 		fillAttributes(tree);
 		if(		this.meaning == null || this.contentDictionary==null){
 			//Yesterday, this was a formality. Today it guards us from the hell of nullpointers.
@@ -42,7 +41,6 @@ public class MacroDeclaration extends DeclareNode {
 			throw new DeclarationInitialisationException();
 		}
 		this.id="MACRO"+Integer.toString(identifier);
-		identifier++;
 	}
 	
 	public String getMacroName() {

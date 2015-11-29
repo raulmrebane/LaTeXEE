@@ -27,9 +27,21 @@ import main.java.latexee.docast.TheoremStatement;
 import main.java.latexee.logging.Logger;
 
 public class FormulaParser {
-	private static TreePrinterImpl treePrinter;
+	private TreePrinterImpl treePrinter;
+	private GrammarCompiler cp;
+	private int nodeId;
 	
-	public static void parse(ParsedStatement root,Map<String,DeclareNode> declarations){
+	public FormulaParser(String filename) throws FileNotFoundException{
+		this.treePrinter = new TreePrinterImpl(new XMLPrinter(new FileOutputStream(filename)));
+		this.cp = new GrammarCompiler();
+		this.nodeId = 0;
+	}
+	public void parse(ParsedStatement root){
+		parseImpl(root,new HashMap<String,DeclareNode>());
+		treePrinter.endPrint();
+	}
+	
+	public void parseImpl(ParsedStatement root,Map<String,DeclareNode> declarations){
 		
 		if(root instanceof DeclareStatement){
 			
@@ -41,7 +53,8 @@ public class FormulaParser {
 			
 			if (operatorStyle){
 				try {
-					node = new OperatorDeclaration(parseTree);
+					node = new OperatorDeclaration(parseTree,nodeId);
+					nodeId++;
 					String id = node.getId();
 					declarations.put(id, node);
 				}
@@ -50,7 +63,8 @@ public class FormulaParser {
 			}
 			else {
 				try {
-					node = new MacroDeclaration(parseTree);
+					node = new MacroDeclaration(parseTree,nodeId);
+					nodeId++;
 					String id = node.getId();
 					declarations.put(id, node);
 				}
@@ -65,7 +79,7 @@ public class FormulaParser {
 			List<DeclareNode> nodes = new ArrayList<DeclareNode>(declarations.values());
 			String grammar = GrammarGenerator.createGrammar(nodes);
 			try {
-				ParseTree formulaTree = GrammarCompiler.compile(grammar, root.getContent());
+				ParseTree formulaTree = cp.compile(grammar, root.getContent());
 				if (formulaTree != null) {
 					Node formulaNode = OpenMathTranslator.parseToOM(formulaTree, declarations);
 					Node formulaRootNode = new NodeImpl(Node.OM_OBJECT);
@@ -85,14 +99,8 @@ public class FormulaParser {
 			declarations = new HashMap<String,DeclareNode>(declarations);
 		}
 		for(ParsedStatement child : root.getChildren()){
-			parse(child,declarations);
+			parseImpl(child,declarations);
 		}
 			
-	}
-	public static void setFilename(String filename) throws FileNotFoundException{
-		 treePrinter = new TreePrinterImpl(new XMLPrinter(new FileOutputStream(filename)));
-	}
-	public static void donePrinting(){
-		treePrinter.endPrint();
 	}
 }

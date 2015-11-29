@@ -30,7 +30,6 @@ public class GrammarTest {
 	
 	@Test
 	public void Parsing1Test(){
-		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/parsing1.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -56,7 +55,6 @@ public class GrammarTest {
 
 	@Test
 	public void Parsing8Test(){
-		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/parsing8.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -85,7 +83,6 @@ public class GrammarTest {
 	
 	@Test
 	public void Parsing9Test(){
-		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/parsing9.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -110,7 +107,6 @@ public class GrammarTest {
 	}
 	@Test
 	public void BasicWithAllDeclaresTest(){
-		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/basic_with_all_declares.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -142,7 +138,6 @@ public class GrammarTest {
 	}
 	@Test
 	public void BasicWithNonsemanticTest(){
-		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/basic_with_nonsemantic.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -175,7 +170,6 @@ public class GrammarTest {
 	
 	@Test
 	public void BasicWithScopingTest(){
-		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/basic_with_scoping.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -208,7 +202,6 @@ public class GrammarTest {
 	
 	@Test
 	public void GrammarGeneratorTest(){
-		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/grammar_generator.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());
@@ -243,7 +236,6 @@ public class GrammarTest {
 
 	@Test
 	public void CommentsTest(){
-		DeclareNode.identifier = 0;
 		ParsedStatement tree = DocumentParser.parse("src/test/antlr/grammar_comment.tex");
 		DeclarationParser.declarationFinder(tree);
 		ArrayList<DeclareNode> nodes = GrammarGenerator.getDeclareNodes(tree, new ArrayList<DeclareNode>());

@@ -23,15 +23,18 @@ public class DeclarationParser {
 	
 	//goes through the AST and parses each DeclarationStatement. 
 	//Can be later integrated into a function that does everything in one run through the AST for performance.
-	
 	public static void declarationFinder(ParsedStatement node){
+		declarationFinder(node, 0);
+	}
+	public static Integer declarationFinder(ParsedStatement node, Integer maxId){
 		if(node instanceof DeclareStatement){
 			DeclareStatement castNode = (DeclareStatement) node;
 			ParseTree parseTree = parseDeclaration(castNode.getContent());
 			boolean operatorStyle = isOperatorSyntax(parseTree);
 			if (operatorStyle){
 				try {
-					OperatorDeclaration opDec = new OperatorDeclaration(parseTree);
+					OperatorDeclaration opDec = new OperatorDeclaration(parseTree,maxId);
+					maxId++;
 					castNode.setNode(opDec);
 				}
 				catch (DeclarationInitialisationException die) {
@@ -39,19 +42,23 @@ public class DeclarationParser {
 			}
 			else {
 				try {
-					castNode.setNode(new MacroDeclaration(parseTree));
+					castNode.setNode(new MacroDeclaration(parseTree,maxId));
+					maxId++;
 				}
 				catch (DeclarationInitialisationException die) {
 				}
 			}			
 		}
 		ArrayList<ParsedStatement> children = node.getChildren();
+		Integer childMax = maxId;
 		for(int i=0;i<children.size();i++){
-			declarationFinder(children.get(i));
+			childMax = declarationFinder(children.get(i),childMax);
 		}
+		maxId = childMax;
+		return maxId;
 		
 	}
-	
+
 	public static boolean isOperatorSyntax(ParseTree tree){
 		boolean foundOperator = false;
 		if(tree instanceof SyntaxBracketContext){

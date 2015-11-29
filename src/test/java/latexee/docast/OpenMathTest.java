@@ -3,6 +3,7 @@ package test.java.latexee.docast;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,19 +15,28 @@ import main.java.latexee.utils.DocumentParser;
 import main.java.latexee.utils.FormulaParser;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class OpenMathTest {
 
-	
+private FormulaParser fp;
+
+@Before
+public void setUp(){
+	try {
+		fp = new FormulaParser("output.xml");
+	} catch (FileNotFoundException e) {
+		e.printStackTrace();
+	}
+}
+
 @Test
 public void BasicWithScopingTest() throws IOException{
 	 ParsedStatement AST = DocumentParser.parse("src/test/antlr/basic_with_scoping.tex");
      DeclarationParser.declarationFinder(AST);
-     FormulaParser.setFilename("output.xml");
-     FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
-     FormulaParser.donePrinting();
+     fp.parse(AST);
      File outputFile = new File("output.xml"); 
      File expectedOutputFile = new File("src/test/openmath/basic_with_scoping.xml");
      assertTrue(FileUtils.contentEqualsIgnoreEOL(outputFile, expectedOutputFile, null));
@@ -37,9 +47,7 @@ public void BasicWithScopingTest() throws IOException{
 public void BasicWithNonsemanticTest() throws IOException{
 	 ParsedStatement AST = DocumentParser.parse("src/test/antlr/basic_with_nonsemantic.tex");
      DeclarationParser.declarationFinder(AST);
-     FormulaParser.setFilename("output.xml");
-     FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
-     FormulaParser.donePrinting();
+     fp.parse(AST);
      File outputFile = new File("output.xml"); 
      File expectedOutputFile = new File("src/test/openmath/basic_with_nonsemantic.xml");
      assertTrue(FileUtils.contentEqualsIgnoreEOL(outputFile, expectedOutputFile, null));
@@ -49,9 +57,7 @@ public void BasicWithNonsemanticTest() throws IOException{
 public void BasicParsingSmall() throws IOException{
 	 ParsedStatement AST = DocumentParser.parse("src/test/antlr/basic_parsing_small.tex");
      DeclarationParser.declarationFinder(AST);
-     FormulaParser.setFilename("output.xml");
-     FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
-     FormulaParser.donePrinting();
+     fp.parse(AST);
      File outputFile = new File("output.xml"); 
      File expectedOutputFile = new File("src/test/openmath/basic_parsing_small.xml");
      assertTrue(FileUtils.contentEqualsIgnoreEOL(outputFile, expectedOutputFile, null));
@@ -61,9 +67,7 @@ public void BasicParsingSmall() throws IOException{
 public void GrammarGenerator() throws IOException{
 	 ParsedStatement AST = DocumentParser.parse("src/test/antlr/grammar_generator.tex");
      DeclarationParser.declarationFinder(AST);
-     FormulaParser.setFilename("output.xml");
-     FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
-     FormulaParser.donePrinting();
+     fp.parse(AST);
      File outputFile = new File("output.xml"); 
      File expectedOutputFile = new File("src/test/openmath/grammar_generator.xml");
      assertTrue(FileUtils.contentEqualsIgnoreEOL(outputFile, expectedOutputFile, null));
@@ -72,9 +76,7 @@ public void GrammarGenerator() throws IOException{
      public void CommentTest() throws IOException{
           ParsedStatement AST = DocumentParser.parse("src/test/antlr/grammar_comment.tex");
           DeclarationParser.declarationFinder(AST);
-          FormulaParser.setFilename("output.xml");
-          FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
-          FormulaParser.donePrinting();
+          fp.parse(AST);
           File outputFile = new File("output.xml");
           File expectedOutputFile = new File("src/test/openmath/grammar_generator.xml");
           assertTrue(FileUtils.contentEqualsIgnoreEOL(outputFile, expectedOutputFile, null));

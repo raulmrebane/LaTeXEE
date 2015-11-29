@@ -99,9 +99,8 @@ public class Main {
 		//String inputFile = args[0];
 		if (inputFile != null) {
             ParsedStatement AST = DocumentParser.parse(inputFile);
-            FormulaParser.setFilename(outputFile);
-            FormulaParser.parse(AST, new HashMap<String,DeclareNode>());
-            FormulaParser.donePrinting();
+            FormulaParser fp = new FormulaParser(outputFile);
+            fp.parse(AST);
 		}
 	}
 }

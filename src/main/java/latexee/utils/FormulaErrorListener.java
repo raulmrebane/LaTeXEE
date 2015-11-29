@@ -10,14 +10,17 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
 public class FormulaErrorListener extends BaseErrorListener {
-    public static FormulaErrorListener INSTANCE = new FormulaErrorListener();
-    public static ArrayList<Object[]> locationData; //1. - charPos, 2. - error message
-
+    private GrammarCompiler gc;
+    private ArrayList<Object[]> locationData; //1. - charPos, 2. - error message
+    public FormulaErrorListener(GrammarCompiler gc){
+    	this.gc=gc;
+    	this.locationData=new ArrayList<Object[]>();
+    }
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, 
     		int charPositionInLine, String msg, RecognitionException e) {
     	
-    	GrammarCompiler.foundErrors = true;
+    	gc.foundError();
     	
     	charPositionInLine++;
     	
@@ -62,4 +65,7 @@ public class FormulaErrorListener extends BaseErrorListener {
 		}
 		return expectedElements.substring(0, expectedElements.length()-2);
     }
+    public ArrayList<Object[]> getLocationData() {
+		return locationData;
+	}
 }

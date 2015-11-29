@@ -34,9 +34,14 @@ import main.java.latexee.logging.Logger;
 
 public class GrammarCompiler {
 	private static JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-	private static int packageIncrement = 0;
-	public static boolean foundErrors;
-	public static ParseTree compile(String grammar, String formula) throws IOException{
+
+	private int packageIncrement;
+	private boolean foundErrors;
+	public GrammarCompiler(){
+		this.packageIncrement = 0;
+		this.foundErrors = false;
+	}
+	public ParseTree compile(String grammar, String formula) throws IOException{
         ParseTree tree = null;
         packageIncrement++;
         
@@ -70,13 +75,13 @@ public class GrammarCompiler {
 			parser = (Parser) parserCtor.newInstance(tokens);
 			
 			foundErrors = false;
-			FormulaErrorListener.locationData = new ArrayList<Object[]>();
 			
 			//This lets us handle any ANTLR errors that occur during parsing/lexing
 			parser.removeErrorListeners();
 			lexer.removeErrorListeners();
-			parser.addErrorListener(FormulaErrorListener.INSTANCE);
-			lexer.addErrorListener(FormulaErrorListener.INSTANCE);
+			FormulaErrorListener fel = new FormulaErrorListener(this);
+			parser.addErrorListener(fel);
+			lexer.addErrorListener(fel);
 			
 			//The method we're invoking takes no parameters
 			Class[] params = {};
@@ -87,7 +92,7 @@ public class GrammarCompiler {
 				//TODO: Make our own exception type for this purpose
 				Logger.log("Error in formula: "+formula+"\n");
 				System.out.println("Error in formula: "+formula+":");
-				for (Object[] data : FormulaErrorListener.locationData) {
+				for (Object[] data : fel.getLocationData()) {
 					Integer charPositionInLine = (Integer) data[0];
 					String msg = (String) data[1];
 					System.out.println("Syntax error at character " + charPositionInLine + ": " + msg);
@@ -113,8 +118,10 @@ public class GrammarCompiler {
         
         return tree;
 	}
-	
-	private static void compileSourceFolder(Path path) throws IOException{
+	public void foundError(){
+		this.foundErrors=true;
+	}
+	private void compileSourceFolder(Path path) throws IOException{
 		
 		//Filtering files in folder by extension (that's what the regex does) and adding them to a list
 		ArrayList<File> sourceFiles = new ArrayList<File>();
@@ -136,7 +143,7 @@ public class GrammarCompiler {
 		
 	}
 	
-	private static void createSource(Path path, String grammar) throws IOException{
+	private void createSource(Path path, String grammar) throws IOException{
 		String tempPath = path.toString();
 		
 		//Writing .g4 file to temp directory
@@ -164,7 +171,7 @@ public class GrammarCompiler {
 		antlr.processGrammarsOnCommandLine();
 	}
 	
-	private static ClassInfo loadClasses(Path path) throws IOException{
+	private ClassInfo loadClasses(Path path) throws IOException{
 		String pathString = path.toString()+File.separator;
 		
 		//Specifying the source folder will allow java to just search for other missing classes it needs.
@@ -204,7 +211,7 @@ public class GrammarCompiler {
 		}
 		return pair;
 	}
-	private static void markForDeletion(File file) {
+	private void markForDeletion(File file) {
 		file.deleteOnExit();
 	    File[] contents = file.listFiles();
 	    if (contents != null) {

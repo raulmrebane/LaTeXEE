@@ -32,10 +32,9 @@ public class OperatorDeclaration extends DeclareNode {
 		this.operator = operator;
 		this.associativity = associativity;
 	}
-	public OperatorDeclaration(ParseTree tree) throws DeclarationInitialisationException{
+	public OperatorDeclaration(ParseTree tree, int identifier) throws DeclarationInitialisationException{
 		fillAttributes(tree);
 		this.id = "Op"+Integer.toString(identifier);
-		identifier++;
 		//Yesterday, this was a formality. Today it guards us from the hell of nullpointers.
 		if(this.type == null){
 			Logger.log("Type field was not instantiated on operator declaration: "+tree.getText());
