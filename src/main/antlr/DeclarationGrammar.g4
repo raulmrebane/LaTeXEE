@@ -5,11 +5,11 @@ declarationGrammar
 	;
 	
 keyValuePairs
-	:	(pair ',' )* pair 
+	:	(WS* pair WS* ',' WS*)* WS* pair WS*
 	;
 
 syntaxBracket
-	: '{' TYPE ',' .*? ',' .*?  ',' ('l'|'r') '}'
+	: '{' WS* TYPE WS* ',' WS* NUMBERS WS* ',' WS* CHARACTERS  WS* ',' WS* ('l'|'r') WS* '}'
 	;
 	
 pair
@@ -69,8 +69,8 @@ NAME
 	: [a-zA-Z0-9]+
 	;
 	
-
-WS : [ \t\n\r] -> skip; 
-OTHER
-	: .
+NONWS
+	: ~[ \t\n\r]
 	;
+WS : [ \t\n\r]; 
+

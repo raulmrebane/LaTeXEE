@@ -5,6 +5,9 @@ import main.java.antlrgen.DeclarationGrammarParser.MiscPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
 import main.java.latexee.logging.Logger;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class OperatorDeclaration extends DeclareNode {
@@ -13,6 +16,12 @@ public class OperatorDeclaration extends DeclareNode {
 	private Integer priority; //parsing priority
 	private String operator; //The actual character, for example "+"
 	private String associativity; //r or l, meaning right- or left-associative
+	
+	private final int TYPEINDEX = 2;
+	private final int PRIORITYINDEX = 4;
+	private final int OPERATORINDEX = 6;
+	private final int ASSOCIATIVITYINDEX = 8;
+	private final List<String> WHITESPACECHARS = Arrays.asList(" ","\r","\n","\t");
 	
 	public OperatorDeclaration(String meaning, String type, Integer priority, String operator,
 			String associativity) {
@@ -56,12 +65,34 @@ public class OperatorDeclaration extends DeclareNode {
 	}
 	private void fillAttributes(ParseTree tree){
 		if(tree instanceof SyntaxBracketContext){
-			this.type = tree.getChild(1).getText();
-			this.priority = Integer.parseInt(tree.getChild(3).getText());
-			String roughOp = tree.getChild(5).getText();
-			this.operator = roughOp.substring(1, roughOp.length()-1);
-			if(tree.getChildCount()==9){
-				this.associativity = tree.getChild(7).getText();
+			//This is a loop to essentially ignore whitespace in the syntax bracket.
+			//indexCounter only increases as non-whitespace characters are found
+			//therefore it acts as an index for non-whitespace characters
+			//However as the { is counted as a non-whitespace character, it is 1-indexed
+			//Instead of 0-indexed like other tree nodes
+			
+			int indexCounter = 0;
+			
+			for(int i=0;i<tree.getChildCount();i++){
+
+				if(!WHITESPACECHARS.contains(tree.getChild(i).getText())){
+					indexCounter++;
+					switch (indexCounter){
+					case TYPEINDEX:
+						this.type = tree.getChild(i).getText();
+						break;
+					case PRIORITYINDEX:
+						this.priority = Integer.parseInt(tree.getChild(i).getText());
+						break;
+					case OPERATORINDEX:
+						String roughOp = tree.getChild(i).getText();
+						this.operator = roughOp.substring(1, roughOp.length()-1);
+						break;
+					case ASSOCIATIVITYINDEX:
+						this.associativity = tree.getChild(i).getText();
+						break;
+					}
+				}
 			}
 		}
 		else if(tree instanceof ImportantPairContext){

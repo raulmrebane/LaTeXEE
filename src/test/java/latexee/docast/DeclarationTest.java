@@ -57,7 +57,7 @@ public class DeclarationTest {
 		assertEquals("ecc", md.getContentDictionary());
 		assertEquals("Tuple", md.getMeaning());
 		assertEquals("false", ""+md.hasOptionalArgument());
-		assertEquals("{code={#1,\\ldots,#2}}", ""+md.getMiscellaneous());
+		assertEquals("{code={#1, \\ldots, #2}}", ""+md.getMiscellaneous());
 	}
 
 }
