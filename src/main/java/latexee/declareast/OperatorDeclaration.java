@@ -131,12 +131,12 @@ public class OperatorDeclaration extends DeclareNode {
 			}
 		}
 		else if(this.type.equals("postfix")){
-			sb.append(lowerLevel);
+			sb.append(currentLevel);
 			sb.append(operatorToken);
 		}
 		else if(this.type.equals("prefix")){
 			sb.append(operatorToken);
-			sb.append(lowerLevel);
+			sb.append(currentLevel);
 		}
 		sb.append(" #"+this.id+"\n");
 		return sb.toString();
@@ -160,12 +160,12 @@ public class OperatorDeclaration extends DeclareNode {
 			}
 		}
 		else if(this.type.equals("postfix")){
-			sb.append(lowerLevel);
+			sb.append(currentLevel);
 			sb.append(operatorToken);
 		}
 		else if(this.type.equals("prefix")){
 			sb.append(operatorToken);
-			sb.append(lowerLevel);
+			sb.append(currentLevel);
 		}
 		sb.append(" #"+this.id+"\n");
 		return sb.toString();

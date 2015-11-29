@@ -18,6 +18,7 @@ public class Main {
     public static String outputFile;
     public static String inputFile;
     public static boolean verbose = false;
+    public static boolean ambiguityChecking = false;
     
     
     /* Construct options for the command line parser. */
@@ -29,6 +30,7 @@ public class Main {
         options.addOption(o);
         options.addOption("v", "add verbosity to output");
         options.addOption("h", "display this menu");
+        options.addOption("a", "check for ambiguity");
         
         return options;
     }
@@ -55,6 +57,10 @@ public class Main {
                     if (cmd.hasOption("v")) {
                         verbose = true;
                         System.out.println("Verbose option is enabled.");
+                    }
+                    if (cmd.hasOption("a")) {
+                        ambiguityChecking = true;
+                        System.out.println("Ambiguity checking is enabled.");
                     }
 
                     if (cmd.hasOption ("o")) {
@@ -100,6 +106,9 @@ public class Main {
 		if (inputFile != null) {
             ParsedStatement AST = DocumentParser.parse(inputFile);
             FormulaParser fp = new FormulaParser(outputFile);
+            if(ambiguityChecking){
+            	fp.enableAmbiguityChecking();
+            }
             fp.parse(AST);
 		}
 	}

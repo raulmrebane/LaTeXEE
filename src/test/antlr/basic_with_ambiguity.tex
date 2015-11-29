@@ -1,0 +1,13 @@
+\documentclass{article}\begin{document}
+\begin{theorem}
+
+\declare{syntax={infix,108,"++",l}, meaning=test.test}
+\declare{syntax={postfix,108,"+"}, meaning=arith1.unary_plus}
+\declare{syntax={infix,100,"/",l}, meaning=artih1.divide}
+\declare{syntax={infix,108,"+",l}, meaning=arith1.plus}
+\declare{syntax={postfix,102,"n",l}, meaning=arith1.plus}
+\declare{syntax={infix,100,"*",l}, meaning=arith1.times,thisis=nonsemanticdata}
+$(2++3)$
+\end{theorem}
+\end{document}
+

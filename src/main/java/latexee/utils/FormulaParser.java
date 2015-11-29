@@ -30,11 +30,13 @@ public class FormulaParser {
 	private TreePrinterImpl treePrinter;
 	private GrammarCompiler cp;
 	private int nodeId;
+	private boolean ambiguityChecking;
 	
 	public FormulaParser(String filename) throws FileNotFoundException{
 		this.treePrinter = new TreePrinterImpl(new XMLPrinter(new FileOutputStream(filename)));
 		this.cp = new GrammarCompiler();
 		this.nodeId = 0;
+		this.ambiguityChecking=false;
 	}
 	public void parse(ParsedStatement root){
 		parseImpl(root,new HashMap<String,DeclareNode>());
@@ -85,6 +87,9 @@ public class FormulaParser {
 					Node formulaRootNode = new NodeImpl(Node.OM_OBJECT);
 					formulaRootNode.appendChild(formulaNode);
 					treePrinter.printTree(formulaRootNode);
+					if(ambiguityChecking){
+						AmbiguityChecker.check(formulaTree,declarations);
+					}
 				}
 			} catch (IOException e) {
 				Logger.log("IO exception when parsing formula: "+root.getContent());
@@ -102,5 +107,8 @@ public class FormulaParser {
 			parseImpl(child,declarations);
 		}
 			
+	}
+	public void enableAmbiguityChecking(){
+		this.ambiguityChecking=true;
 	}
 }

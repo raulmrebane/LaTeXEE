@@ -5,7 +5,7 @@ declarationGrammar
 	;
 	
 keyValuePairs
-	:	(WS* pair WS* ',' WS*)* WS* pair WS*
+	:	(WS* pair WS* ',')* WS* pair WS*?
 	;
 
 syntaxBracket
@@ -66,7 +66,7 @@ CHARACTERS
 	;
 
 NAME
-	: [a-zA-Z0-9]+
+	: [_a-zA-Z0-9]+
 	;
 	
 NONWS
