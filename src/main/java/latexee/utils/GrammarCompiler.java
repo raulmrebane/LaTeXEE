@@ -47,7 +47,7 @@ public class GrammarCompiler {
 	public ParseTree compile(String grammar, String formula) throws IOException{
 		ClassInfo pair = null;
 		ParseTree tree = null;
-		pair = grammarMap.get(pair);
+		pair = grammarMap.get(grammar);
 		
 		if (pair==null) {
 	        packageIncrement++;
