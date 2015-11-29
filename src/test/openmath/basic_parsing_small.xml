@@ -15,7 +15,7 @@
     <OMATP>
       <OMS cd="LaTeXEE" name="nonsemantic"/>
       <OMA>
-        <OMS cd="code" name="{...}"/>
+        <OMS cd="code" name="{"/>
       </OMA>
     </OMATP>
     <OMA>

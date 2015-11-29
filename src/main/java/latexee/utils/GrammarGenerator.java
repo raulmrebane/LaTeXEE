@@ -160,6 +160,16 @@ public class GrammarGenerator {
 		defaultCounter++;
 		sb.append("LEXERRULE : [0-9]+ | [a-z];\n");
 		return sb.toString();
-	}	
+	}
+	
+	//Old proof of concept method, will be deleted in final product.
+	//TODO: Delete me later on.
+	public static void exampleCase(){
+		ParsedStatement AST = DeclarationParser.giveMeTheTestCase();
+		DeclarationParser.declarationFinder(AST);
+		ArrayList<DeclareNode> grammarNodes = getDeclareNodes(AST, new ArrayList<DeclareNode>());
+		System.out.println(createGrammar(grammarNodes));
+	}
+	
 	
 }

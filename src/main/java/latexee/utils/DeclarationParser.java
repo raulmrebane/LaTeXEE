@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import main.java.antlrgen.DeclarationGrammarLexer;
 import main.java.antlrgen.DeclarationGrammarParser;
-import main.java.antlrgen.DeclarationGrammarParser.SyntaxpairContext;
+import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
 import main.java.latexee.declareast.DeclarationInitialisationException;
 import main.java.latexee.declareast.MacroDeclaration;
 import main.java.latexee.declareast.OperatorDeclaration;
@@ -54,7 +54,7 @@ public class DeclarationParser {
 	
 	public static boolean isOperatorSyntax(ParseTree tree){
 		boolean foundOperator = false;
-		if(tree instanceof SyntaxpairContext){
+		if(tree instanceof SyntaxBracketContext){
 			foundOperator = true;
 		}
 		int childCount = tree.getChildCount();

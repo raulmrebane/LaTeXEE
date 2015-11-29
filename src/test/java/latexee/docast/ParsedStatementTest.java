@@ -160,20 +160,20 @@ public class ParsedStatementTest {
 	@Test //tests declarations
 	public void ParsingTest7() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-			new DeclareStatement("syntax={infix, 7, \"/\", l}, meaning=arith1.divide", 0),
-			new DeclareStatement("syntax={infix, 7, \"/\", r}, meaning=arith1.divide", 0),
-			new DeclareStatement("syntax={prefix, 7, \"/\"}, meaning=arith1.divide", 0),
-			new DeclareStatement("syntax={postfix, 7, \"/\"}, meaning=arith1.divide", 0),
-			new DeclareStatement("macro=\\frac, meaning=arith1.divide, argspec=[2], code={...}", 0),
-			new DeclareStatement("macro=\\frac2, meaning=arith1.divide, argspec=2, code={...}", 0),
-			new DeclareStatement("macro=\\tuple, meaning=ecc.Tuple, argspec=[2], code={#1, \\ldots, #2}", 0),
-			new DeclareStatement("syntax={infix, -2, \"/\", l}, meaning=arith1.divide", 0),
-			new DeclareStatement("syntax={infix, 7, \"/\", m}, meaning=arith1.divide", 0),
-			new DeclareStatement("syntax={infi, 7, \"/\", l}, meaning=arith1.divide", 0),
-			new DeclareStatement("syntax={prefix, 7, \"/\", l}, meaning=arith1.divide", 0),
-			new DeclareStatement("syntax={postfix, 7, \"/\", l}, meaning=arith1.divide", 0),
-			new DeclareStatement("syntax={infi, 7, \"/\", l}", 0),
-			new DeclareStatement("macro=\\frac3, argspec=2, code={...}", 0)
+			new DeclareStatement("{syntax={infix, 7, \"/\", l}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={infix, 7, \"/\", r}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={prefix, 7, \"/\"}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={postfix, 7, \"/\"}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{macro=\\frac, meaning=arith1.divide, argspec=[2], code={...}}", 0),
+			new DeclareStatement("{macro=\\frac2, meaning=arith1.divide, argspec=2, code={...}}", 0),
+			new DeclareStatement("{macro=\\tuple, meaning=ecc.Tuple, argspec=[2], code={#1, \\ldots, #2}}", 0),
+			new DeclareStatement("{syntax={infix, -2, \"/\", l}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={infix, 7, \"/\", m}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={infi, 7, \"/\", l}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={prefix, 7, \"/\", l}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={postfix, 7, \"/\", l}, meaning=arith1.divide}", 0),
+			new DeclareStatement("{syntax={infi, 7, \"/\", l}}", 0),
+			new DeclareStatement("{macro=\\frac3, argspec=2, code={...}}", 0)
 		)));
 		ParsedStatement ps2 = DocumentParser.parse("src/test/antlr/parsing7.tex");
 		assertTrue(compareTrees(ps, ps2));
@@ -183,11 +183,11 @@ public class ParsedStatementTest {
 	public void ParsingTest8() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new TheoremStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-				new DeclareStatement("syntax={infix, 7, \"/\", l}, meaning=arith1.divide", 0)	
+				new DeclareStatement("{syntax={infix, 7, \"/\", l}, meaning=arith1.divide}", 0)	
 			))),
 			new ProofStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 				new LemmaStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-					new DeclareStatement("syntax={infix, 7, \"/\", l}, meaning=arith1.divide", 0)	
+					new DeclareStatement("{syntax={infix, 7, \"/\", l}, meaning=arith1.divide}", 0)	
 				)))
 			)))
 		)));
@@ -281,7 +281,7 @@ public class ParsedStatementTest {
 					new FormulaStatement("o", 0)	
 				))),
 				new LemmaStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-					new DeclareStatement("syntax={infix, 7, /, lassoc}, meaning=arith1.divide", 0),
+					new DeclareStatement("{syntax={infix, 7, /, lassoc}, meaning=arith1.divide}", 0),
 					new FormulaStatement("meh", 0)
 				))),
 				new FormulaStatement("blaa", 0)
@@ -355,12 +355,12 @@ public class ParsedStatementTest {
 	public void basic_with_declareTest() {
 		ParsedStatement ps = new ParsedStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
 			new TheoremStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-				new DeclareStatement("syntax={infix,7,\"/\",l}, meaning=artih1.divide", 0),
+				new DeclareStatement("{syntax={infix,7,\"/\",l}, meaning=artih1.divide}", 0),
 				new FormulaStatement("2+3", 0),
 				new FormulaStatement("2+5", 0)
 			))),
 			new ProofStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(
-					new DeclareStatement("macro=\\asd, meaning=asdasd,    argspec=[2], code={...}", 0),
+					new DeclareStatement("{macro=\\asd, meaning=asdasd,    argspec=[2], code={...}}", 0),
 					new FormulaStatement("1+1", 0)
 			))),
 			new LemmaStatement("", 0, new ArrayList<ParsedStatement>(Arrays.asList(

@@ -1,11 +1,15 @@
 grammar DeclarationGrammar;
 
 declarationGrammar 
-	: keyValuePairs
+	: '{' keyValuePairs '}'
 	;
 	
 keyValuePairs
 	:	(pair ',' )* pair 
+	;
+
+syntaxBracket
+	: '{' TYPE ',' .*? ',' .*?  ',' ('l'|'r') '}'
 	;
 	
 pair
@@ -14,24 +18,21 @@ pair
 	;
 
 importantPair
-	: 'syntax' '=' BraceLiteral 				#syntaxpair
-	| 'macro' '=' '\\'NAME						#macropair
-	| 'meaning' '=' NAME '.' NAME				#meaningpair
-	| 'argspec' '=' '['NUMBERS']'('['.*?']')?	#argspecpair
+	: 'syntax' '=' syntaxBracket
+	| 'macro' '=' '\\'NAME
+	| 'meaning' '=' NAME '.' NAME
+	| 'argspec' '=' '['NUMBERS']'('['.*?']')?
 	;
-  
+	
 miscPair
-    : .*? '=' BraceLiteral	
-    | .*? '=' NAME			
-    ;
-
-BraceLiteral
-    : UnterminatedBraceLiteral '}'
-    ;
-
-UnterminatedBraceLiteral
-    : '{' (~[\\}] | '\\' (. | EOF)|BraceLiteral)* 
-    ;  	
+	: .*? '=' .*?
+	;
+TYPE
+	: 'infix'
+	| 'prefix'
+	| 'postfix'
+	;
+	
 
 NUMBERS
 	: [1-9]|([1-9][0-9]*)
@@ -44,7 +45,7 @@ CHARACTERS
 	;
 
 NAME
-	: [a-zA-Z0-9_]+
+	: [a-zA-Z0-9]+
 	;
 
 WS : [ \t\n\r] -> skip; 
