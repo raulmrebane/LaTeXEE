@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
 public class DeclarationErrorListener extends BaseErrorListener {
-	boolean errors;
+	private boolean errors;
 	public DeclarationErrorListener(){
 		super();
 		errors = false;
