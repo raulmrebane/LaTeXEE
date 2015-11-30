@@ -38,10 +38,8 @@ public class GrammarCompiler {
 	private static JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 	private Map<String,ClassInfo> grammarMap;
 	private int packageIncrement;
-	private boolean foundErrors;
 	public GrammarCompiler(){
 		this.packageIncrement = 0;
-		this.foundErrors = false;
 		this.grammarMap = new HashMap<String,ClassInfo>();
 	}
 	public ParseTree compile(String grammar, String formula) throws IOException{
@@ -84,12 +82,10 @@ public class GrammarCompiler {
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			parser = (Parser) parserCtor.newInstance(tokens);
 			
-			foundErrors = false;
-			
 			//This lets us handle any ANTLR errors that occur during parsing/lexing
 			parser.removeErrorListeners();
 			lexer.removeErrorListeners();
-			FormulaErrorListener fel = new FormulaErrorListener(this);
+			FormulaErrorListener fel = new FormulaErrorListener();
 			parser.addErrorListener(fel);
 			lexer.addErrorListener(fel);
 			
@@ -100,7 +96,7 @@ public class GrammarCompiler {
 			Method parsingMethod = parserClass.getMethod("highestLevel", params);
 			Object rawObject = parsingMethod.invoke(parser);
 			
-			if(foundErrors){
+			if(fel.foundErrors()){
 				//TODO: Make our own exception type for this purpose
 				Logger.log("Parsing finished with errors.\n");
 				return null;
@@ -122,9 +118,7 @@ public class GrammarCompiler {
         
         return tree;
 	}
-	public void foundError(){
-		this.foundErrors=true;
-	}
+	
 	private void compileSourceFolder(Path path) throws IOException{
 		
 		//Filtering files in folder by extension (that's what the regex does) and adding them to a list

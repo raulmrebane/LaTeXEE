@@ -12,15 +12,22 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
 public class FormulaErrorListener extends BaseErrorListener {
-    private GrammarCompiler gc;
-    public FormulaErrorListener(GrammarCompiler gc){
-    	this.gc=gc;
+	
+    private boolean errors;
+    
+    public FormulaErrorListener(){
+    	errors = false;
     }
+    
+    public boolean foundErrors(){
+    	return this.errors;
+    }
+    
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, 
     		int charPositionInLine, String msg, RecognitionException e) {
     	
-    	gc.foundError();
+    	errors = true;
     	
     	charPositionInLine++;
     	
