@@ -7,13 +7,16 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
 public class DeclarationErrorListener extends BaseErrorListener {
-	public static DeclarationErrorListener INSTANCE = new DeclarationErrorListener();
-	
+	boolean errors;
+	public DeclarationErrorListener(){
+		super();
+		errors = false;
+	}
 	@Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, 
     		int charPositionInLine, String msg, RecognitionException e) {
 		
-		DeclarationParser.foundErrors = true;
+		errors = true;
 		
 		charPositionInLine++;
 		
@@ -35,18 +38,21 @@ public class DeclarationErrorListener extends BaseErrorListener {
 		
 	}
 	
-	public static String getInput(String msg) { //TODO: viia see ja getExpEl ühisesse ülemklassi?
+	private String getInput(String msg) { //TODO: viia see ja getExpEl ühisesse ülemklassi?
     	String end = msg.substring(msg.indexOf('\'')+1, msg.length()-2);
 		return "'" + end.substring(0, end.indexOf('\'')) + "'";
     }
     
-    public static String getExpectedElements(String msg) {
+    private String getExpectedElements(String msg) {
     	String expected = msg.substring(msg.indexOf('{')+1, msg.length()-1);
 		String expectedElements = "";
 		for (String s : expected.split(",")) {
 			expectedElements += s +", "; //TODO: et kaks tühikut ei jääks.
 		}
 		return expectedElements.substring(0, expectedElements.length()-2);
+    }
+    public boolean foundErrors(){
+    	return this.errors;
     }
 
 }

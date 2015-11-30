@@ -22,9 +22,6 @@ import main.java.latexee.docast.TheoremStatement;
 import main.java.latexee.logging.Logger;
 
 public class DeclarationParser {
-	
-	public static boolean foundErrors; //temporary, TODO: replace
-	
 	//goes through the AST and parses each DeclarationStatement. 
 	//Can be later integrated into a function that does everything in one run through the AST for performance.
 	public static void declarationFinder(ParsedStatement node){
@@ -91,16 +88,16 @@ public class DeclarationParser {
 	    CommonTokenStream tokens = new CommonTokenStream(lexer);
 	    DeclarationGrammarParser parser = new DeclarationGrammarParser(tokens);
 	    
-	    foundErrors = false;
 	    Logger.log("Parsing declaration " + rule);
 	    
+	    DeclarationErrorListener del = new DeclarationErrorListener();
 	    parser.removeErrorListeners();
 		lexer.removeErrorListeners();
-		parser.addErrorListener(DeclarationErrorListener.INSTANCE);
-		lexer.addErrorListener(DeclarationErrorListener.INSTANCE);
+		parser.addErrorListener(del);
+		lexer.addErrorListener(del);
 		
 	    ParseTree tree = parser.declarationGrammar();
-	    if (foundErrors) //TODO: logimine hiljem? Makrode/dekl-de juures?
+	    if (del.foundErrors()) //TODO: logimine hiljem? Makrode/dekl-de juures?
 	    	Logger.log("Parsing finished with errors.");
 	    else
 	    	Logger.log("Parsing successful.\n");
