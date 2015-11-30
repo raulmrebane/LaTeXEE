@@ -49,8 +49,8 @@ public class FormulaParser {
 	public void parse(ParsedStatement root){
 		parseImpl(root,new HashMap<String,DeclareNode>());
 		treePrinter.endPrint();
-		Logger.log(successfullyParsedDeclarations + "/" + parsedDeclarations + " declarations parsed successfully.");
-		Logger.log(successfullyParsedFormulas + "/" + parsedFormulas + " formulas parsed successfully.");
+		System.out.println(successfullyParsedDeclarations + "/" + parsedDeclarations + " declarations parsed successfully.");
+		System.out.println(successfullyParsedFormulas + "/" + parsedFormulas + " formulas parsed successfully.");
 	}
 	
 	public void parseImpl(ParsedStatement root,Map<String,DeclareNode> declarations){
@@ -59,10 +59,7 @@ public class FormulaParser {
 			
 			parsedDeclarations++;
 			DeclareStatement castNode = (DeclareStatement) root;
-			DeclarationParser dp = new DeclarationParser();
-			dp.parseDeclaration(castNode.getContent());
-			ParseTree parseTree = dp.getDeclaration();
-			//ParseTree parseTree = DeclarationParser.parseDeclaration(castNode.getContent());
+			ParseTree parseTree = DeclarationParser.parseDeclaration(castNode.getContent());
 			boolean operatorStyle = DeclarationParser.isOperatorSyntax(parseTree);
 			
 			DeclareNode node = null;

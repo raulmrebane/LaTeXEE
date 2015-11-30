@@ -23,29 +23,14 @@ import main.java.latexee.logging.Logger;
 
 public class DeclarationParser {
 	
-	//public static boolean foundErrors; //temporary, TODO: replace
-	
-	private boolean foundErrors;
-	private ParseTree declaration;
-	
-	public DeclarationParser() {
-		this.foundErrors = false;
-	}
-	
-	public void foundError(){
-		this.foundErrors=true;
-	}
-	
-	public ParseTree getDeclaration() {
-		return declaration;
-	}
+	public static boolean foundErrors; //temporary, TODO: replace
 	
 	//goes through the AST and parses each DeclarationStatement. 
 	//Can be later integrated into a function that does everything in one run through the AST for performance.
-	public void declarationFinder(ParsedStatement node){
+	public static void declarationFinder(ParsedStatement node){
 		declarationFinder(node, 0);
 	}
-	public Integer declarationFinder(ParsedStatement node, Integer maxId){
+	public static Integer declarationFinder(ParsedStatement node, Integer maxId){
 		if(node instanceof DeclareStatement){
 			DeclareStatement castNode = (DeclareStatement) node;
 			ParseTree parseTree = parseDeclaration(castNode.getContent());
@@ -100,7 +85,7 @@ public class DeclarationParser {
 	
 	//Generates the ANTLR parse tree for each declaration string
 	
-	public ParseTree parseDeclaration(String rule){
+	public static ParseTree parseDeclaration(String rule){
 		ANTLRInputStream antlrInput = new ANTLRInputStream(rule);
 	    DeclarationGrammarLexer lexer = new DeclarationGrammarLexer(antlrInput);
 	    CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -111,16 +96,14 @@ public class DeclarationParser {
 	    
 	    parser.removeErrorListeners();
 		lexer.removeErrorListeners();
-		DeclarationErrorListener del = new DeclarationErrorListener(this);
-		parser.addErrorListener(del);
-		lexer.addErrorListener(del);
+		parser.addErrorListener(DeclarationErrorListener.INSTANCE);
+		lexer.addErrorListener(DeclarationErrorListener.INSTANCE);
 		
 	    ParseTree tree = parser.declarationGrammar();
 	    if (foundErrors) //TODO: logimine hiljem? Makrode/dekl-de juures?
 	    	Logger.log("Parsing finished with errors.");
 	    else
 	    	Logger.log("Parsing successful.\n");
-	    this.declaration = tree;
 	    return tree;
 	}
 

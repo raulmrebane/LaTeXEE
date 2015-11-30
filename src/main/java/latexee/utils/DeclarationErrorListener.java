@@ -7,19 +7,13 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
 public class DeclarationErrorListener extends BaseErrorListener {
-	//public static DeclarationErrorListener INSTANCE = new DeclarationErrorListener();
-	private DeclarationParser dp;
-	
-	public DeclarationErrorListener(DeclarationParser dp) {
-		this.dp = dp;
-	}
+	public static DeclarationErrorListener INSTANCE = new DeclarationErrorListener();
 	
 	@Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, 
     		int charPositionInLine, String msg, RecognitionException e) {
 		
-		//DeclarationParser.foundErrors = true;
-		dp.foundError();
+		DeclarationParser.foundErrors = true;
 		
 		charPositionInLine++;
 		
