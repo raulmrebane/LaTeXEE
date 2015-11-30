@@ -93,6 +93,8 @@ public class GrammarCompiler {
 			parser.addErrorListener(fel);
 			lexer.addErrorListener(fel);
 			
+			Logger.log("Parsing formula " + formula);
+			
 			//The method we're invoking takes no parameters
 			Class[] params = {};
 			Method parsingMethod = parserClass.getMethod("highestLevel", params);
@@ -100,16 +102,10 @@ public class GrammarCompiler {
 			
 			if(foundErrors){
 				//TODO: Make our own exception type for this purpose
-				Logger.log("Error in formula: "+formula+"\n");
-				System.out.println("Error in formula: "+formula+":");
-				for (Object[] data : fel.getLocationData()) {
-					Integer charPositionInLine = (Integer) data[0];
-					String msg = (String) data[1];
-					System.out.println("Syntax error at character " + charPositionInLine + ": " + msg);
-					Logger.log("Syntax error at character " + charPositionInLine + ": " + msg);
-				}
+				Logger.log("Parsing finished with errors.\n");
 				return null;
 			}
+			Logger.log("Parsing successful.\n");
 			tree = (ParseTree) rawObject;
 			
 		} catch (InstantiationException | IllegalAccessException
@@ -168,7 +164,7 @@ public class GrammarCompiler {
 			writer.close();
 		}
         
-        Logger.log("Finished without errors");
+        Logger.log("Finished without errors.\n");
         
         //Add a package name to each class so we would not have issues with naming
         String packageString = "LaTeXEE"+Integer.toString(packageIncrement);

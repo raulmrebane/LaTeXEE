@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import main.java.antlrgen.DeclarationGrammarLexer;
 import main.java.antlrgen.DeclarationGrammarParser;
+import main.java.antlrgen.DeclarationGrammarParser.MiscPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
 import main.java.latexee.declareast.DeclarationInitialisationException;
 import main.java.latexee.declareast.MacroDeclaration;
@@ -18,34 +19,58 @@ import main.java.latexee.docast.FormulaStatement;
 import main.java.latexee.docast.LemmaStatement;
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.docast.TheoremStatement;
+import main.java.latexee.logging.Logger;
 
 public class DeclarationParser {
 	
+	//public static boolean foundErrors; //temporary, TODO: replace
+	
+	private boolean foundErrors;
+	private ParseTree declaration;
+	
+	public DeclarationParser() {
+		this.foundErrors = false;
+	}
+	
+	public void foundError(){
+		this.foundErrors=true;
+	}
+	
+	public ParseTree getDeclaration() {
+		return declaration;
+	}
+	
 	//goes through the AST and parses each DeclarationStatement. 
 	//Can be later integrated into a function that does everything in one run through the AST for performance.
-	public static void declarationFinder(ParsedStatement node){
+	public void declarationFinder(ParsedStatement node){
 		declarationFinder(node, 0);
 	}
-	public static Integer declarationFinder(ParsedStatement node, Integer maxId){
+	public Integer declarationFinder(ParsedStatement node, Integer maxId){
 		if(node instanceof DeclareStatement){
 			DeclareStatement castNode = (DeclareStatement) node;
 			ParseTree parseTree = parseDeclaration(castNode.getContent());
 			boolean operatorStyle = isOperatorSyntax(parseTree);
 			if (operatorStyle){
 				try {
+					Logger.log("Parsing an operator."); //TODO: change?
 					OperatorDeclaration opDec = new OperatorDeclaration(parseTree,maxId);
 					maxId++;
 					castNode.setNode(opDec);
+					Logger.log("Parsing successful.\n");
 				}
 				catch (DeclarationInitialisationException die) {
+					Logger.log("Parsing finished with errors.\n");
 				}
 			}
 			else {
 				try {
+					Logger.log("Parsing a macro.");
 					castNode.setNode(new MacroDeclaration(parseTree,maxId));
 					maxId++;
+					Logger.log("Parsing successful.\n");
 				}
 				catch (DeclarationInitialisationException die) {
+					Logger.log("Parsing finished with errors.\n");
 				}
 			}			
 		}
@@ -64,6 +89,8 @@ public class DeclarationParser {
 		if(tree instanceof SyntaxBracketContext){
 			foundOperator = true;
 		}
+		else if (tree instanceof MiscPairContext && tree.getChild(0).getText().equals("syntax")) //for relevant error exceptions
+			foundOperator = true;
 		int childCount = tree.getChildCount();
 		for(int i=0;i<childCount;i++){
 			foundOperator = foundOperator || isOperatorSyntax(tree.getChild(i));
@@ -73,15 +100,30 @@ public class DeclarationParser {
 	
 	//Generates the ANTLR parse tree for each declaration string
 	
-	public static ParseTree parseDeclaration(String rule){
+	public ParseTree parseDeclaration(String rule){
 		ANTLRInputStream antlrInput = new ANTLRInputStream(rule);
 	    DeclarationGrammarLexer lexer = new DeclarationGrammarLexer(antlrInput);
 	    CommonTokenStream tokens = new CommonTokenStream(lexer);
 	    DeclarationGrammarParser parser = new DeclarationGrammarParser(tokens);
+	    
+	    foundErrors = false;
+	    Logger.log("Parsing declaration " + rule);
+	    
+	    parser.removeErrorListeners();
+		lexer.removeErrorListeners();
+		DeclarationErrorListener del = new DeclarationErrorListener(this);
+		parser.addErrorListener(del);
+		lexer.addErrorListener(del);
+		
 	    ParseTree tree = parser.declarationGrammar();
+	    if (foundErrors) //TODO: logimine hiljem? Makrode/dekl-de juures?
+	    	Logger.log("Parsing finished with errors.");
+	    else
+	    	Logger.log("Parsing successful.\n");
+	    this.declaration = tree;
 	    return tree;
 	}
-	
+
 	//Document parsing is broken, so I have to resort to this. This will later join other similar test cases.
 	public static ParsedStatement giveMeTheTestCase(){
 		ParsedStatement root = new ParsedStatement("placeholder", 0);

@@ -31,46 +31,68 @@ public class FormulaParser {
 	private GrammarCompiler cp;
 	private int nodeId;
 	private boolean ambiguityChecking;
+	private int parsedFormulas;
+	private int successfullyParsedFormulas;
+	private int parsedDeclarations; //TODO: või makrodele ja operaatoritele eraldi?
+	private int successfullyParsedDeclarations;
 	
 	public FormulaParser(String filename) throws FileNotFoundException{
 		this.treePrinter = new TreePrinterImpl(new XMLPrinter(new FileOutputStream(filename)));
 		this.cp = new GrammarCompiler();
 		this.nodeId = 0;
 		this.ambiguityChecking=false;
+		this.parsedFormulas = 0;
+		this.successfullyParsedFormulas = 0;
+		this.parsedDeclarations = 0;
+		this.successfullyParsedDeclarations = 0;
 	}
 	public void parse(ParsedStatement root){
 		parseImpl(root,new HashMap<String,DeclareNode>());
 		treePrinter.endPrint();
+		Logger.log(successfullyParsedDeclarations + "/" + parsedDeclarations + " declarations parsed successfully.");
+		Logger.log(successfullyParsedFormulas + "/" + parsedFormulas + " formulas parsed successfully.");
 	}
 	
 	public void parseImpl(ParsedStatement root,Map<String,DeclareNode> declarations){
 		
 		if(root instanceof DeclareStatement){
 			
+			parsedDeclarations++;
 			DeclareStatement castNode = (DeclareStatement) root;
-			ParseTree parseTree = DeclarationParser.parseDeclaration(castNode.getContent());
+			DeclarationParser dp = new DeclarationParser();
+			dp.parseDeclaration(castNode.getContent());
+			ParseTree parseTree = dp.getDeclaration();
+			//ParseTree parseTree = DeclarationParser.parseDeclaration(castNode.getContent());
 			boolean operatorStyle = DeclarationParser.isOperatorSyntax(parseTree);
 			
 			DeclareNode node = null;
 			
 			if (operatorStyle){
 				try {
+					Logger.log("Parsing an operator."); //TODO: change? tegelt parsimine on tehtud juba, ainult käsitsi parsimine veel
 					node = new OperatorDeclaration(parseTree,nodeId);
 					nodeId++;
 					String id = node.getId();
 					declarations.put(id, node);
+					Logger.log("Parsing successful.\n");
+					successfullyParsedDeclarations++;
 				}
 				catch (DeclarationInitialisationException die) {
+					Logger.log("Parsing finished with errors.\n");
 				}
 			}
 			else {
 				try {
+					Logger.log("Parsing a macro.");
 					node = new MacroDeclaration(parseTree,nodeId);
 					nodeId++;
 					String id = node.getId();
 					declarations.put(id, node);
+					Logger.log("Parsing successful.\n");
+					successfullyParsedDeclarations++;
 				}
 				catch (DeclarationInitialisationException die) {
+					Logger.log("Parsing finished with errors.\n");
 				}
 			}
 			
@@ -81,8 +103,10 @@ public class FormulaParser {
 			List<DeclareNode> nodes = new ArrayList<DeclareNode>(declarations.values());
 			String grammar = GrammarGenerator.createGrammar(nodes);
 			try {
+				parsedFormulas++;
 				ParseTree formulaTree = cp.compile(grammar, root.getContent());
 				if (formulaTree != null) {
+					successfullyParsedFormulas++;
 					Node formulaNode = OpenMathTranslator.parseToOM(formulaTree, declarations);
 					Node formulaRootNode = new NodeImpl(Node.OM_OBJECT);
 					formulaRootNode.appendChild(formulaNode);

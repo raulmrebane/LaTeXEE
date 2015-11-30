@@ -5,16 +5,16 @@ package main.java.latexee.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import main.java.latexee.logging.Logger;
+
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
 public class FormulaErrorListener extends BaseErrorListener {
     private GrammarCompiler gc;
-    private ArrayList<Object[]> locationData; //1. - charPos, 2. - error message
     public FormulaErrorListener(GrammarCompiler gc){
     	this.gc=gc;
-    	this.locationData=new ArrayList<Object[]>();
     }
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, 
@@ -48,13 +48,14 @@ public class FormulaErrorListener extends BaseErrorListener {
     	msg = msg.replaceAll("<EOF>", "the end of the file");
     	ArrayList<String> lexerTokens = new ArrayList<>(Arrays.asList("variable name", "integer constant"));
     	msg = msg.replaceAll("LEXERRULE", lexerTokens.toString());
-        Object[] data = {charPositionInLine, msg};
-        locationData.add(data);
+    	
+    	Logger.log("Syntax error at character " + charPositionInLine + ": " + msg);
+
     }
     
     public static String getInput(String msg) {
     	String end = msg.substring(msg.indexOf('\'')+1, msg.length()-2);
-		return end.substring(0, end.indexOf('\''));
+		return "'" + end.substring(0, end.indexOf('\'')) + "'";
     }
     
     public static String getExpectedElements(String msg) {
@@ -65,7 +66,5 @@ public class FormulaErrorListener extends BaseErrorListener {
 		}
 		return expectedElements.substring(0, expectedElements.length()-2);
     }
-    public ArrayList<Object[]> getLocationData() {
-		return locationData;
-	}
+
 }

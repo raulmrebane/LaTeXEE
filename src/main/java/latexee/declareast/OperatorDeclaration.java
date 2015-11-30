@@ -62,7 +62,7 @@ public class OperatorDeclaration extends DeclareNode {
 	public String getId() {
 		return id;
 	}
-	private void fillAttributes(ParseTree tree){
+	private void fillAttributes(ParseTree tree) throws DeclarationInitialisationException{
 		if(tree instanceof SyntaxBracketContext){
 			//This is a loop to essentially ignore whitespace in the syntax bracket.
 			//indexCounter only increases as non-whitespace characters are found
@@ -70,25 +70,44 @@ public class OperatorDeclaration extends DeclareNode {
 			//However as the { is counted as a non-whitespace character, it is 1-indexed
 			//Instead of 0-indexed like other tree nodes
 			
+			if (this.type != null || this.priority != null || this.operator != null) {
+				Logger.log("Multiple instances of syntax."); //TODO: mujal logida?
+				throw new DeclarationInitialisationException();
+			}
+			
 			int indexCounter = 0;
 			
 			for(int i=0;i<tree.getChildCount();i++){
 
 				if(!WHITESPACECHARS.contains(tree.getChild(i).getText())){
 					indexCounter++;
+					String text = tree.getChild(i).getText();
 					switch (indexCounter){
 					case TYPEINDEX:
-						this.type = tree.getChild(i).getText();
+						this.type = text;
 						break;
 					case PRIORITYINDEX:
-						this.priority = Integer.parseInt(tree.getChild(i).getText());
+						this.priority = Integer.parseInt(text);
 						break;
 					case OPERATORINDEX:
-						String roughOp = tree.getChild(i).getText();
+						String roughOp = text;
+						if (text.length() < 3) {
+							Logger.log("No operator given.");
+							throw new DeclarationInitialisationException();
+						}
+						/*if (text.indexOf('$') > -1) {
+							Logger.log("No '$' allowed within operators.");
+							throw new DeclarationInitialisationException();
+						}*/
 						this.operator = roughOp.substring(1, roughOp.length()-1);
 						break;
 					case ASSOCIATIVITYINDEX:
-						this.associativity = tree.getChild(i).getText();
+						if (this.type.equals("infix"))
+							this.associativity = text;
+						else {
+							Logger.log("No associativity allowed for a " + this.type + " operator.");
+							throw new DeclarationInitialisationException();
+						}
 						break;
 					}
 				}
@@ -98,12 +117,23 @@ public class OperatorDeclaration extends DeclareNode {
 			String key = tree.getChild(0).getText();
 			String value = tree.getChild(2).getText();
 			if(key.equals("meaning")){
+				if (this.meaning != null) {
+					Logger.log("Multiple instances of meaning.");
+				}
 				this.contentDictionary=value;
 				this.meaning = tree.getChild(4).getText();
 			}
 		}
 		else if(tree instanceof MiscPairContext){
 			String key = tree.getChild(0).getText();
+			if (this.miscellaneous.get(key) != null) {
+				Logger.log("Multiple instances of " + key +".");
+				throw new DeclarationInitialisationException();
+			}
+			if (key.equals("syntax")) {
+				Logger.log("Faulty syntax. Should be {infix, <Integer>, \"<operator>\", (l|r)} or {(prefix|postfix), <Integer>, \"<operator>\"}");
+				throw new DeclarationInitialisationException();
+			}
 			String value = tree.getChild(2).getText();
 			this.miscellaneous.put(key,value);
 		}	
