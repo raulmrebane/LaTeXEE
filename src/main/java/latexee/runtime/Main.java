@@ -13,16 +13,22 @@ import main.java.latexee.utils.FormulaParser;
 
 import org.apache.commons.cli.*;
 
-
+/**
+ * This class contains the main method for running the application.
+ * Main method of the class accepts arguments from command line which are then passed to
+ * command line arguments parser. After parsing the arguments the main application is run.
+ */
 public class Main {
     public static String outputFile;
     public static String inputFile;
     public static boolean verbose = false;
     public static boolean ambiguityChecking = false;
-    
-    
-    /* Construct options for the command line parser. */
 
+
+    /**
+     * Options builder method.
+     * @return returns object belonging to Options class, which is required by the command line arguments parser.
+     */
     private
     static Options constructOptions() {
         final Options options = new Options();
@@ -34,7 +40,11 @@ public class Main {
         
         return options;
     }
-    /* Use the command line parser */
+
+    /**
+     * Static method to parse command line arguments.
+     * @param args command line arguments passed from the main method.
+     */
     private static void useParser(final String[] args) {
         final CommandLineParser parser = new DefaultParser();
         final Options options = constructOptions();  
@@ -92,8 +102,13 @@ public class Main {
                 + parseException.getMessage());
         }
     }
-    
-    
+
+    /**
+     * Entry point to the program.
+     * @param args command line arguments passed from the command line.
+     * @throws IOException thrown when there is error with input or output files. Usually thrown when input file does
+     * not exist or it is not possible to write output file at the given location.
+     */
 	public static void main(String[] args) throws IOException {
         
         // Call parser.
