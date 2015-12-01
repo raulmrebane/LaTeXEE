@@ -4,8 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 
 import main.java.latexee.docast.ParsedStatement;
-import main.java.latexee.utils.DocumentParser;
-import main.java.latexee.utils.FormulaParser;
+import main.java.latexee.parsers.DocumentParser;
+import main.java.latexee.parsers.FormulaParser;
 
 import org.junit.Before;
 import org.junit.Test;

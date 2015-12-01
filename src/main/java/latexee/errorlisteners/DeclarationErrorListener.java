@@ -1,4 +1,4 @@
-package main.java.latexee.utils;
+package main.java.latexee.errorlisteners;
 
 import main.java.latexee.logging.Logger;
 

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.docast.ParsedStatement;
-import main.java.latexee.utils.DeclarationParser;
-import main.java.latexee.utils.DocumentParser;
+import main.java.latexee.parsers.DeclarationParser;
+import main.java.latexee.parsers.DocumentParser;
 import main.java.latexee.utils.GrammarGenerator;
 
 import org.junit.Test;

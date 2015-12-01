@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import main.java.latexee.docast.ParsedStatement;
-import main.java.latexee.utils.DeclarationParser;
-import main.java.latexee.utils.DocumentParser;
-import main.java.latexee.utils.FormulaParser;
+import main.java.latexee.parsers.DeclarationParser;
+import main.java.latexee.parsers.DocumentParser;
+import main.java.latexee.parsers.FormulaParser;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;

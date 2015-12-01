@@ -1,4 +1,4 @@
-package main.java.latexee.utils;
+package main.java.latexee.exceptions;
 
 public class TemplateFillException extends Exception {
 	

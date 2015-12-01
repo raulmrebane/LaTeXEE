@@ -1,4 +1,4 @@
-package main.java.latexee.utils;
+package main.java.latexee.errorlisteners;
 
 //credit: http://stackoverflow.com/questions/18132078/handling-errors-in-antlr4
 

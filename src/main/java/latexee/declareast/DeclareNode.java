@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.symcomp.openmath.OpenMathBase;
 import org.symcomp.openmath.OpenMathException;
 
+import main.java.latexee.exceptions.DeclarationInitialisationException;
 import main.java.latexee.logging.Logger;
 
 public abstract class DeclareNode {

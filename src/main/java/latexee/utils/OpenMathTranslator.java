@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.declareast.MacroDeclaration;
 import main.java.latexee.declareast.OperatorDeclaration;
+import main.java.latexee.exceptions.TemplateFillException;
 import main.java.latexee.logging.Logger;
 
 import org.antlr.v4.runtime.tree.ParseTree;

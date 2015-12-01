@@ -9,7 +9,7 @@ import java.util.Arrays;
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.docast.DeclareStatement;
 import main.java.latexee.docast.ParsedStatement;
-
+import main.java.latexee.parsers.DeclarationParser;
 import main.java.latexee.utils.*;
 
 import org.antlr.v4.runtime.tree.ParseTree;

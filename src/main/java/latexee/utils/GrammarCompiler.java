@@ -32,6 +32,7 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import main.java.latexee.errorlisteners.FormulaErrorListener;
 import main.java.latexee.logging.Logger;
 
 public class GrammarCompiler {

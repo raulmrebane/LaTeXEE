@@ -1,4 +1,4 @@
-package main.java.latexee.utils;
+package main.java.latexee.parsers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +11,6 @@ import main.java.antlrgen.DeclarationGrammarLexer;
 import main.java.antlrgen.DeclarationGrammarParser;
 import main.java.antlrgen.DeclarationGrammarParser.MiscPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
-import main.java.latexee.declareast.DeclarationInitialisationException;
 import main.java.latexee.declareast.MacroDeclaration;
 import main.java.latexee.declareast.OperatorDeclaration;
 import main.java.latexee.docast.DeclareStatement;
@@ -19,6 +18,8 @@ import main.java.latexee.docast.FormulaStatement;
 import main.java.latexee.docast.LemmaStatement;
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.docast.TheoremStatement;
+import main.java.latexee.errorlisteners.DeclarationErrorListener;
+import main.java.latexee.exceptions.DeclarationInitialisationException;
 import main.java.latexee.logging.Logger;
 
 public class DeclarationParser {

@@ -1,4 +1,4 @@
-package main.java.latexee.declareast;
+package main.java.latexee.exceptions;
 
 public class DeclarationInitialisationException extends Exception {
 	

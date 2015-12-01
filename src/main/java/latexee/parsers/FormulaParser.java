@@ -1,4 +1,4 @@
-package main.java.latexee.utils;
+package main.java.latexee.parsers;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -15,7 +15,6 @@ import java.util.Map;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.symcomp.openmath.OpenMathBase;
 
-import main.java.latexee.declareast.DeclarationInitialisationException;
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.declareast.MacroDeclaration;
 import main.java.latexee.declareast.OperatorDeclaration;
@@ -25,7 +24,14 @@ import main.java.latexee.docast.LemmaStatement;
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.docast.ProofStatement;
 import main.java.latexee.docast.TheoremStatement;
+import main.java.latexee.exceptions.DeclarationInitialisationException;
+import main.java.latexee.exceptions.TemplateFillException;
 import main.java.latexee.logging.Logger;
+import main.java.latexee.utils.AmbiguityChecker;
+import main.java.latexee.utils.GrammarCompiler;
+import main.java.latexee.utils.GrammarGenerator;
+import main.java.latexee.utils.OpenMathTranslator;
+import main.java.latexee.utils.OutputWriter;
 
 public class FormulaParser {
 	private Writer writer;

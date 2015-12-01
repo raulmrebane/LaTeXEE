@@ -10,7 +10,7 @@ import main.java.latexee.docast.LemmaStatement;
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.docast.ProofStatement;
 import main.java.latexee.docast.TheoremStatement;
-import main.java.latexee.utils.DocumentParser;
+import main.java.latexee.parsers.DocumentParser;
 
 import org.junit.Test;
 

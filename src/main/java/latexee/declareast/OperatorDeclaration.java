@@ -4,6 +4,7 @@ import main.java.antlrgen.DeclarationGrammarParser.ImportantPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.MiscPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
 import main.java.antlrgen.DeclarationGrammarParser.ValueInBracesContext;
+import main.java.latexee.exceptions.DeclarationInitialisationException;
 import main.java.latexee.logging.Logger;
 
 import java.util.Arrays;

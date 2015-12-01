@@ -1,4 +1,4 @@
-package main.java.latexee.utils;
+package main.java.latexee.parsers;
 
 import java.io.File;
 import java.io.FileInputStream;

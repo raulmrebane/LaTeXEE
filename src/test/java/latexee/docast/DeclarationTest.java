@@ -1,10 +1,11 @@
 package test.java.latexee.docast;
 
 import static org.junit.Assert.*;
-import main.java.latexee.declareast.DeclarationInitialisationException;
+
 import main.java.latexee.declareast.MacroDeclaration;
 import main.java.latexee.declareast.OperatorDeclaration;
-import main.java.latexee.utils.DeclarationParser;
+import main.java.latexee.exceptions.DeclarationInitialisationException;
+import main.java.latexee.parsers.DeclarationParser;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
