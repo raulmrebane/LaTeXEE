@@ -3,15 +3,18 @@ package main.java.latexee.declareast;
 import main.java.antlrgen.DeclarationGrammarParser.ImportantPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.MiscPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.PairContext;
+import main.java.antlrgen.DeclarationGrammarParser.ValueInBracesContext;
 import main.java.latexee.logging.Logger;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.symcomp.openmath.OpenMathBase;
+import org.symcomp.openmath.OpenMathException;
 
 public class MacroDeclaration extends DeclareNode {
 	private String macroName; //the name of the macro - the characters following \
 	private Integer arguments;
 	private boolean hasOptionalArgument = false;
-	private String optionalValue;
+	private Object optionalMeaning;
 	
 	public MacroDeclaration(String meaning, String macroname, int arguments, int identifier) {
 		super();
@@ -23,9 +26,17 @@ public class MacroDeclaration extends DeclareNode {
 	
 	public MacroDeclaration(ParseTree tree, int identifier) throws DeclarationInitialisationException{
 		fillAttributes(tree);
-		if(		this.meaning == null || this.contentDictionary==null){
+		if(		this.meaning == null && this.contentDictionary==null){
 			//Yesterday, this was a formality. Today it guards us from the hell of nullpointers.
 			Logger.log("OpenMath meaning was not instantiated on macro declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
+		}
+		if(this.meaning instanceof String && this.contentDictionary==null){
+			Logger.log("OpenMath meaning was not instantiated on macro declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
+		}
+		if(this.hasOptionalArgument && this.optionalMeaning==null){
+			Logger.log("Operation has optional argument but no optional meaning in macro declaration: "+tree.getText());
 			throw new DeclarationInitialisationException();
 		}
 		if(this.arguments==null){
@@ -47,11 +58,7 @@ public class MacroDeclaration extends DeclareNode {
 		return macroName;
 	}
 
-	public boolean isHasOptionalArgument() {
-		return hasOptionalArgument;
-	}
-
-	private void fillAttributes(ParseTree tree){
+	private void fillAttributes(ParseTree tree) throws DeclarationInitialisationException{
 		if(tree instanceof ImportantPairContext){
 			
 			String key = tree.getChild(0).getText();
@@ -64,14 +71,22 @@ public class MacroDeclaration extends DeclareNode {
 			case "argspec":
 				String nrOfArgs = tree.getChild(3).getText();
 				this.arguments=Integer.parseInt(nrOfArgs);
-				if(tree.getChildCount()==8){
-					this.hasOptionalArgument=true;
-					this.optionalValue = tree.getChild(6).getText();
-				}
 				break;
 			case "meaning":
-				this.contentDictionary=value;
-				this.meaning=tree.getChild(4).getText();
+				if(tree instanceof ValueInBracesContext){
+					this.meaning=getTree(value);
+				}else{
+					this.contentDictionary=value;
+					this.meaning=tree.getChild(4).getText();
+				}
+				break;
+			case "meaningOpt":
+				if(tree instanceof ValueInBracesContext){
+					this.meaning=getTree(value);
+				}else{
+					this.contentDictionary=value;
+					this.meaning=tree.getChild(4).getText();
+				}
 				break;
 			default:
 				this.miscellaneous.put(key, value);
@@ -92,8 +107,8 @@ public class MacroDeclaration extends DeclareNode {
 		return hasOptionalArgument;
 	}
 
-	public String getOptionalValue() {
-		return optionalValue;
+	public Object getOptionalMeaning() {
+		return this.optionalMeaning;
 	}
 	public Integer getArguments() {
 		return arguments;
@@ -120,5 +135,24 @@ public class MacroDeclaration extends DeclareNode {
 		}
 		return sb.toString();
 	}
-
+	private OpenMathBase getTree(String s) throws DeclarationInitialisationException{
+		if(s.length()<2){
+			Logger.log("Code is too short, cannot parse "+s);
+			throw new DeclarationInitialisationException();
+		}
+		String code = s.substring(1, s.length()-1);
+		OpenMathBase tree = null;
+		try{
+			tree = OpenMathBase.parsePopcorn(code);
+		}catch (OpenMathException popcornException){
+			try{
+				tree = OpenMathBase.parse(code);
+			} catch (OpenMathException xmlException){
+				Logger.log("Could not parse the following with XML or popcorn: "+s);
+				throw new DeclarationInitialisationException();
+			}
+		}
+		
+		return tree;
+	}
 }

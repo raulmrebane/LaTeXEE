@@ -44,8 +44,12 @@ public class OperatorDeclaration extends DeclareNode {
 			Logger.log("Priority field was not instantiated on operator declaration: "+tree.getText());
 			throw new DeclarationInitialisationException();
 		}
-		if(this.meaning == null || this.contentDictionary == null){
+		if(this.meaning == null && this.contentDictionary == null){
 			Logger.log("OpenMath meaning field was not instantiated on operator declaration: "+tree.getText());
+			throw new DeclarationInitialisationException();
+		}
+		if(this.meaning instanceof String && this.contentDictionary == null){
+			Logger.log("OpenMath meaning given but content dictionary missing on declaration: "+tree.getText());
 			throw new DeclarationInitialisationException();
 		}
 		if(this.operator == null){

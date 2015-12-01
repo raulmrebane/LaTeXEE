@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public abstract class DeclareNode {
 	protected String contentDictionary;
-	protected String meaning;
+	protected Object meaning;
 	protected HashMap<String,String> miscellaneous = new HashMap<String,String>();
 	protected String id;
 	//This will create a string that will act as a fragment of the ANTLR grammar for parsing formulas.
@@ -12,7 +12,7 @@ public abstract class DeclareNode {
 	public String getContentDictionary() {
 		return contentDictionary;
 	}
-	public String getMeaning() {
+	public Object getMeaning() {
 		return meaning;
 	}
 	public HashMap<String, String> getMiscellaneous() {

@@ -83,27 +83,30 @@ public class OpenMathTranslator {
 			if(declaration!=null){				
 				//Get operation info from declaration
 				String contentDictionary = declaration.getContentDictionary();
-				String operationName = declaration.getMeaning();
-				
 				HashMap<String,String> miscellaneous = declaration.getMiscellaneous();
-				
-				List<OpenMathBase> children = new ArrayList<OpenMathBase>();
-				if(declaration instanceof OperatorDeclaration){
-					OperatorDeclaration castDeclaration = (OperatorDeclaration) declaration;
-					children.addAll(operatorChildren(tree, declarations, castDeclaration));
-				}
-				if(declaration instanceof MacroDeclaration){
-					MacroDeclaration castDeclaration = (MacroDeclaration) declaration;
-					children.addAll(macroChildren(tree, declarations, castDeclaration));
+				OpenMathBase root = null;
+				if(declaration.getMeaning() instanceof String){
+					String operationName = (String) declaration.getMeaning();
 					
-					if(optionalArgs){
-						//TODO: Handle optional values
+					
+					
+					List<OpenMathBase> children = new ArrayList<OpenMathBase>();
+					if(declaration instanceof OperatorDeclaration){
+						OperatorDeclaration castDeclaration = (OperatorDeclaration) declaration;
+						children.addAll(operatorChildren(tree, declarations, castDeclaration));
 					}
+					if(declaration instanceof MacroDeclaration){
+						MacroDeclaration castDeclaration = (MacroDeclaration) declaration;
+						children.addAll(macroChildren(tree, declarations, castDeclaration));
+						
+						if(optionalArgs){
+							//TODO: Handle optional values
+						}
+					}
+					OpenMathBase[] childArray = children.toArray(new OpenMathBase[children.size()]);
+					OMSymbol base = new OMSymbol(contentDictionary, operationName);
+					root = new OMApply(base, childArray);
 				}
-				OpenMathBase[] childArray = children.toArray(new OpenMathBase[children.size()]);
-				OMSymbol base = new OMSymbol(contentDictionary, operationName);
-				OMApply root = new OMApply(base, childArray);
-				
 				//If there is nonsemantic data
 				if(miscellaneous.size()>0){
 					
