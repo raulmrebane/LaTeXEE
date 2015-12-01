@@ -20,7 +20,8 @@ pair
 importantPair
 	: 'syntax' '=' syntaxBracket
 	| 'macro' '=' '\\'NAME
-	| 'meaning' '=' NAME '.' NAME
+	| 'meaning' '=' (NAME '.' NAME|valueInBraces)
+	| 'meaningOpt' '=' (NAME '.' NAME|valueInBraces)
 	| 'argspec' '=' '['NUMBERS']'('['.*?']')?
 	;
 	
