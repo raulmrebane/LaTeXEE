@@ -3,6 +3,7 @@ package test.java.latexee.docast;
 import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,7 +21,12 @@ public class ScopingTest {
 	@Before
 	public void setUp(){
 		try {
-			fp = new FormulaParser("output.xml");
+			try {
+				fp = new FormulaParser("output.xml");
+			} catch (UnsupportedEncodingException e) {
+				System.out.println("Couldn't use utf-8 encoding for output file.");
+				e.printStackTrace();
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

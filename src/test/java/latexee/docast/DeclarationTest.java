@@ -26,11 +26,10 @@ public class DeclarationTest {
 	
 	@Test
 	public void test2() throws DeclarationInitialisationException {
-		ParseTree pt = DeclarationParser.parseDeclaration("{syntax={prefix,100,\"%\",r}, meaning=arith1.remainder, misc=\"some misc info\"}");
+		ParseTree pt = DeclarationParser.parseDeclaration("{syntax={prefix,100,\"%\"}, meaning=arith1.remainder, misc=\"some misc info\"}");
 		OperatorDeclaration od = new OperatorDeclaration(pt,0);		
 		assertEquals("prefix", od.getType());
 		assertEquals("%", od.getOperator());
-		assertEquals("r", od.getAssociativity());
 		assertEquals("100", ""+od.getPriority());
 		assertEquals("arith1", od.getContentDictionary());
 		assertEquals("remainder", od.getMeaning());

@@ -1,19 +1,22 @@
 package main.java.latexee.utils;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.symcomp.openmath.OpenMathBase;
+import org.symcomp.openmath.OpenMathException;
 
-import fr.inria.openmath.omapi.Node;
-import fr.inria.openmath.omapi.implementation.NodeImpl;
-import fr.inria.openmath.omapi.implementation.TreePrinterImpl;
-import fr.inria.openmath.omapi.implementation.XMLPrinter;
 import main.java.latexee.declareast.DeclarationInitialisationException;
 import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.declareast.MacroDeclaration;
@@ -27,20 +30,27 @@ import main.java.latexee.docast.TheoremStatement;
 import main.java.latexee.logging.Logger;
 
 public class FormulaParser {
-	private TreePrinterImpl treePrinter;
+	private Writer writer;
 	private GrammarCompiler cp;
+	
 	private int nodeId;
+	
 	private boolean ambiguityChecking;
+	private boolean popcornOutput;	
+	
 	private int parsedFormulas;
 	private int successfullyParsedFormulas;
 	private int parsedDeclarations; //TODO: või makrodele ja operaatoritele eraldi?
 	private int successfullyParsedDeclarations;
 	
-	public FormulaParser(String filename) throws FileNotFoundException{
-		this.treePrinter = new TreePrinterImpl(new XMLPrinter(new FileOutputStream(filename)));
+	public FormulaParser(String filename) throws FileNotFoundException, UnsupportedEncodingException{
+		this.writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "utf-8"));
 		this.cp = new GrammarCompiler();
 		this.nodeId = 0;
+		
 		this.ambiguityChecking=false;
+		this.popcornOutput=false;
+		
 		this.parsedFormulas = 0;
 		this.successfullyParsedFormulas = 0;
 		this.parsedDeclarations = 0;
@@ -48,7 +58,12 @@ public class FormulaParser {
 	}
 	public void parse(ParsedStatement root){
 		parseImpl(root,new HashMap<String,DeclareNode>());
-		treePrinter.endPrint();
+		try {
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Error: Could not close output writer.");
+			e.printStackTrace();
+		}
 		System.out.println(successfullyParsedDeclarations + "/" + parsedDeclarations + " declarations parsed successfully.");
 		System.out.println(successfullyParsedFormulas + "/" + parsedFormulas + " formulas parsed successfully.");
 	}
@@ -104,10 +119,13 @@ public class FormulaParser {
 				ParseTree formulaTree = cp.compile(grammar, root.getContent());
 				if (formulaTree != null) {
 					successfullyParsedFormulas++;
-					Node formulaNode = OpenMathTranslator.parseToOM(formulaTree, declarations);
-					Node formulaRootNode = new NodeImpl(Node.OM_OBJECT);
-					formulaRootNode.appendChild(formulaNode);
-					treePrinter.printTree(formulaRootNode);
+					OpenMathBase formulaNode = OpenMathTranslator.parseToOM(formulaTree, declarations);
+					OpenMathBase wrapped = formulaNode.toOMObject();
+					if(popcornOutput){
+						writer.write(wrapped.toPopcorn());
+					} else {
+						writer.write(wrapped.toXml());
+					}
 					if(ambiguityChecking){
 						AmbiguityChecker.check(formulaTree,declarations);
 					}
@@ -131,5 +149,8 @@ public class FormulaParser {
 	}
 	public void enableAmbiguityChecking(){
 		this.ambiguityChecking=true;
+	}
+	public void enablePopcornOutput(){
+		this.popcornOutput=true;
 	}
 }

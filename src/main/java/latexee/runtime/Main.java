@@ -23,6 +23,7 @@ public class Main {
     public static String inputFile;
     public static boolean verbose = false;
     public static boolean ambiguityChecking = false;
+    public static boolean popcornOutput = false;
 
 
     /**
@@ -37,6 +38,7 @@ public class Main {
         options.addOption("v", "add verbosity to output");
         options.addOption("h", "display this menu");
         options.addOption("a", "check for ambiguity");
+        options.addOption("p", "output in Popcorn");
         
         return options;
     }
@@ -67,6 +69,10 @@ public class Main {
                     if (cmd.hasOption("v")) {
                         verbose = true;
                         System.out.println("Verbose option is enabled.");
+                    }
+                    if (cmd.hasOption("p")) {
+                    	popcornOutput = true;
+                    	System.out.println("Popcorn output mode is enabled.");
                     }
                     if (cmd.hasOption("a")) {
                         ambiguityChecking = true;
@@ -109,7 +115,7 @@ public class Main {
      * @throws IOException thrown when there is error with input or output files. Usually thrown when input file does
      * not exist or it is not possible to write output file at the given location.
      */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
         
         // Call parser.
         useParser(args);   
@@ -118,13 +124,21 @@ public class Main {
 		//args = new String[] {"src/test/antlr/basic_with_declare.tex"};
 		//String outputFile = "output.txt";
 		//String inputFile = args[0];
-		if (inputFile != null) {
-            ParsedStatement AST = DocumentParser.parse(inputFile);
-            FormulaParser fp = new FormulaParser(outputFile);
-            if(ambiguityChecking){
-            	fp.enableAmbiguityChecking();
-            }
-            fp.parse(AST);
-		}
+        try{
+    		if (inputFile != null) {
+                ParsedStatement AST = DocumentParser.parse(inputFile);
+                FormulaParser fp = new FormulaParser(outputFile);
+                if(ambiguityChecking){
+                	fp.enableAmbiguityChecking();
+                }
+                if(popcornOutput){
+                	fp.enablePopcornOutput();
+                }
+                fp.parse(AST);
+    		}
+        } catch (IOException e){
+        	System.out.println("Error creating output file. Using utf-8.");
+        }
+
 	}
 }

@@ -18,9 +18,6 @@ import main.java.latexee.utils.GrammarGenerator;
 
 import org.junit.Test;
 
-import fr.inria.openmath.omapi.TreePrinter;
-import fr.inria.openmath.omapi.implementation.TreePrinterImpl;
-
 import static org.junit.Assert.*;
 
 
