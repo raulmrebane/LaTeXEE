@@ -71,6 +71,9 @@ public class MacroDeclaration extends DeclareNode {
 			case "argspec":
 				String nrOfArgs = tree.getChild(3).getText();
 				this.arguments=Integer.parseInt(nrOfArgs);
+				if(tree.getChildCount()==8){
+					this.hasOptionalArgument=true;
+				}
 				break;
 			case "meaning":
 				if(tree instanceof ValueInBracesContext){
