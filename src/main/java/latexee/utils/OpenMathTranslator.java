@@ -2,6 +2,7 @@ package main.java.latexee.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,17 +16,24 @@ import main.java.latexee.logging.Logger;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import org.symcomp.openmath.OMApply;
+import org.symcomp.openmath.OMBinary;
+import org.symcomp.openmath.OMBind;
+import org.symcomp.openmath.OMError;
+import org.symcomp.openmath.OMForeign;
 import org.symcomp.openmath.OMInteger;
+import org.symcomp.openmath.OMObject;
+import org.symcomp.openmath.OMReference;
 import org.symcomp.openmath.OMSymbol;
 import org.symcomp.openmath.OMVariable;
 import org.symcomp.openmath.OpenMathBase;
+import org.symcomp.openmath.OpenMathException;
 
 public class OpenMathTranslator {
 
 	private static List<String> supportedBrackets = Arrays.asList("BRACESContext","PARENSContext");
 	public static ArrayList<String> bracketFlags = new ArrayList<String>();
 	
-	public static OpenMathBase parseToOM(ParseTree tree, Map<String,DeclareNode> declarations){
+	public static OpenMathBase parseToOM(ParseTree tree, Map<String,DeclareNode> declarations) throws TemplateFillException{
 		String treeName = tree.getClass().getSimpleName();
 		if(treeName.contains("DEFAULT")){
 			return parseToOM(tree.getChild(0), declarations);
@@ -85,27 +93,27 @@ public class OpenMathTranslator {
 				String contentDictionary = declaration.getContentDictionary();
 				HashMap<String,String> miscellaneous = declaration.getMiscellaneous();
 				OpenMathBase root = null;
+				
+				//Find children
+				List<OpenMathBase> children = new ArrayList<OpenMathBase>();
+				if(declaration instanceof OperatorDeclaration){
+					OperatorDeclaration castDeclaration = (OperatorDeclaration) declaration;
+					children.addAll(operatorChildren(tree, declarations, castDeclaration));
+				}
+				if(declaration instanceof MacroDeclaration){
+					MacroDeclaration castDeclaration = (MacroDeclaration) declaration;
+					children.addAll(macroChildren(tree, declarations, castDeclaration));
+				}
+				
+				OpenMathBase[] childArray = children.toArray(new OpenMathBase[children.size()]);
+				
 				if(declaration.getMeaning() instanceof String){
 					String operationName = (String) declaration.getMeaning();
-					
-					
-					
-					List<OpenMathBase> children = new ArrayList<OpenMathBase>();
-					if(declaration instanceof OperatorDeclaration){
-						OperatorDeclaration castDeclaration = (OperatorDeclaration) declaration;
-						children.addAll(operatorChildren(tree, declarations, castDeclaration));
-					}
-					if(declaration instanceof MacroDeclaration){
-						MacroDeclaration castDeclaration = (MacroDeclaration) declaration;
-						children.addAll(macroChildren(tree, declarations, castDeclaration));
-						
-						if(optionalArgs){
-							//TODO: Handle optional values
-						}
-					}
-					OpenMathBase[] childArray = children.toArray(new OpenMathBase[children.size()]);
 					OMSymbol base = new OMSymbol(contentDictionary, operationName);
 					root = new OMApply(base, childArray);
+				}else{
+					OpenMathBase template = (OpenMathBase) declaration.getMeaning();
+					root = fillTemplate(template, childArray);
 				}
 				//If there is nonsemantic data
 				if(miscellaneous.size()>0){
@@ -133,7 +141,7 @@ public class OpenMathTranslator {
 		}
 	}
 	
-	private static List<OpenMathBase> operatorChildren(ParseTree tree, Map<String,DeclareNode> declarations, OperatorDeclaration declaration){
+	private static List<OpenMathBase> operatorChildren(ParseTree tree, Map<String,DeclareNode> declarations, OperatorDeclaration declaration) throws TemplateFillException{
 		List<OpenMathBase> children = new ArrayList<OpenMathBase>();
 		String type = declaration.getType();
 		if(type.equals("infix")){
@@ -153,7 +161,7 @@ public class OpenMathTranslator {
 		return children;
 	}
 	
-	private static List<OpenMathBase> macroChildren(ParseTree tree, Map<String,DeclareNode> declarations, MacroDeclaration declaration){
+	private static List<OpenMathBase> macroChildren(ParseTree tree, Map<String,DeclareNode> declarations, MacroDeclaration declaration) throws TemplateFillException{
 		List<OpenMathBase> children = new ArrayList<OpenMathBase>();
 		
 		for(int i=2;i<tree.getChildCount();i=i+3){
@@ -164,7 +172,7 @@ public class OpenMathTranslator {
 		return children;
 	}
 	
-	public static void addParens(OpenMathBase root){
+	private static void addParens(OpenMathBase root){
 		//Labeling the attribute again
 		OMSymbol keyOMS = new OMSymbol("LaTeXEE", "parenstype");
 		
@@ -178,7 +186,71 @@ public class OpenMathTranslator {
 		bracketFlags.clear();
 	}
 	
-	
+	//Since the method below alters the node, we'll make a copy of it here.
+	private static OpenMathBase fillTemplate(OpenMathBase node, OpenMathBase[] args) throws TemplateFillException{
+		OpenMathBase copy = null;
+		try {
+			copy = OpenMathBase.parse(node.toPopcorn());
+		} catch (OpenMathException e) {
+			Logger.log("Parsing failed for:"+node.toPopcorn()+" which was already parsed once. This should not happen.");
+			throw new TemplateFillException();
+		}
+		fillTemplateImpl(copy,args);
+		return copy;
+		
+	}
+	private static void fillTemplateImpl(OpenMathBase node, OpenMathBase[] args) throws TemplateFillException{
+		if(node instanceof OMApply){
+			OMApply oma = (OMApply) node;
+			OpenMathBase[] params = oma.getParams();
+			processArray(params,args);
+		}
+		if(node instanceof OMBind){
+			OMBind ombi = (OMBind) node;
+			OpenMathBase param = ((OMBind) node).getParam();
+			fillTemplateImpl(param,args);
+			OpenMathBase[] vars = ombi.getBvars();
+			processArray(vars,args);
+		}
+		if(node instanceof OMError){
+			OMError ome = (OMError) node;
+			OpenMathBase[] params = ome.getParams();
+			processArray(params,args);
+		}
+		if(node instanceof OMObject){
+			Logger.log("Object found in template - there can't be objects within an object.");
+			throw new TemplateFillException();
+		}
+		Collection<OpenMathBase[]> attrArrays = node.getAttributions().values();
+		for (OpenMathBase[] attrs : attrArrays) {
+			processArray(attrs,args);
+		}
+
+	}
+	private static void processArray(OpenMathBase[] array, OpenMathBase[] args) throws TemplateFillException{
+		for(int i=0;i<array.length;i++){
+			OpenMathBase child = array[i];
+			if(child instanceof OMReference){
+				OMReference omref = (OMReference) child;
+				String content = omref.getHref();
+				if(content.length()<3){
+					Logger.log("Reference in template too small");
+					throw new TemplateFillException();
+				}
+				String id = content.substring(2);
+				int index = Integer.parseInt(id);
+				
+				try{
+					array[i] = args[index];
+				} catch (Exception e){
+					Logger.log("Argument in template higher than amount of children.");
+					throw new TemplateFillException();
+				}
+			}else{
+				fillTemplateImpl(child,args);
+			}
+		}
+	}
 	//This is an ugly (hopefully temporary) hack.
 	//Hopefully in the release version this will be done by the ANTLR grammar tags
 	

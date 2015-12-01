@@ -2,6 +2,11 @@ package main.java.latexee.declareast;
 
 import java.util.HashMap;
 
+import org.symcomp.openmath.OpenMathBase;
+import org.symcomp.openmath.OpenMathException;
+
+import main.java.latexee.logging.Logger;
+
 public abstract class DeclareNode {
 	protected String contentDictionary;
 	protected Object meaning;
@@ -20,5 +25,25 @@ public abstract class DeclareNode {
 	}
 	public String getId() {
 		return id;
+	}
+	protected OpenMathBase getTree(String s) throws DeclarationInitialisationException{
+		if(s.length()<2){
+			Logger.log("Code is too short, cannot parse "+s);
+			throw new DeclarationInitialisationException();
+		}
+		String code = s.substring(1, s.length()-1);
+		OpenMathBase tree = null;
+		try{
+			tree = OpenMathBase.parsePopcorn(code);
+		}catch (OpenMathException popcornException){
+			try{
+				tree = OpenMathBase.parse(code);
+			} catch (OpenMathException xmlException){
+				Logger.log("Could not parse the following with XML or popcorn: "+s);
+				throw new DeclarationInitialisationException();
+			}
+		}
+		
+		return tree;
 	}
 }

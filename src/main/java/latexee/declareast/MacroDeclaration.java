@@ -62,6 +62,7 @@ public class MacroDeclaration extends DeclareNode {
 			
 			String key = tree.getChild(0).getText();
 			String value = tree.getChild(2).getText();
+			ParseTree valueNode = tree.getChild(2);
 			
 			switch(key){
 			case "macro":
@@ -75,7 +76,7 @@ public class MacroDeclaration extends DeclareNode {
 				}
 				break;
 			case "meaning":
-				if(tree instanceof ValueInBracesContext){
+				if(valueNode instanceof ValueInBracesContext){
 					this.meaning=getTree(value);
 				}else{
 					this.contentDictionary=value;
@@ -83,7 +84,7 @@ public class MacroDeclaration extends DeclareNode {
 				}
 				break;
 			case "meaningOpt":
-				if(tree instanceof ValueInBracesContext){
+				if(valueNode instanceof ValueInBracesContext){
 					this.meaning=getTree(value);
 				}else{
 					this.contentDictionary=value;
@@ -136,25 +137,5 @@ public class MacroDeclaration extends DeclareNode {
 			sb.append(" #"+this.id+"Optional\n");
 		}
 		return sb.toString();
-	}
-	private OpenMathBase getTree(String s) throws DeclarationInitialisationException{
-		if(s.length()<2){
-			Logger.log("Code is too short, cannot parse "+s);
-			throw new DeclarationInitialisationException();
-		}
-		String code = s.substring(1, s.length()-1);
-		OpenMathBase tree = null;
-		try{
-			tree = OpenMathBase.parsePopcorn(code);
-		}catch (OpenMathException popcornException){
-			try{
-				tree = OpenMathBase.parse(code);
-			} catch (OpenMathException xmlException){
-				Logger.log("Could not parse the following with XML or popcorn: "+s);
-				throw new DeclarationInitialisationException();
-			}
-		}
-		
-		return tree;
 	}
 }

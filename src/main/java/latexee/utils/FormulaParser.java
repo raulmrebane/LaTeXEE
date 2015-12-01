@@ -134,7 +134,9 @@ public class FormulaParser {
 			} catch (IOException e) {
 				Logger.log("IO exception when parsing formula: "+root.getContent());
 				e.printStackTrace();
-			} finally{
+			} catch (TemplateFillException e){
+				Logger.log("Template fill problem in formula: "+root.getContent());
+			}finally{
 				OpenMathTranslator.bracketFlags.clear();
 			}
 		}

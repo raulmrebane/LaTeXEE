@@ -3,6 +3,7 @@ package main.java.latexee.declareast;
 import main.java.antlrgen.DeclarationGrammarParser.ImportantPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.MiscPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
+import main.java.antlrgen.DeclarationGrammarParser.ValueInBracesContext;
 import main.java.latexee.logging.Logger;
 
 import java.util.Arrays;
@@ -119,13 +120,18 @@ public class OperatorDeclaration extends DeclareNode {
 		}
 		else if(tree instanceof ImportantPairContext){
 			String key = tree.getChild(0).getText();
-			String value = tree.getChild(2).getText();
+			ParseTree valueNode = tree.getChild(2);
+			String value = valueNode.getText();
 			if(key.equals("meaning")){
 				if (this.meaning != null) {
 					Logger.log("Multiple instances of meaning.");
 				}
-				this.contentDictionary=value;
-				this.meaning = tree.getChild(4).getText();
+				if(valueNode instanceof ValueInBracesContext){
+					this.meaning=getTree(value);
+				}else{
+					this.contentDictionary=value;
+					this.meaning=tree.getChild(4).getText();
+				}
 			}
 		}
 		else if(tree instanceof MiscPairContext){
