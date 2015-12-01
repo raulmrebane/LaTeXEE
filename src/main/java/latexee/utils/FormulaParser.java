@@ -122,7 +122,9 @@ public class FormulaParser {
 					OpenMathBase formulaNode = OpenMathTranslator.parseToOM(formulaTree, declarations);
 					OpenMathBase wrapped = formulaNode.toOMObject();
 					if(popcornOutput){
-						writer.write(wrapped.toPopcorn());
+						//Currently adding a newline to each formula for readability
+						String line = wrapped.toPopcorn()+"\n";
+						writer.write(line);
 					} else {
 						String indented = OutputWriter.indentXML(wrapped.toXml());
 						writer.write(indented);
