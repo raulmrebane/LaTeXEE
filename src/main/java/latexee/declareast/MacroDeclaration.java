@@ -2,7 +2,6 @@ package main.java.latexee.declareast;
 
 import main.java.antlrgen.DeclarationGrammarParser.ImportantPairContext;
 import main.java.antlrgen.DeclarationGrammarParser.MiscPairContext;
-import main.java.antlrgen.DeclarationGrammarParser.PairContext;
 import main.java.antlrgen.DeclarationGrammarParser.ValueInBracesContext;
 import main.java.latexee.logging.Logger;
 

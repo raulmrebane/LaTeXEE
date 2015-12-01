@@ -1,13 +1,8 @@
 package test.java.latexee.docast;
 
-import static org.junit.Assert.*;
-
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
-import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.utils.DocumentParser;
 import main.java.latexee.utils.FormulaParser;

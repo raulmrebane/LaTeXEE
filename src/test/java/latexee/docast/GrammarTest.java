@@ -2,16 +2,8 @@ package test.java.latexee.docast;
 
 import java.util.ArrayList;
 
-import java.util.Arrays;
-
 import main.java.latexee.declareast.DeclareNode;
-import main.java.latexee.docast.DeclareStatement;
-import main.java.latexee.docast.FormulaStatement;
-import main.java.latexee.docast.IncludeStatement;
-import main.java.latexee.docast.LemmaStatement;
 import main.java.latexee.docast.ParsedStatement;
-import main.java.latexee.docast.ProofStatement;
-import main.java.latexee.docast.TheoremStatement;
 import main.java.latexee.utils.DeclarationParser;
 import main.java.latexee.utils.DocumentParser;
 import main.java.latexee.utils.GrammarGenerator;

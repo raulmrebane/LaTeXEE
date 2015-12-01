@@ -1,7 +1,6 @@
 package main.java.latexee.utils;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,7 +14,6 @@ import java.util.Map;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.symcomp.openmath.OpenMathBase;
-import org.symcomp.openmath.OpenMathException;
 
 import main.java.latexee.declareast.DeclarationInitialisationException;
 import main.java.latexee.declareast.DeclareNode;

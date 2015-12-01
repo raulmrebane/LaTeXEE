@@ -1,13 +1,9 @@
 package main.java.latexee.runtime;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
-import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.logging.Logger;
-import main.java.latexee.utils.DeclarationParser;
 import main.java.latexee.utils.DocumentParser;
 import main.java.latexee.utils.FormulaParser;
 
