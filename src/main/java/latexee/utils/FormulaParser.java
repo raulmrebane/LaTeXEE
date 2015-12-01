@@ -124,7 +124,8 @@ public class FormulaParser {
 					if(popcornOutput){
 						writer.write(wrapped.toPopcorn());
 					} else {
-						writer.write(wrapped.toXml());
+						String indented = OutputWriter.indentXML(wrapped.toXml());
+						writer.write(indented);
 					}
 					if(ambiguityChecking){
 						AmbiguityChecker.check(formulaTree,declarations);
