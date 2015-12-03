@@ -12,6 +12,14 @@ import java.util.List;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 
+/**
+ * OperatorDeclaration is a class, which inherits from DeclareNode.
+ * OperatorDeclaration holds information about user-defined operators, like
+ * \declare{syntax={infix, 7, /, l}, meaning=arith1.divide}
+ * Instances of this class hold information about operator's meaning, type (infix/prefix/etc),
+ * parsing priority, character(s) used by the operator, associativity (left- or right-associative)
+ * content dictionary and misc information.
+ */
 public class OperatorDeclaration extends DeclareNode {
 	
 	private String type; //infix/prefix/etc
@@ -24,7 +32,15 @@ public class OperatorDeclaration extends DeclareNode {
 	private final int OPERATORINDEX = 6;
 	private final int ASSOCIATIVITYINDEX = 8;
 	private final List<String> WHITESPACECHARS = Arrays.asList(" ","\r","\n","\t");
-	
+
+	/**
+	 * Constructor for OperatorDeclaration.
+	 * @param meaning meaning of the operator (meaning=arith1.divide)
+	 * @param type type of the operator (syntax={infix,...}
+	 * @param priority priority of the operator (syntax={.., 7, ..})
+	 * @param operator characters representing the (syntax={...,/,...}
+	 * @param associativity associativity of the operator (syntax={..., l})
+	 */
 	public OperatorDeclaration(String meaning, String type, Integer priority, String operator,
 			String associativity) {
 		super();
@@ -34,6 +50,13 @@ public class OperatorDeclaration extends DeclareNode {
 		this.operator = operator;
 		this.associativity = associativity;
 	}
+
+	/**
+	 * Constructor for OperatorDeclaration, which parses the given parse tree to get the required information.
+	 * @param tree parse tree of the OperatorDeclaration
+	 * @param identifier identifier of the instance
+	 * @throws DeclarationInitialisationException unfit parameter(s) for OperatorDeclaration or unable to get the required information from parse tree.
+	 */
 	public OperatorDeclaration(ParseTree tree, int identifier) throws DeclarationInitialisationException{
 		fillAttributes(tree);
 		this.id = "Op"+Integer.toString(identifier);
@@ -65,9 +88,21 @@ public class OperatorDeclaration extends DeclareNode {
 			
 			
 	}
+
+	/**
+	 * Gets the {@link String} instance of OperatorDeclaration's instance's name.
+	 * @return {@link String} instance of OperatorDeclaration's instance's name.
+	 */
 	public String getId() {
 		return id;
 	}
+
+	/**
+	 * Private function (recursive) used by the OperatorDeclaration's constructor.
+	 * Gets the required information (meaning, name, etc) by traversing the parse tree which is used to build the instance of OperatorDeclaration.
+	 * @param tree parse tree of the OperatorDeclaration
+	 * @throws DeclarationInitialisationException unable to get the required information to build the instance of OperatorDeclaration.
+	 */
 	private void fillAttributes(ParseTree tree) throws DeclarationInitialisationException{
 		if(tree instanceof SyntaxBracketContext){
 			//This is a loop to essentially ignore whitespace in the syntax bracket.
@@ -153,6 +188,13 @@ public class OperatorDeclaration extends DeclareNode {
 		}
 	}
 	//only increments the priority by one.
+
+	/**
+	 * Method to translate the OperatorDeclaration object to a grammar rule, which
+	 * is used to write the grammar rules.
+	 * Increments the operator priority counter by one, so we know how to link the priorities in grammar.
+	 * @return string representation of the OperatorDeclaration's grammar rule.
+	 */
 	@Override
 	public String toGrammarRule() {
 		StringBuilder sb = new StringBuilder();
@@ -182,7 +224,14 @@ public class OperatorDeclaration extends DeclareNode {
 		sb.append(" #"+this.id+"\n");
 		return sb.toString();
 	}
-	
+
+	/**
+	 *
+	 * Method to translate the OperatorDeclaration object to a grammar rule, which
+	 * is used to write the grammar rules.
+	 * @param nextPriority priority of the next grammar rule - which level to point to.
+	 * @return string representation of the OperatorDeclaration's grammar rule.
+	 */
 	public String toGrammarRule(Integer nextPriority) {
 		StringBuilder sb = new StringBuilder();
 		String operatorToken = "\'"+this.operator+"\'";
@@ -211,15 +260,31 @@ public class OperatorDeclaration extends DeclareNode {
 		sb.append(" #"+this.id+"\n");
 		return sb.toString();
 	}
+
+	/**
+	 * @return priority of the operator
+	 */
 	public Integer getPriority() {
 		return priority;
 	}
+
+	/**
+	 * @return type of the operator
+	 */
 	public String getType() {
 		return type;
 	}
+
+	/**
+	 * @return character(s) which correspond to the operator
+	 */
 	public String getOperator() {
 		return operator;
 	}
+
+	/**
+	 * @return associativity of the operator
+	 */
 	public String getAssociativity() {
 		return associativity;
 	}
