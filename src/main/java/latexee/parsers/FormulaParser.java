@@ -79,41 +79,40 @@ public class FormulaParser {
 			parsedDeclarations++;
 			DeclareStatement castNode = (DeclareStatement) root;
 			ParseTree parseTree = DeclarationParser.parseDeclaration(castNode.getContent());
-			boolean operatorStyle = DeclarationParser.isOperatorSyntax(parseTree);
-			
-			DeclareNode node = null;
-			
-			if (operatorStyle){
-				try {
-					Logger.log("Parsing an operator."); //TODO: change? tegelt parsimine on tehtud juba, ainult käsitsi parsimine veel
-					node = new OperatorDeclaration(parseTree,nodeId);
-					nodeId++;
-					String id = node.getId();
-					declarations.put(id, node);
-					Logger.log("Parsing successful.\n");
-					successfullyParsedDeclarations++;
+			if (parseTree != null) {
+				boolean operatorStyle = DeclarationParser.isOperatorSyntax(parseTree);
+				
+				DeclareNode node = null;
+				
+				if (operatorStyle){
+					try {
+						Logger.log("Parsing an operator.");
+						node = new OperatorDeclaration(parseTree,nodeId);
+						nodeId++;
+						String id = node.getId();
+						declarations.put(id, node);
+						Logger.log("Parsing successful.\n");
+						successfullyParsedDeclarations++;
+					}
+					catch (DeclarationInitialisationException die) {
+						Logger.log("Parsing finished with errors.\n");
+					}
 				}
-				catch (DeclarationInitialisationException die) {
-					Logger.log("Parsing finished with errors.\n");
+				else {
+					try {
+						Logger.log("Parsing a macro.");
+						node = new MacroDeclaration(parseTree,nodeId);
+						nodeId++;
+						String id = node.getId();
+						declarations.put(id, node);
+						Logger.log("Parsing successful.\n");
+						successfullyParsedDeclarations++;
+					}
+					catch (DeclarationInitialisationException die) {
+						Logger.log("Parsing finished with errors.\n");
+					}
 				}
 			}
-			else {
-				try {
-					Logger.log("Parsing a macro.");
-					node = new MacroDeclaration(parseTree,nodeId);
-					nodeId++;
-					String id = node.getId();
-					declarations.put(id, node);
-					Logger.log("Parsing successful.\n");
-					successfullyParsedDeclarations++;
-				}
-				catch (DeclarationInitialisationException die) {
-					Logger.log("Parsing finished with errors.\n");
-				}
-			}
-			
-			
-			
 		}
 		else if(root instanceof FormulaStatement){
 			List<DeclareNode> nodes = new ArrayList<DeclareNode>(declarations.values());
