@@ -27,13 +27,13 @@ public class DeclarationTest {
 	
 	@Test(expected=DeclarationInitialisationException.class)
 	public void test2() throws DeclarationInitialisationException {
-		DeclarationParser.parseDeclaration("{syntax={prefix,100,\"%\"}, meaning=arith1.remainder, misc=\"some misc info\"}");
+		ParseTree decTree = DeclarationParser.parseDeclaration("{syntax={prefix,100,\"\\%\"}, meaning=arith1.remainder, misc=\"some misc info\"}");
+		new OperatorDeclaration(decTree,0);
 	}
 	
 	@Test
 	public void test3() throws DeclarationInitialisationException {
 		ParseTree pt = DeclarationParser.parseDeclaration("{macro=\\frac, meaning=arith1.divide, argspec=[2], code={...}}");
-		System.out.println(pt.getText());
 		MacroDeclaration md = new MacroDeclaration(pt,0);		
 		assertEquals("frac", md.getMacroName());
 		assertEquals("arith1", md.getContentDictionary());
