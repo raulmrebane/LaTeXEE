@@ -51,3 +51,5 @@ if __name__ == "__main__":
     tester(START + "-v", ["No inputfile"], "Missing input file", env)
     # Tests output flag and parsing process. Expected result: created file is the same as the test file.
     file_compare(START + "../src/test/antlr/basic_with_nonsemantic.tex -o output_test.xml -v", "output_test.xml", "output_test_1.test", "Parsing test", env)
+    # Popcorn test
+    file_compare(START + "../src/test/antlr/basic_with_nonsemantic.tex -p -o popcorn.pop", "popcorn.pop", "popcorn.test", "Popcorn test", env)
