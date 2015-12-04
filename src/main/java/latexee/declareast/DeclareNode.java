@@ -8,6 +8,11 @@ import org.symcomp.openmath.OpenMathException;
 import main.java.latexee.exceptions.DeclarationInitialisationException;
 import main.java.latexee.logging.Logger;
 
+/**
+ * Abstract class for MacroDeclaration and OperatorDeclaration.
+ * Describes fields and methods which are common for MacroDeclaration and OperatorDeclaration,
+ * such as content dictionary, meaning, misc. information contained and ID
+ */
 public abstract class DeclareNode {
 	protected String contentDictionary;
 	protected Object meaning;
@@ -22,11 +27,23 @@ public abstract class DeclareNode {
 		return meaning;
 	}
 	public HashMap<String, String> getMiscellaneous() {
-		return miscellaneous;
+			return miscellaneous;
 	}
+
+	/**
+	 * Gets the {@link String} instance of DeclareNode's id.
+	 * @return {@link String} instance of DeclareNode id.
+	 */
 	public String getId() {
 		return id;
 	}
+
+	/**
+	 * Used in operator and macro declaration functions to p
+	 * @param s string to be parsed as declaration meaning
+	 * @return parsed string as OpenMathBase object.
+	 * @throws DeclarationInitialisationException given meaning code is either too short or unable to parse given meaning
+	 */
 	protected OpenMathBase getTree(String s) throws DeclarationInitialisationException{
 		if(s.length()<2){
 			Logger.log("Code is too short, cannot parse "+s);

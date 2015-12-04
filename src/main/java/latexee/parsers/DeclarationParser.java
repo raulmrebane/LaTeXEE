@@ -32,30 +32,32 @@ public class DeclarationParser {
 		if(node instanceof DeclareStatement){
 			DeclareStatement castNode = (DeclareStatement) node;
 			ParseTree parseTree = parseDeclaration(castNode.getContent());
-			boolean operatorStyle = isOperatorSyntax(parseTree);
-			if (operatorStyle){
-				try {
-					Logger.log("Parsing an operator."); //TODO: change?
-					OperatorDeclaration opDec = new OperatorDeclaration(parseTree,maxId);
-					maxId++;
-					castNode.setNode(opDec);
-					Logger.log("Parsing successful.\n");
+			if (parseTree != null) {
+				boolean operatorStyle = isOperatorSyntax(parseTree);
+				if (operatorStyle){
+					try {
+						Logger.log("Parsing an operator.");
+						OperatorDeclaration opDec = new OperatorDeclaration(parseTree,maxId);
+						maxId++;
+						castNode.setNode(opDec);
+						Logger.log("Parsing successful.\n");
+					}
+					catch (DeclarationInitialisationException die) {
+						Logger.log("Parsing finished with errors.\n");
+					}
 				}
-				catch (DeclarationInitialisationException die) {
-					Logger.log("Parsing finished with errors.\n");
+				else {
+					try {
+						Logger.log("Parsing a macro.");
+						castNode.setNode(new MacroDeclaration(parseTree,maxId));
+						maxId++;
+						Logger.log("Parsing successful.\n");
+					}
+					catch (DeclarationInitialisationException die) {
+						Logger.log("Parsing finished with errors.\n");
+					}
 				}
 			}
-			else {
-				try {
-					Logger.log("Parsing a macro.");
-					castNode.setNode(new MacroDeclaration(parseTree,maxId));
-					maxId++;
-					Logger.log("Parsing successful.\n");
-				}
-				catch (DeclarationInitialisationException die) {
-					Logger.log("Parsing finished with errors.\n");
-				}
-			}			
 		}
 		ArrayList<ParsedStatement> children = node.getChildren();
 		Integer childMax = maxId;
@@ -98,8 +100,10 @@ public class DeclarationParser {
 		lexer.addErrorListener(del);
 		
 	    ParseTree tree = parser.declarationGrammar();
-	    if (del.foundErrors()) //TODO: logimine hiljem? Makrode/dekl-de juures?
+	    if (del.foundErrors()) {
 	    	Logger.log("Parsing finished with errors.");
+	    	return null;
+	    }
 	    else
 	    	Logger.log("Parsing successful.\n");
 	    return tree;

@@ -25,16 +25,9 @@ public class DeclarationTest {
 		assertEquals("{}", ""+od.getMiscellaneous());
 	}
 	
-	@Test
+	@Test(expected=DeclarationInitialisationException.class)
 	public void test2() throws DeclarationInitialisationException {
-		ParseTree pt = DeclarationParser.parseDeclaration("{syntax={prefix,100,\"%\"}, meaning=arith1.remainder, misc=\"some misc info\"}");
-		OperatorDeclaration od = new OperatorDeclaration(pt,0);		
-		assertEquals("prefix", od.getType());
-		assertEquals("%", od.getOperator());
-		assertEquals("100", ""+od.getPriority());
-		assertEquals("arith1", od.getContentDictionary());
-		assertEquals("remainder", od.getMeaning());
-		assertEquals("{misc=\"some misc info\"}", ""+od.getMiscellaneous());
+		DeclarationParser.parseDeclaration("{syntax={prefix,100,\"%\"}, meaning=arith1.remainder, misc=\"some misc info\"}");
 	}
 	
 	@Test
