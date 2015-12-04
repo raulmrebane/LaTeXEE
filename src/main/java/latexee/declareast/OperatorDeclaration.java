@@ -101,10 +101,10 @@ public class OperatorDeclaration extends DeclareNode {
 							Logger.log("No operator given.");
 							throw new DeclarationInitialisationException();
 						}
-						/*if (text.indexOf('$') > -1) {
+						if (text.indexOf('$') > -1) {
 							Logger.log("No '$' allowed within operators.");
 							throw new DeclarationInitialisationException();
-						}*/
+						}
 						this.operator = roughOp.substring(1, roughOp.length()-1);
 						break;
 					case ASSOCIATIVITYINDEX:
