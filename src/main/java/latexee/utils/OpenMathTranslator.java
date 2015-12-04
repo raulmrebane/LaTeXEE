@@ -81,11 +81,10 @@ public class OpenMathTranslator {
 			boolean optionalArgs = false;
 			
 			//Just in case there is an operation named "optional" we check that the word "Optional" is in the end
-			if(noContext.contains("Opt")&&noContext.substring(noContext.length()-8, noContext.length()).equals("Opt")){ 
-				
+			if(noContext.contains("Opt")&&noContext.substring(noContext.length()-3, noContext.length()).equals("Opt")){ 
 				//Set the flag for optional argument use and remove word "Optional" from ID.
 				optionalArgs = true;
-				noContext = noContext.substring(0, noContext.length()-8);
+				noContext = noContext.substring(0, noContext.length()-3);
 			}
 			
 			//Find appropriate declaration for operation
@@ -111,13 +110,19 @@ public class OpenMathTranslator {
 				}
 				
 				OpenMathBase[] childArray = children.toArray(new OpenMathBase[children.size()]);
-				
-				if(declaration.getMeaning() instanceof String){
-					String operationName = (String) declaration.getMeaning();
+				Object meaning = null;
+				if(optionalArgs){
+					MacroDeclaration md = (MacroDeclaration) declaration;
+					meaning = md.getOptionalMeaning();
+				} else{
+					meaning = declaration.getMeaning();
+				}
+				if(meaning instanceof String){
+					String operationName = (String) meaning;
 					OMSymbol base = new OMSymbol(contentDictionary, operationName);
 					root = new OMApply(base, childArray);
 				}else{
-					OpenMathBase template = (OpenMathBase) declaration.getMeaning();
+					OpenMathBase template = (OpenMathBase) meaning;
 					root = fillTemplate(template, childArray);
 				}
 				//If there is nonsemantic data
