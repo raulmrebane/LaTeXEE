@@ -116,10 +116,10 @@ public class MacroDeclaration extends DeclareNode {
 				break;
 			case "meaningOpt":
 				if(valueNode instanceof ValueInBracesContext){
-					this.meaning=getTree(value);
+					this.optionalMeaning=getTree(value);
 				}else{
 					this.contentDictionary=value;
-					this.meaning=tree.getChild(4).getText();
+					this.optionalMeaning=tree.getChild(4).getText();
 				}
 				break;
 			default:
@@ -181,7 +181,7 @@ public class MacroDeclaration extends DeclareNode {
 				sb.append(highestLevelRule);
 				sb.append("\'}\'");
 			}
-			sb.append(" #"+this.id+"Optional\n");
+			sb.append(" #"+this.id+"Opt\n");
 		}
 		return sb.toString();
 	}

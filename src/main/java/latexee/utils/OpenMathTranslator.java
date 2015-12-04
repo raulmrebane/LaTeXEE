@@ -36,6 +36,7 @@ public class OpenMathTranslator {
 	
 	public static OpenMathBase parseToOM(ParseTree tree, Map<String,DeclareNode> declarations) throws TemplateFillException{
 		String treeName = tree.getClass().getSimpleName();
+		
 		if(treeName.contains("DEFAULT")){
 			return parseToOM(tree.getChild(0), declarations);
 		}
@@ -67,6 +68,7 @@ public class OpenMathTranslator {
 
 			return root;
 		}
+		
 		else{
 			if(tree instanceof TerminalNodeImpl){
 				TerminalNodeImpl castTree = (TerminalNodeImpl) tree;
@@ -79,7 +81,7 @@ public class OpenMathTranslator {
 			boolean optionalArgs = false;
 			
 			//Just in case there is an operation named "optional" we check that the word "Optional" is in the end
-			if(noContext.contains("Optional")&&noContext.substring(noContext.length()-8, noContext.length()).equals("Optional")){ 
+			if(noContext.contains("Opt")&&noContext.substring(noContext.length()-8, noContext.length()).equals("Opt")){ 
 				
 				//Set the flag for optional argument use and remove word "Optional" from ID.
 				optionalArgs = true;
@@ -89,6 +91,7 @@ public class OpenMathTranslator {
 			//Find appropriate declaration for operation
 			DeclareNode declaration = null;
 			declaration = declarations.get(noContext);
+			
 			if(declaration!=null){				
 				//Get operation info from declaration
 				String contentDictionary = declaration.getContentDictionary();
@@ -97,6 +100,7 @@ public class OpenMathTranslator {
 				
 				//Find children
 				List<OpenMathBase> children = new ArrayList<OpenMathBase>();
+				
 				if(declaration instanceof OperatorDeclaration){
 					OperatorDeclaration castDeclaration = (OperatorDeclaration) declaration;
 					children.addAll(operatorChildren(tree, declarations, castDeclaration));
