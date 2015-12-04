@@ -108,8 +108,6 @@ public class Main {
     /**
      * Entry point to the program.
      * @param args command line arguments passed from the command line.
-     * @throws IOException thrown when there is error with input or output files. Usually thrown when input file does
-     * not exist or it is not possible to write output file at the given location.
      */
 	public static void main(String[] args) {
         

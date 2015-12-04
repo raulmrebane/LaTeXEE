@@ -10,12 +10,26 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.symcomp.openmath.OpenMathBase;
 import org.symcomp.openmath.OpenMathException;
 
+/**
+ * MacroDeclaration is a class, which inherits from DeclareNode.
+ * MacroDeclaration holds information about user-defined macros, like
+ * \declare{macro=\tuple, meaning=ecc.Tuple, argspec=[2], code{#1, \ldots, #2}}
+ * Instances of this class hold information about macro's meaning, name and argument count, misc
+ * information, content dictionary.
+ */
 public class MacroDeclaration extends DeclareNode {
 	private String macroName; //the name of the macro - the characters following \
 	private Integer arguments;
 	private boolean hasOptionalArgument = false;
 	private Object optionalMeaning;
-	
+
+	/**
+	 * Public constructor for MacroDeclaration instances
+	 * @param meaning meaning of the Macro (meaning=ecc.Tuple)
+	 * @param macroname name of the macro (macro=\tuple)
+	 * @param arguments number of arguments the macro takes. (argspec=[2])
+	 * @param identifier ID of the MacroDeclaration's instance.
+	 */
 	public MacroDeclaration(String meaning, String macroname, int arguments, int identifier) {
 		super();
 		this.meaning=meaning;
@@ -23,7 +37,13 @@ public class MacroDeclaration extends DeclareNode {
 		this.arguments=arguments;
 		this.id="MACRO"+Integer.toString(identifier);
 	}
-	
+
+	/**
+	 * Public constructor for MacroDeclaration instances.
+	 * @param tree parse tree of MacroDeclaration
+	 * @param identifier ID of the macro
+	 * @throws DeclarationInitialisationException unable to get information from parse tree, which is required for MacroDeclaration.
+	 */
 	public MacroDeclaration(ParseTree tree, int identifier) throws DeclarationInitialisationException{
 		fillAttributes(tree);
 		if(		this.meaning == null && this.contentDictionary==null){
@@ -53,11 +73,21 @@ public class MacroDeclaration extends DeclareNode {
 		}
 		this.id="MACRO"+Integer.toString(identifier);
 	}
-	
+
+	/**
+	 * Gets the {@link String} instance of MacroDeclaration's instance's name.
+	 * @return {@link String} instance of MacroDeclaration's instance's name.
+	 */
 	public String getMacroName() {
 		return macroName;
 	}
 
+	/**
+	 * Private function (recursive) used by the MacroDeclaration's constructor.
+	 * Gets the required information (meaning, name, etc) by traversing the parse tree which is used to build the instance of MacroDeclaration.
+	 * @param tree parse tree of the MacroDeclaration
+	 * @throws DeclarationInitialisationException unable to get the required information to build the instance of MacroDeclaration.
+	 */
 	private void fillAttributes(ParseTree tree) throws DeclarationInitialisationException{
 		if(tree instanceof ImportantPairContext){
 			
@@ -106,17 +136,33 @@ public class MacroDeclaration extends DeclareNode {
 			fillAttributes(tree.getChild(i));
 		}
 	}
-	
+
+	/**
+	 * @return if the MacroDeclaration instance has an optional argument.
+	 */
 	public boolean hasOptionalArgument() {
 		return hasOptionalArgument;
 	}
 
+	/*
+	 * @return MacroDeclaration's instance's optional meaning as an Object
+	 */
 	public Object getOptionalMeaning() {
 		return this.optionalMeaning;
 	}
+
+	/**
+	 * @return number of arguments the Macro uses
+	 */
 	public Integer getArguments() {
 		return arguments;
 	}
+
+	/**
+	 * Method to translate the MacroDeclaration object to a grammar rule, which
+	 * is used to write the grammar rules.
+	 * @return string representation of the MacroDeclaration's grammar rule
+	 */
 	@Override
 	public String toGrammarRule() {
 		String highestLevelRule = "highestLevel";
