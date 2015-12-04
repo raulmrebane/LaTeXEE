@@ -239,7 +239,7 @@ public class OpenMathTranslator {
 					throw new TemplateFillException();
 				}
 				String id = content.substring(2);
-				int index = Integer.parseInt(id);
+				int index = Integer.parseInt(id)-1;
 				
 				try{
 					array[i] = args[index];
