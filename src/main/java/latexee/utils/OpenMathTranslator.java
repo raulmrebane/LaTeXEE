@@ -156,7 +156,7 @@ public class OpenMathTranslator {
 		String type = declaration.getType();
 		if(type.equals("infix")){
 			OpenMathBase leftChild = parseToOM(tree.getChild(0), declarations);
-			OpenMathBase rightChild = parseToOM(tree.getChild(2), declarations);
+			OpenMathBase rightChild = parseToOM(tree.getChild(tree.getChildCount()-1), declarations);
 			children.add(leftChild);
 			children.add(rightChild);
 		}

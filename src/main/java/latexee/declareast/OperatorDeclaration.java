@@ -202,7 +202,11 @@ public class OperatorDeclaration extends DeclareNode {
 	@Override
 	public String toGrammarRule() {
 		StringBuilder sb = new StringBuilder();
-		String operatorToken = "\'"+this.operator+"\'";
+		String operatorToken = "";
+		char[] tokens = operator.toCharArray();
+		for (char c : tokens) {
+			operatorToken += "\'" + c + "\'";
+		}
 		String currentLevel = "level"+priority.toString().replace('-', '_');
 		String lowerLevel = "level"+Integer.toString(priority+1).replace('-', '_');
 		if(this.type.equals("infix")){
@@ -238,7 +242,11 @@ public class OperatorDeclaration extends DeclareNode {
 	 */
 	public String toGrammarRule(Integer nextPriority) {
 		StringBuilder sb = new StringBuilder();
-		String operatorToken = "\'"+this.operator+"\'";
+		String operatorToken = "";
+		char[] tokens = operator.toCharArray();
+		for (char c : tokens) {
+			operatorToken += "\'" + c + "\'";
+		}
 		String currentLevel = "level"+priority.toString().replace('-', '_');
 		String lowerLevel = "level"+Integer.toString(nextPriority).replace('-', '_');
 		if(this.type.equals("infix")){
