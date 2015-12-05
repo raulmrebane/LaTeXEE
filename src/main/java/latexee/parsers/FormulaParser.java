@@ -32,7 +32,14 @@ import main.java.latexee.utils.GrammarCompiler;
 import main.java.latexee.utils.GrammarGenerator;
 import main.java.latexee.utils.OpenMathTranslator;
 import main.java.latexee.utils.OutputWriter;
-
+/**
+ * This class contains most of the main logic of the application.
+ * Class constructor is given a file where the xml or popcorn is later written.
+ * parseImpl method calls methods for declaration parsing, grammar generating and after
+ * parsing formulas to xml or popcorn.
+ *
+ * Also keeps count of parsed formulas and declarations.
+ */
 public class FormulaParser {
 	private Writer writer;
 	private GrammarCompiler cp;
@@ -46,7 +53,14 @@ public class FormulaParser {
 	private int successfullyParsedFormulas;
 	private int parsedDeclarations; //TODO: või makrodele ja operaatoritele eraldi?
 	private int successfullyParsedDeclarations;
-	
+
+	/**
+	 * FormulaParser constructor.
+	 * Creates instance of output writer, grammar compiler.
+	 * @param filename file name where the output of the program is written to
+	 * @throws FileNotFoundException mostly thrown when output location cant be accessed
+	 * @throws UnsupportedEncodingException thrown when encoding is not supported.
+	 */
 	public FormulaParser(String filename) throws FileNotFoundException, UnsupportedEncodingException{
 		this.writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "utf-8"));
 		this.cp = new GrammarCompiler();
@@ -60,6 +74,15 @@ public class FormulaParser {
 		this.parsedDeclarations = 0;
 		this.successfullyParsedDeclarations = 0;
 	}
+
+	/**
+	 * After the Document is parsed for statements this method will be called.
+	 * This method calls method parseImpl(), which does the statement tree parsing.
+	 * which parses the document tree, looks for declarations, compiles grammar from them and
+	 * then parses the formulas and writes to output file.
+	 *
+	 * @param root root
+	 */
 	public void parse(ParsedStatement root){
 		parseImpl(root,new HashMap<String,DeclareNode>());
 		try {
@@ -71,7 +94,15 @@ public class FormulaParser {
 		System.out.println(successfullyParsedDeclarations + "/" + parsedDeclarations + " declarations parsed successfully.");
 		System.out.println(successfullyParsedFormulas + "/" + parsedFormulas + " formulas parsed successfully.");
 	}
-	
+
+	/**
+	 *
+	 * This is a recursive method, which does the main document tree parsing.
+	 * looks for declarations, when finding a formula, compiles grammar and
+	 * then parses the formulas and writes to output file.
+	 * @param root ParsedStatement node, which is traversed.
+	 * @param declarations operator and macro declarations in current scope
+	 */
 	public void parseImpl(ParsedStatement root,Map<String,DeclareNode> declarations){
 		
 		if(root instanceof DeclareStatement){
@@ -79,40 +110,41 @@ public class FormulaParser {
 			parsedDeclarations++;
 			DeclareStatement castNode = (DeclareStatement) root;
 			ParseTree parseTree = DeclarationParser.parseDeclaration(castNode.getContent());
-			if (parseTree != null) {
-				boolean operatorStyle = DeclarationParser.isOperatorSyntax(parseTree);
-				
-				DeclareNode node = null;
-				
-				if (operatorStyle){
-					try {
-						Logger.log("Parsing an operator.");
-						node = new OperatorDeclaration(parseTree,nodeId);
-						nodeId++;
-						String id = node.getId();
-						declarations.put(id, node);
-						Logger.log("Parsing successful.\n");
-						successfullyParsedDeclarations++;
-					}
-					catch (DeclarationInitialisationException die) {
-						Logger.log("Parsing finished with errors.\n");
-					}
+			boolean operatorStyle = DeclarationParser.isOperatorSyntax(parseTree);
+			
+			DeclareNode node = null;
+			
+			if (operatorStyle){
+				try {
+					Logger.log("Parsing an operator."); //TODO: change? tegelt parsimine on tehtud juba, ainult käsitsi parsimine veel
+					node = new OperatorDeclaration(parseTree,nodeId);
+					nodeId++;
+					String id = node.getId();
+					declarations.put(id, node);
+					Logger.log("Parsing successful.\n");
+					successfullyParsedDeclarations++;
 				}
-				else {
-					try {
-						Logger.log("Parsing a macro.");
-						node = new MacroDeclaration(parseTree,nodeId);
-						nodeId++;
-						String id = node.getId();
-						declarations.put(id, node);
-						Logger.log("Parsing successful.\n");
-						successfullyParsedDeclarations++;
-					}
-					catch (DeclarationInitialisationException die) {
-						Logger.log("Parsing finished with errors.\n");
-					}
+				catch (DeclarationInitialisationException die) {
+					Logger.log("Parsing finished with errors.\n");
 				}
 			}
+			else {
+				try {
+					Logger.log("Parsing a macro.");
+					node = new MacroDeclaration(parseTree,nodeId);
+					nodeId++;
+					String id = node.getId();
+					declarations.put(id, node);
+					Logger.log("Parsing successful.\n");
+					successfullyParsedDeclarations++;
+				}
+				catch (DeclarationInitialisationException die) {
+					Logger.log("Parsing finished with errors.\n");
+				}
+			}
+			
+			
+			
 		}
 		else if(root instanceof FormulaStatement){
 			List<DeclareNode> nodes = new ArrayList<DeclareNode>(declarations.values());
@@ -155,9 +187,17 @@ public class FormulaParser {
 		}
 			
 	}
+
+	/**
+	 * Method to enable ambiguity checking
+	 */
 	public void enableAmbiguityChecking(){
 		this.ambiguityChecking=true;
 	}
+
+	/**
+	 * Method to enable popcorn output.
+	 */
 	public void enablePopcornOutput(){
 		this.popcornOutput=true;
 	}
