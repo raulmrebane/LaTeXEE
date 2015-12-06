@@ -12,11 +12,18 @@ import main.java.latexee.declareast.OperatorDeclaration;
 import main.java.latexee.docast.DeclareStatement;
 import main.java.latexee.docast.ParsedStatement;
 
+/**
+ * GrammarGenerator class contains method to generate grammar based on before-gathered operator and macro declaration rules.
+ * Generated grammar is later used to parse the formulas.
+ */
 public class GrammarGenerator {
-	//This assumes that DeclareStatements have their appropriate nodes attached. 
-	//If you're not sure, run your tree through DeclarationParser.declarationFinder(tree) first.
-	//This method serves only as a proof of concept, in later iterations of the project the list would be created during AST traversal.
-	//As of end of iteration 3, this method is not used in the main workflow and is only kept for possible testing purposes.
+	/**
+	 * This method is only used for testing purposes. Assumes that DeclareStatements have their appropriate nodes attached.
+	 * If you're not sure, run your tree through DeclarationParser.declarationFinder(tree) first.
+	 * @param tree statement tree where DeclareStatements have their appropriate nodes attached
+	 * @param existingRules existing macro and operator rules
+	 * @return returns an ArrayList of declaration nodes
+	 */
 	public static ArrayList<DeclareNode> getDeclareNodes(ParsedStatement tree, ArrayList<DeclareNode> existingRules){
 		
 		if(tree instanceof DeclareStatement){
@@ -28,7 +35,14 @@ public class GrammarGenerator {
 		}
 		return existingRules;
 	}
-	
+
+	/**
+	 * This method translates operator and macro declarations to ANTLR grammar, which can and is later used to parse formulas.
+	 * Chooses appropriate levels for each rule in the grammar.
+	 * StringBuilder object is used to put together grammar rule-by-rule.
+	 * @param nodes list of DeclareNode objects
+	 * @return string of ANTLR grammar
+	 */
 	public static String createGrammar(List<DeclareNode> nodes){
 		//Resulting grammar is built here.
 		StringBuilder sb = new StringBuilder();
@@ -164,6 +178,7 @@ public class GrammarGenerator {
 		sb.append("LEXERRULE #DEFAULT"+Integer.toString(defaultCounter)+";\n");
 		defaultCounter++;
 		sb.append("LEXERRULE : [0-9]+ | [a-z];\n");
+
 		return sb.toString();
 	}	
 }

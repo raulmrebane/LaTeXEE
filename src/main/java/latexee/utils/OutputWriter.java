@@ -20,7 +20,17 @@ import main.java.latexee.docast.FormulaStatement;
 import main.java.latexee.docast.ParsedStatement;
 import main.java.latexee.logging.Logger;
 
+/**
+ * Class OutputWriter contains methods to manipulate and write strings to files.
+ * Methods here are used for either program output or for testing.
+ */
 public class OutputWriter {
+	/**
+	 * This method is no longer required and is deprecated. This was used to write formulas in string (2+3) to output file
+	 * @param tree document tree node
+	 * @param filename output file name
+	 */
+	@Deprecated
 	public static void formulasToTXT(ParsedStatement tree, String filename){
 		Writer writer = null;
 		try {
@@ -39,6 +49,12 @@ public class OutputWriter {
 			System.exit(1);
 		}
 	}
+
+	/**
+	 * Gathers formulas from document parse tree and adds them to string.
+	 * @param tree document tree node
+	 * @param sb StringBuilder object that is built from finding formulas from the file
+	 */
 	public static void gatherFormulas(ParsedStatement tree, StringBuilder sb){
 		if(tree instanceof FormulaStatement){
 			sb.append(tree.getContent()+"\n");
@@ -47,11 +63,25 @@ public class OutputWriter {
 			gatherFormulas(child, sb);
 		}
 	}
+
+	/**
+	 * This method is only used for testing purposes. Prettifies a parse tree in string format
+	 * @param tree parse tree to be output in beautified manner
+	 * @return beautified string of parse tree
+	 */
 	public static String prettyParseTree(ParseTree tree){
     	StringBuilder sb = new StringBuilder();
         print("", true, sb,tree);
 		return sb.toString();
 	}
+
+	/**
+	 * This method recursively builds a beautified tree from syntax tree
+	 * @param prefix text appended before the node information, such as spacing
+	 * @param isTail used to show the parent-children relationship if such exist.
+	 * @param sb string that is built using the function
+	 * @param tree input tree to be beautified
+	 */
     private static void print(String prefix, boolean isTail, StringBuilder sb, ParseTree tree) {
     	String text = "";
     	if (tree instanceof TerminalNodeImpl)
@@ -64,14 +94,20 @@ public class OutputWriter {
             print(prefix + (isTail ?"    " : "│   "), true, sb,tree.getChild(tree.getChildCount()-1));
         }
     }
-    //Indents the generated XML. Code from http://stackoverflow.com/a/11519668
-    //Thanks to Steve McLeod and DaoWen.
+
+	/**
+	 * Method to generated idented XML
+	 * Credit: Steve McLeod and DaoWen.
+	 * Code from http://stackoverflow.com/a/11519668
+	 * @param xml input xml in string format
+	 * @return indented xml in string format
+	 */
     public static String indentXML(String xml) {
 
         try {
             final InputSource src = new InputSource(new StringReader(xml));
             final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(src).getDocumentElement();
-            final Boolean keepDeclaration = Boolean.valueOf(xml.startsWith("<?xml"));
+            final Boolean keepDeclaration = xml.startsWith("<?xml");
 
         //May need this: System.setProperty(DOMImplementationRegistry.PROPERTY,"com.sun.org.apache.xerces.internal.dom.DOMImplementationSourceImpl");
 

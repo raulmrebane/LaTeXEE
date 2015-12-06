@@ -35,14 +35,33 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import main.java.latexee.errorlisteners.FormulaErrorListener;
 import main.java.latexee.logging.Logger;
 
+/**
+ * GrammarCompiler class methods are used to compile the grammar to class files which can later be loaded during runtime of the application.
+ * Takes ANTLR string, creates a temp location for the grammar to be stored and is then compiled.
+ * Compiled grammar is later used to parse the formulas in the document.
+ */
 public class GrammarCompiler {
 	private static JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 	private Map<String,ClassInfo> grammarMap;
 	private int packageIncrement;
+
+	/**
+	 * Constructor for GrammarCompiler. Initializes HashMap, which maps grammar to compiled classes.
+	 */
 	public GrammarCompiler(){
 		this.packageIncrement = 0;
 		this.grammarMap = new HashMap<String,ClassInfo>();
 	}
+
+	/**
+	 * This method takes input of grammar string which is generate by grammar generator and a string which is going to be parsed by the gramamr.
+	 * Creates new temporary directory to store the grammar files, creates .g4 files, generates ANTLR .java files and then compiles the
+	 * source folder where the ANTLR generated java files are.
+	 * @param grammar generated input grammar from grammar generator
+	 * @param formula formula which is parsed by the grammar
+	 * @return parse tree of the the parsed formula
+	 * @throws IOException usually thrown when not enough rights to create new folders or files
+	 */
 	public ParseTree compile(String grammar, String formula) throws IOException{
 		ClassInfo pair = null;
 		ParseTree tree = null;
@@ -119,7 +138,13 @@ public class GrammarCompiler {
         
         return tree;
 	}
-	
+
+	/**
+	 * This method compiles java files in the given path.
+	 * Checks if the file is java file, calls the compiler to compile them.
+	 * @param path location of the folder which is to be compiled.
+	 * @throws IOException
+	 */
 	private void compileSourceFolder(Path path) throws IOException{
 		
 		//Filtering files in folder by extension (that's what the regex does) and adding them to a list
@@ -141,7 +166,13 @@ public class GrammarCompiler {
         fileManager.close();
 		
 	}
-	
+
+	/**
+	 * Writes ANTLR grammar to a temporary folder and generates java classes which are later compiled
+	 * @param path location of the temporary folder created in compile method.
+	 * @param grammar grammar which is saved as .g4 file and from which .java file is generated
+	 * @throws IOException usually thrown when not enough rights at the given location.
+	 */
 	private void createSource(Path path, String grammar) throws IOException{
 		String tempPath = path.toString();
 		
@@ -169,7 +200,14 @@ public class GrammarCompiler {
 		//Generate .java files
 		antlr.processGrammarsOnCommandLine();
 	}
-	
+
+	/**
+	 * This method is used to load classes in runtime using Java class loader.
+	 * Loads the generated grammar classes, so they can be used to parse the formulas
+	 * @param path location of the class to be loaded
+	 * @return ClassInfo instance which contains all the required constructors to use them in runtime
+	 * @throws IOException usually thrown when the given class file does not exist or unable to load classes.
+	 */
 	private ClassInfo loadClasses(Path path) throws IOException{
 		String pathString = path.toString()+File.separator;
 		
@@ -210,6 +248,11 @@ public class GrammarCompiler {
 		}
 		return pair;
 	}
+
+	/**
+	 * Method to mark which files are to be deleted after the JVM exits.
+	 * @param file filepath to be marked for deletion after the JVM exits.
+	 */
 	private void markForDeletion(File file) {
 		file.deleteOnExit();
 	    File[] contents = file.listFiles();
@@ -221,7 +264,9 @@ public class GrammarCompiler {
 	}
 }
 
-
+/**
+ * Class to hold constructors of the generated, compiled and loaded grammar source files
+ */
 class ClassInfo{
 	private Constructor parserCtor;
 	private Constructor lexerCtor;

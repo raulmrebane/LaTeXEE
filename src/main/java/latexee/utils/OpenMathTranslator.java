@@ -29,11 +29,27 @@ import org.symcomp.openmath.OMVariable;
 import org.symcomp.openmath.OpenMathBase;
 import org.symcomp.openmath.OpenMathException;
 
+/**
+ * OpenMathTranslator class contains static methods to translate the parse tree of parsed formulas to OpenMath format.
+ * To generate the OpenMathBase object, which can later be either transformed to XML or Popcorn a
+ * ParseTree of formulas and a list of declarations is required.
+ * Uses OpenMath library to translate nodes to popcorn and parse them.
+ */
 public class OpenMathTranslator {
 
 	private static List<String> supportedBrackets = Arrays.asList("BRACESContext","PARENSContext");
 	public static ArrayList<String> bracketFlags = new ArrayList<String>();
-	
+
+	/**
+	 * Static method to translate given ParseTree of formulas and declarations to OpenMathBase object, which
+	 * can be later transformed to either XML or popcorn to output files.
+	 * If a supported bracket is found then it is saved and is later written to XML output.
+	 * Also adds non-semantic data to the OpenMathBase object.
+	 * @param tree ParseTree of formulas
+	 * @param declarations list of declarations in scope
+	 * @return OpenMathBase object, which can be later used to generate XML-document
+	 * @throws TemplateFillException thrown when was unable to transform to OpenMathBase object
+	 */
 	public static OpenMathBase parseToOM(ParseTree tree, Map<String,DeclareNode> declarations) throws TemplateFillException{
 		String treeName = tree.getClass().getSimpleName();
 		
@@ -150,7 +166,16 @@ public class OpenMathTranslator {
 			return null;
 		}
 	}
-	
+
+	/**
+	 * Method gets all the formula nodes which are children to a given operator declaration node as OpenMathBase objects.
+	 * Checks if the type of the operator is infix, prefix or postfix and acts accordingly.
+	 * @param tree operator node for which the children are gathered from
+	 * @param declarations declarations currently in scope
+	 * @param declaration declaration of the operator
+	 * @return list of OpenMathBase objects containing all of the children of the given operator node.
+	 * @throws TemplateFillException thrown when was unable to transform to OpenMathBase object
+	 */
 	private static List<OpenMathBase> operatorChildren(ParseTree tree, Map<String,DeclareNode> declarations, OperatorDeclaration declaration) throws TemplateFillException{
 		List<OpenMathBase> children = new ArrayList<OpenMathBase>();
 		String type = declaration.getType();
@@ -170,7 +195,15 @@ public class OpenMathTranslator {
 		}
 		return children;
 	}
-	
+
+	/**
+	 * Method gets all the formula nodes which are children to a given macro declaration node as OpenMathBase objects.
+	 * @param tree macro declaration for which the children are gathered from.
+	 * @param declarations declarations currently in scope
+	 * @param declaration declaration of a macro
+	 * @return list of OpenMathBase objects containing all of the children of the given operator node.
+	 * @throws TemplateFillException thrown when was unable to transform to OpenMathBase object
+	 */
 	private static List<OpenMathBase> macroChildren(ParseTree tree, Map<String,DeclareNode> declarations, MacroDeclaration declaration) throws TemplateFillException{
 		List<OpenMathBase> children = new ArrayList<OpenMathBase>();
 		
@@ -181,7 +214,11 @@ public class OpenMathTranslator {
 		
 		return children;
 	}
-	
+
+	/**
+	 * Method to add collected brackets info to OpenMathBase object, so we can present them in XML.
+	 * @param root OpenMathBase object, which gets brackets added to.
+	 */
 	private static void addParens(OpenMathBase root){
 		//Labeling the attribute again
 		OMSymbol keyOMS = new OMSymbol("LaTeXEE", "parenstype");
@@ -195,8 +232,16 @@ public class OpenMathTranslator {
 		//Clear any bracket flags in the end 
 		bracketFlags.clear();
 	}
-	
-	//Since the method below alters the node, we'll make a copy of it here.
+
+	/**
+	 * Entry method for filling out templates
+	 * The method below alters the given OpenMathBase node, therefore a copy of it is made.
+	 * Generates copy by translating OpenMathNode to popcorn and then parsed to OpenMathBase object
+	 * @param node OpenMathBase object, which is passed to fillTemplateImpl(OpenMathBase, OpenMathBase[])
+	 * @param args OpenMathBase[] arguments with what the template is filled with
+	 * @return a copy of node which has its template filled
+	 * @throws TemplateFillException thrown when a node was parsed more than once, which should not happen.
+	 */
 	private static OpenMathBase fillTemplate(OpenMathBase node, OpenMathBase[] args) throws TemplateFillException{
 		OpenMathBase copy = null;
 		try {
@@ -209,6 +254,14 @@ public class OpenMathTranslator {
 		return copy;
 		
 	}
+
+	/**
+	 * A recursive method, which is used to get arguments which are used to fill OpenMathBase templates.
+	 * Checks to which groups a given node belongs to and acts accordingly (OMApply, OMBind, OMError).
+	 * @param node OpenMathBase node that is to be processed
+	 * @param args OpenMathBase[] arguments with what the template is filled with
+	 * @throws TemplateFillException thrown when if node is incorrect. Object within an object.
+	 */
 	private static void fillTemplateImpl(OpenMathBase node, OpenMathBase[] args) throws TemplateFillException{
 		if(node instanceof OMApply){
 			OMApply oma = (OMApply) node;
@@ -237,6 +290,13 @@ public class OpenMathTranslator {
 		}
 
 	}
+
+	/**
+	 * Method to process an array of OpenMathBase objects.
+	 * @param array Array of OpenMathBase objects to be processed
+	 * @param args Arguments that the template is filled with.
+	 * @throws TemplateFillException thrown when incorrect amount of arguments given for OpenMathBase object.
+	 */
 	private static void processArray(OpenMathBase[] array, OpenMathBase[] args) throws TemplateFillException{
 		for(int i=0;i<array.length;i++){
 			OpenMathBase child = array[i];
@@ -270,6 +330,12 @@ public class OpenMathTranslator {
 	//Adds non-semantic data about the existence of parens to the node.
 	//Could later be improved upon by adding a type parameter
 	//In case we deal with more than {} such as ()
+
+	/**
+	 * Parses OMI and OMV constants in the the formula tree.
+	 * @param tree tree node containing of a constant
+	 * @return OpenMathBase object (right now OMInteger or OMVariable) containing a constant
+	 */
 	public static OpenMathBase lexerToOM(TerminalNodeImpl tree){
 		String constant = tree.getText();
 		if(OMI.matcher(constant).matches()){
