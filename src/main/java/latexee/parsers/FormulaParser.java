@@ -198,16 +198,17 @@ public class FormulaParser {
 	public void enableAmbiguityChecking(){
 		this.ambiguityChecking=true;
 	}
-<<<<<<< HEAD
+	
+	/**
+	 * Method to enable ambiguity checking with priorities
+	 */
 	public void enableAmbiguityCheckingWithPriority(){
 		this.ambiguityCheckingWithPriority=true;
 	}
-=======
 
 	/**
 	 * Method to enable popcorn output.
 	 */
->>>>>>> 0c3215f07437d8f384c3e922f7d5952440606113
 	public void enablePopcornOutput(){
 		this.popcornOutput=true;
 	}
