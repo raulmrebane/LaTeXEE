@@ -91,9 +91,15 @@ public class Main {
                         // Default outputfile is the same as input file, but change extension.
                         // If no extension, then just add extension
                         if (inputFile.indexOf('.') == -1) {
-                            outputFile = inputFile + ".xml3";
+                            if (popcornOutput)
+                                outputFile = inputFile + ".pop";
+                            else
+                                outputFile = inputFile + ".xml";
                         } else {
-                            outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + ".xml";
+                            if (popcornOutput)
+                                outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + ".pop";
+                            else
+                                outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + ".xml";
                         }
                         //System.out.println("Outputfile is: " + outputFile);
                     }
