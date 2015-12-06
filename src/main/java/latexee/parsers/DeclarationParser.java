@@ -42,6 +42,7 @@ public class DeclarationParser {
 	}
 
 	/**
+     * This method is only used for testing purposes.
 	 * Static method to find all the macro and operator declarations in the statement tree.
 	 * @param node entry node to statements branch
 	 * @param maxId amount of declarations parsed
@@ -87,6 +88,7 @@ public class DeclarationParser {
 	}
 
 	/**
+     * This method is only used for testing purposes.
 	 * Method to find if the declaration contains operator syntax.
 	 * @param tree statement node
 	 * @return true if node is operator statement, false if not operator then it should be macro statement
