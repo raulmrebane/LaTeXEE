@@ -43,7 +43,7 @@ public class DeclarationTest {
 	}
 	
 	@Test
-	public void test4() throws DeclarationInitialisationException { //fails because doesn't parse #
+	public void test4() throws DeclarationInitialisationException {
 		ParseTree pt = DeclarationParser.parseDeclaration("{macro=\\tuple, meaning=ecc.Tuple, argspec=[2], code={#1, \\ldots, #2}}");
 		MacroDeclaration md = new MacroDeclaration(pt,0);		
 		assertEquals("tuple", md.getMacroName());

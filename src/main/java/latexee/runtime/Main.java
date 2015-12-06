@@ -19,6 +19,7 @@ public class Main {
     public static String inputFile;
     public static boolean verbose = false;
     public static boolean ambiguityChecking = false;
+    public static boolean ambiguityCheckingWithPriority = false;
     public static boolean popcornOutput = false;
 
 
@@ -34,6 +35,7 @@ public class Main {
         options.addOption("v", "add verbosity to output");
         options.addOption("h", "display this menu");
         options.addOption("a", "check for ambiguity");
+        options.addOption("b", "check for ambiguity with priorities");
         options.addOption("p", "output in Popcorn");
         
         return options;
@@ -70,9 +72,14 @@ public class Main {
                     	popcornOutput = true;
                     	System.out.println("Popcorn output mode is enabled.");
                     }
-                    if (cmd.hasOption("a")) {
+                    if (cmd.hasOption("a") && !cmd.hasOption("b")) {
                         ambiguityChecking = true;
                         System.out.println("Ambiguity checking is enabled.");
+                    }
+                    
+                    if (cmd.hasOption("b")) {
+                    	ambiguityCheckingWithPriority = true;
+                    	System.out.println("Ambiguity checking with priorities is enabled.");
                     }
 
                     if (cmd.hasOption ("o")) {
@@ -125,6 +132,8 @@ public class Main {
                 if(ambiguityChecking){
                 	fp.enableAmbiguityChecking();
                 }
+                else if (ambiguityCheckingWithPriority)
+                	fp.enableAmbiguityCheckingWithPriority();
                 if(popcornOutput){
                 	fp.enablePopcornOutput();
                 }

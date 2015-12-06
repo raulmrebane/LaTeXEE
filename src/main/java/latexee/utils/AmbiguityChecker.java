@@ -2,7 +2,6 @@ package main.java.latexee.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,11 +16,65 @@ import main.java.latexee.logging.Logger;
 
 public class AmbiguityChecker {
 	
-	public static void check(ParseTree formula,Map<String,DeclareNode> declarations){
+	public static void checkAmbiguity(boolean withPriorities, ParseTree formula, Map<String,DeclareNode> declarations) {	
+		
 		//Find all used operators in the formula. 
 		//This lets us cap the max string length for when we find the combinations
 		//Which can greatly improve efficiency (for example if there was one unused operator with an absurd length)
 		Set<OperatorDeclaration> usedOperations = getUsedOperations(formula, declarations);
+		
+		/*System.out.println(declarations.size());
+		for (String k : declarations.keySet()) {
+			DeclareNode dn = declarations.get(k);
+			if (dn instanceof OperatorDeclaration) {
+				OperatorDeclaration c = (OperatorDeclaration) dn;
+				System.out.println(c.getOperator() + ", " + c.getType() + ", " + c.getPriority());
+			}
+		}*/
+		
+		if (withPriorities) {
+			
+			Map<Integer, Set<OperatorDeclaration>> priorityMap = new HashMap<>();
+		
+			for (OperatorDeclaration usedOperator : usedOperations)
+				addToMap(usedOperator, priorityMap);
+			
+			Map<Integer, Map<String, DeclareNode>> priorityDeclarations = createPriorityDeclarations(declarations);
+			
+			for (int p : priorityMap.keySet()) {
+				Set<OperatorDeclaration> prioritySet = priorityMap.get(p);
+				int maxLength = getMaxLength(prioritySet);
+				Map<String, DeclareNode> decs = priorityDeclarations.get(p);
+				check(formula, decs, maxLength, prioritySet);
+			}
+			
+		}
+		else {
+			int maxLength = getMaxLength(usedOperations);
+			check(formula, declarations, maxLength, usedOperations);
+		}
+		
+	}
+	
+	public static Map<Integer, Map<String, DeclareNode>> createPriorityDeclarations(Map<String, DeclareNode> declarations) {
+		Map<Integer, Map<String, DeclareNode>> priorityMap = new HashMap<>();
+		for (String key : declarations.keySet()) {
+			DeclareNode dn = declarations.get(key);
+			if (dn instanceof OperatorDeclaration) {
+				int priority = ((OperatorDeclaration) dn).getPriority();
+				if (priorityMap.containsKey(priority))
+					priorityMap.get(priority).put(key, dn);
+				else {
+					Map<String, DeclareNode> decs = new HashMap<>();
+					decs.put(key, dn);
+					priorityMap.put(priority, decs);
+				}
+			}
+		}
+		return priorityMap;
+	}
+	
+	public static int getMaxLength(Set<OperatorDeclaration> usedOperations){
 		int maxLength = 0;
 		for (OperatorDeclaration operatorDeclaration : usedOperations) {
 			int opLength = operatorDeclaration.getOperator().length();
@@ -29,6 +82,10 @@ public class AmbiguityChecker {
 				maxLength=opLength;
 			}
 		}
+		return maxLength;
+	}
+	
+	public static void check(ParseTree formula, Map<String,DeclareNode> declarations, int maxLength, Set<OperatorDeclaration> usedOperations){
 		
 		//Sort all operators by their type so I can make combinations based off of them.
 		//Type has to be taken into account because combinations with two infix operators next to each other
@@ -65,30 +122,6 @@ public class AmbiguityChecker {
 		Map<Integer,List<String>> postfixCombinations = findCombinations(postfixOperators,initialMap,maxLength,0);
 		Map<Integer,List<String>> prefixCombinations = findCombinations(prefixOperators,initialMap,maxLength,0);
 		
-		
-		Map<Integer, List<String>> prefixMap = new HashMap<>();
-		Map<Integer, List<String>> postfixMap = new HashMap<>();
-		Map<Integer, List<String>> infixMap = new HashMap<>();
-		
-		for (OperatorDeclaration usedOperator : usedOperations) {
-			String type = usedOperator.getType();
-			switch (type) {
-			case "prefix":
-				addToMap(usedOperator, prefixMap);
-				break;
-			case "postfix":
-				addToMap(usedOperator, postfixMap);
-				break;
-			case "infix":
-				addToMap(usedOperator, infixMap);
-				break;
-			}
-		}
-		
-		sortMap(prefixMap);
-		sortMap(postfixMap);
-		sortMap(infixMap);
-		
 		for (OperatorDeclaration usedOperator : usedOperations) {
 			String opString = usedOperator.getOperator();
 			String type = usedOperator.getType();
@@ -101,10 +134,8 @@ public class AmbiguityChecker {
 				Integer prefixOpLen = opString.length();
 				List<String> prefixSameLen = prefixCombinations.get(prefixOpLen);
 				for (String string : prefixSameLen) {
-					if(string.equals(opString)){
+					if(string.equals(opString))
 						counter++;
-					}
-					
 				}
 				break;
 			case "postfix":
@@ -112,9 +143,8 @@ public class AmbiguityChecker {
 				Integer postfixOpLen = opString.length();
 				List<String> postfixSameLen = postfixCombinations.get(postfixOpLen);
 				for (String string : postfixSameLen) {
-					if(string.equals(opString)){
+					if(string.equals(opString))
 						counter++;
-					}
 				}
 				break;
 			case "infix":
@@ -134,10 +164,9 @@ public class AmbiguityChecker {
 						if(prefixes!=null&&postfixes!=null){
 							for (String pre : prefixes) {
 								for (String post : postfixes) {
-									String complete = pre + inf + post;
-									if(complete.equals(opString)){
+									String complete = post + inf + pre;
+									if(complete.equals(opString))
 										counter++;
-									}
 								}
 							}
 						}
@@ -149,13 +178,13 @@ public class AmbiguityChecker {
 				break;
 			}
 			if(counter>1){
-				System.out.println("Operator \""+opString+"\" is ambiguous in formula "+formula.getText());
+				System.out.println("Operator \""+opString+"\" is ambiguous in formula "+formula.getText() + "\n");
 			}
 		}
 		
 	}
 	
-	//TODO: add priorities
+
 	private static Set<OperatorDeclaration> getUsedOperations(ParseTree formula, Map<String,DeclareNode> declarations){
 		HashSet<OperatorDeclaration> operations = new HashSet<OperatorDeclaration>();	
 		//Take the context name, see if it matches an operator usage
@@ -170,20 +199,18 @@ public class AmbiguityChecker {
 				//Add it to result if it's an operator-type declaration
 				OperatorDeclaration castDec = (OperatorDeclaration) declaration;
 				operations.add(castDec);
-				System.out.println("SIIN0: " + castDec.getOperator() + ", " + castDec.getType());
+				
 				if (castDec.getType().equals("infix")) { //if infix, then checks if has any prefix children
-					System.out.println("SIIN1: " + castDec.getOperator());
 					String i = getLongerInfix(formula, declarations, castDec.getPriority());
-					System.out.println("SIIN2: " + i);
 					if (!i.equals(""))
-						operations.add(new OperatorDeclaration("", "infix", castDec.getPriority(), castDec.getOperator() + i, castDec.getAssociativity()));
+						operations.add(new OperatorDeclaration("", "infix", castDec.getPriority(), i + castDec.getOperator(), castDec.getAssociativity()));
 				}
 			}
 		}
 		//Find operators from children
 		for(int i=0;i<formula.getChildCount();i++){
 			ParseTree childNode = formula.getChild(i);
-			operations.addAll(getUsedOperations(childNode,declarations));
+			operations.addAll(getUsedOperations(childNode, declarations));
 		}
 		
 		return operations;
@@ -219,51 +246,21 @@ public class AmbiguityChecker {
 		}
 	}
 	
-	//finds all combinations of postfix followed by prefix (no longer necessary?)
-	public static List<String> findPostfixPrefixCombinations(List<String> postfixOperators, List<String> prefixOperators, int maxLength) {
-		List<String> combinations = new ArrayList<>();
-		if (postfixOperators.size() == 0 || prefixOperators.size() == 0)
-			return combinations;
-		Collections.sort(prefixOperators, new StringLengthComparator()); //TODO: need üles.
-		Collections.sort(postfixOperators, new StringLengthComparator());
-		for (String postOp : postfixOperators) {
-			int postOpLen = postOp.length();
-			//for effectiveness, breaks the cycle once the max length has been surpassed
-			if (postOpLen + prefixOperators.get(0).length() > maxLength)
-				break;
-			for (String preOp : prefixOperators) {
-				if (postOpLen + preOp.length() > maxLength)
-					break;
-				String newOp = postOp + preOp;
-				combinations.add(newOp);
-			}
-		}
-		return combinations;
-	}
-	
-	//adds operators to their respective maps (by type and priority)
-	public static Map<Integer, List<String>> addToMap(OperatorDeclaration op, Map<Integer, List<String>> map) {
+	//adds OperatorDeclarations to map by priority
+	public static void addToMap(OperatorDeclaration op, Map<Integer, Set<OperatorDeclaration>> map) {
 		int priority = op.getPriority();
-		String opString = op.getOperator();
 		if (map.containsKey(priority))
-			map.get(priority).add(opString);
+			map.get(priority).add(op);
 		else {
-			List<String> prefixList = new ArrayList<>();
-			prefixList.add(opString);
-			map.put(priority, prefixList);
-		}
-		return map;
-	}
-	
-	//sorts the lists within maps by String lengths
-	public static void sortMap(Map<Integer, List<String>> map) {
-		for (int i : map.keySet()) {
-			Collections.sort(map.get(i), new StringLengthComparator());
+			Set<OperatorDeclaration> prioritySet = new HashSet<>();
+			prioritySet.add(op);
+			map.put(priority, prioritySet);
 		}
 	}
 	
 	//the -+ case: - is infix, + prefix, returns a new infix operator -+
-	public static String getLongerInfix(ParseTree formula, Map<String, DeclareNode> declarations, int priority) {		
+	public static String getLongerInfix(ParseTree formula, Map<String, DeclareNode> declarations, int priority) {	
+		String s = "";
 		for (int i = 0; i < formula.getChildCount(); i++) {
 			ParseTree childNode = formula.getChild(i);
 			String treeName = childNode.getClass().getSimpleName();
@@ -272,14 +269,13 @@ public class AmbiguityChecker {
 				DeclareNode declaration = declarations.get(noContext);
 				if(declaration!=null && declaration instanceof OperatorDeclaration){
 					OperatorDeclaration castDec = (OperatorDeclaration) declaration;
-					if (castDec.getType().equals("prefix") && castDec.getPriority() == priority)
+					if (castDec.getType().equals("postfix") && castDec.getPriority() == priority)
 						return castDec.getOperator();
 				}
 			}
+			s += getLongerInfix(childNode, declarations, priority);
 		}
-		return "";
+		return s;
 	}
+	
 }
-
-
-

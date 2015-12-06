@@ -103,7 +103,10 @@ public class GrammarGenerator {
 				if(priority==100){
 					sb.append("level"+priorityAsString+" "+"level"+nextPriorityAsString+" #INVISIBLETIMES\n|");
 				}
-				for(OperatorDeclaration opNode : operatorNodes.get(priorities.get(i))){
+				ArrayList<OperatorDeclaration> opNodes = operatorNodes.get(priorities.get(i));
+				Collections.sort(opNodes, new DeclarationComparator());
+
+				for(OperatorDeclaration opNode : opNodes){
 					
 					//Using the method which specifies which level the rule should point to
 					//For example if we have addition on level 5 and the next level is 7
@@ -125,6 +128,8 @@ public class GrammarGenerator {
 				sb.append("level"+priorityAsString+" level101"+" #INVISIBLETIMES\n|");
 			}
 			//Here opNode.toGrammarRule just points to a level that is 1 higher than the current one. 
+			ArrayList<OperatorDeclaration> opNodes = operatorNodes.get(lastPriority);
+			Collections.sort(opNodes, new DeclarationComparator());
 			for(DeclareNode opNode : operatorNodes.get(lastPriority)){
 				sb.append(opNode.toGrammarRule()+"|");
 			}

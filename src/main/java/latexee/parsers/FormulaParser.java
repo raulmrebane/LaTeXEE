@@ -40,6 +40,7 @@ public class FormulaParser {
 	private int nodeId;
 	
 	private boolean ambiguityChecking;
+	private boolean ambiguityCheckingWithPriority;
 	private boolean popcornOutput;	
 	
 	private int parsedFormulas;
@@ -52,7 +53,8 @@ public class FormulaParser {
 		this.cp = new GrammarCompiler();
 		this.nodeId = 0;
 		
-		this.ambiguityChecking=false;
+		this.ambiguityChecking = false;
+		this.ambiguityCheckingWithPriority = false;
 		this.popcornOutput=false;
 		
 		this.parsedFormulas = 0;
@@ -133,7 +135,10 @@ public class FormulaParser {
 						writer.write(indented);
 					}
 					if(ambiguityChecking){
-						AmbiguityChecker.check(formulaTree,declarations);
+						AmbiguityChecker.checkAmbiguity(false, formulaTree, declarations);
+					}
+					else if (ambiguityCheckingWithPriority){
+						AmbiguityChecker.checkAmbiguity(true, formulaTree, declarations);
 					}
 				}
 			} catch (IOException e) {
@@ -157,6 +162,9 @@ public class FormulaParser {
 	}
 	public void enableAmbiguityChecking(){
 		this.ambiguityChecking=true;
+	}
+	public void enableAmbiguityCheckingWithPriority(){
+		this.ambiguityCheckingWithPriority=true;
 	}
 	public void enablePopcornOutput(){
 		this.popcornOutput=true;
