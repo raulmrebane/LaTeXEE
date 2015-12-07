@@ -21,6 +21,7 @@ public class Main {
     public static boolean ambiguityChecking = false;
     public static boolean ambiguityCheckingWithPriority = false;
     public static boolean popcornOutput = false;
+    public static boolean displayDoctree = false;
 
 
     /**
@@ -37,6 +38,7 @@ public class Main {
         options.addOption("a", "check for ambiguity");
         options.addOption("A", "check for ambiguity with priorities");
         options.addOption("p", "output in Popcorn");
+        options.addOption("t", "show document tree");
         
         return options;
     }
@@ -80,6 +82,9 @@ public class Main {
                     if (cmd.hasOption("A")) {
                     	ambiguityCheckingWithPriority = true;
                     	System.out.println("Ambiguity checking with priorities is enabled.");
+                    }
+                    if(cmd.hasOption("t")){
+                    	displayDoctree = true;
                     }
 
                     if (cmd.hasOption ("o")) {
@@ -134,6 +139,9 @@ public class Main {
         try{
     		if (inputFile != null) {
                 ParsedStatement AST = DocumentParser.parse(inputFile);
+                if(displayDoctree){
+                	System.out.println(AST);
+                }
                 FormulaParser fp = new FormulaParser(outputFile);
                 if(ambiguityChecking){
                 	fp.enableAmbiguityChecking();
