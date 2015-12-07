@@ -23,8 +23,8 @@ The following flags are available:
 * "-v" terminal output more verbose
 * "-p" popcorn output mode
 * "-a" check for ambiguities
-* "-A" check for ambiguities with priorities
-* "-t" show document AST tree in console
+* "-A" check for ambiguities only within the same priority level
+* "-t" show the document tree in console
 
 ### The team  
 
