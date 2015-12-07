@@ -1,69 +1,70 @@
 \documentclass{article}\begin{document}
 \begin{theorem}
 
-\declare{syntax={infix,108,"++",l}, meaning=arith1.double_plus}
+\declare{syntax={infix,107,"++",l}, meaning=arith1.double_plus}
 \declare{syntax={prefix,108,"+"}, meaning=arith1.unary_plus}
 \declare{syntax={infix,108,"+",l}, meaning=arith1.plus}
-$(1+2+(3+4))$
-$(+4)+(+5)$
-$(2++3)$ %ambiguous: 2++3 or 2+(+3)
+$1+2+3+4$
+$++++a$
+$+2+++5$
+$2++3$ %ambiguous: 2++3 or 2+(+3)
 
 \declare{syntax={infix,108,"##",l}, meaning=arith1.hash}
 \declare{syntax={prefix,106,"#"}, meaning=arith1.unary_hash}
 \declare{syntax={infix,108,"#",l}, meaning=arith1.hash}
 
-$(2##3)$ %ambigous only without taking priorities into account
+$2##3$ %ambigous only without taking priorities into account
 
 \declare{syntax={postfix,108,"-"}, meaning=arith1.unary_minus}
 \declare{syntax={infix,108,"-",l}, meaning=arith1.minus}
 
-$(a-+b)$ %ambiguous: (a-)+b or a-(+b)
+$a-+b$ %ambiguous: (a-)+b or a-(+b)
 
 \declare{syntax={prefix,108,"|"}, meaning=arith1.sth}
 \declare{syntax={infix,108,"|",l}, meaning=arith1.sth}
 
-$(a-|b)$ %ambiguous: (a-)|b or a-(|b)
+$a-|b$ %ambiguous: (a-)|b or a-(|b)
 
 \declare{syntax={infix,108,"**",l}, meaning=arith1.double_times}
 \declare{syntax={postfix,108,"*"}, meaning=arith1.unary_times}
 \declare{syntax={infix,108,"*",l}, meaning=arith1.times}
 
-$(2**4)$ %ambiguous: 2**4 or (2*)*4
-$(5**)$
-$(9*9)$
+$2**4$ %ambiguous: 2**4 or (2*)*4
+$5**$
+$9*9$
 
 \declare{syntax={infix,108,"£",l}, meaning=arith1.sth}
 \declare{syntax={prefix,108,"€"}, meaning=arith1.sth}
 \declare{syntax={infix,108,"£€",l}, meaning=arith1.sth}
 
-$(7£€8)$ %ambiguous: 7£€8 or 7£(€8)
+$7£€8$ %ambiguous: 7£€8 or 7£(€8)
 
 \declare{syntax={infix,108,"!",l}, meaning=arith1.sth}
 \declare{syntax={postfix,108,"~"}, meaning=arith1.sth}
 \declare{syntax={infix,108,"~!",l}, meaning=arith1.sth}
 
-$(9~!10)$ %ambiguous: 9~!10 or (9~)!10
+$9~!10$ %ambiguous: 9~!10 or (9~)!10
 
 \declare{syntax={infix,108,".",l}, meaning=arith1.sth}
 \declare{syntax={prefix,108,"."}, meaning=arith1.sth}
 
-$(.a.b)$ %ambiguous: (.a).b or .(a.b)
+$.a.b$ %ambiguous: (.a).b or .(a.b)
 
 \declare{syntax={infix,108,",",l}, meaning=arith1.sth}
 \declare{syntax={postfix,108,","}, meaning=arith1.sth}
 
-$(a,b,)$ %ambiguous: a,(b,) or (a,b),
+$a,b,$ %ambiguous: a,(b,) or (a,b),
 
 \declare{syntax={infix,108,"??",l}, meaning=arith1.sth}
 \declare{syntax={postfix,108,"?"}, meaning=arith1.sth}
 
-$(a??b??)$ %ambiguous: a??((b?)?) or ((a??b)?)?
+$a??b??$ %ambiguous: a??((b?)?) or ((a??b)?)?
 
 \declare{syntax={infix,108,"==;",l}, meaning=arith1.sth}
 \declare{syntax={postfix,108,"="}, meaning=arith1.sth}
 \declare{syntax={postfix,108,";"}, meaning=arith1.sth}
 
-$(a==;b==;)$ %ambiguous: (((a==;b)=)=); or a==;(((b=)=);)
+$a==;b==;$ %ambiguous: (((a==;b)=)=); or a==;(((b=)=);)
 $a==;b$
 $a==;$
 $a====;b$
@@ -72,7 +73,7 @@ $a====;b$
 \declare{syntax={prefix,108,"_"}, meaning=arith1.sth}
 \declare{syntax={prefix,108,"@"}, meaning=arith1.sth}
 
-$(@__a@__b)$ %ambiguous: (@(_(_a)))@__b or @(_(_(a@__b)))
+$@__a@__b$ %ambiguous: (@(_(_a)))@__b or @(_(_(a@__b)))
 
 \end{theorem}
 \end{document}
