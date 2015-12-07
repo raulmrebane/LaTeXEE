@@ -71,6 +71,7 @@ public class DocumentParser {
 	 * Gets the parse tree of the latex text and parses it to get statement tree.
 	 * @param filename name of the file to be parsed
 	 * @param includedFiles files included in another file
+     * @param isIncludedFile true if file is included, false if first file
 	 * @return ParsedStatement object of statements containing all the statements from all the input files
 	 */
 		public static ParsedStatement parse (String filename, ArrayList<String> includedFiles, boolean isIncludedFile) {
@@ -100,6 +101,7 @@ public class DocumentParser {
 	/**
 	 * This method, given the file path, gets all the text from in the form of string.
 	 * @param filePath file location in the system
+     * @param isIncludedFile true if file is included, false if first file
 	 * @return content of file at the location given with filePath
 	 */
 		public static String getFileContent (String filePath, boolean isIncludedFile) {
