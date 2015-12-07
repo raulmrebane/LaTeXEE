@@ -21,7 +21,13 @@ BLOCK_COMMENT
 	:	'\\begin{comment}' .*? '\\end{comment}' -> skip
 	;
 
-LINE_COMMENT: '%' ~('\r'|'\n') -> skip;
+LineCommentLiteral
+  : UnterminatedLineCommentLiteral ('\r'|'\n')
+  ;
+
+UnterminatedLineCommentLiteral
+  : '%' (~[\\n] | '\\' (. | EOF))*
+  ;
 
 formula
 	: FormulaLiteral
@@ -70,5 +76,8 @@ UnterminatedFormulaLiteral
 BugFixLiteral
   : '\\$'
   | '\\{' //the other brace is handled in UnterminatedBraceLiteral
+  | '\\n'
+  | '\\r'
+  | '\\%'
   ;
 OTHER : .->skip;
