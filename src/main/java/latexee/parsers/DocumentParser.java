@@ -63,7 +63,7 @@ public class DocumentParser {
 	 * @return ParsedStatement object of statements for file which contains all declaration nodes and formula statement nodes
 	 */
 		public static ParsedStatement parse(String filename) {
-			return parse (filename, new ArrayList<String>(Arrays.asList(filename)));
+			return parse (filename, new ArrayList<String>(Arrays.asList(filename)), false);
 		}
 
 	/**
@@ -73,9 +73,11 @@ public class DocumentParser {
 	 * @param includedFiles files included in another file
 	 * @return ParsedStatement object of statements containing all the statements from all the input files
 	 */
-		public static ParsedStatement parse (String filename, ArrayList<String> includedFiles) {
-			String fileContent = getFileContent(filename);
+		public static ParsedStatement parse (String filename, ArrayList<String> includedFiles, boolean isIncludedFile) {
+	
+			String fileContent = getFileContent(filename, isIncludedFile);
 			ParseTree tree = parseText(fileContent);
+			
 			ParsedStatement ps = parseRecursively(tree, includedFiles);
 			return ps;
 		}
@@ -100,21 +102,31 @@ public class DocumentParser {
 	 * @param filePath file location in the system
 	 * @return content of file at the location given with filePath
 	 */
-		public static String getFileContent (String filePath) {
+		public static String getFileContent (String filePath, boolean isIncludedFile) {
+			
 			StringBuffer sb = new StringBuffer();
 			try {
 				Logger.log("Attempting to open file: "+filePath);
-				Scanner sc = new Scanner(new File(filePath));
-				Logger.log("... OK");
-				while (sc.hasNextLine()) {
-					sb.append(sc.nextLine()); //TODO: add /r/n as well?
+				File file = new File(filePath);
+				if (isIncludedFile && file.isAbsolute()){
+					throw new Exception("Files with absolute paths cannot be accessed.");
 				}
-				sc.close();
+				else {
+					Scanner sc = new Scanner(file);
+					Logger.log("... OK");
+					while (sc.hasNextLine()) {
+						sb.append(sc.nextLine()); //TODO: add /r/n as well?
+					}
+					sc.close();
+				}
 			}
 			
 			catch (FileNotFoundException e) {
 				Logger.log("Could not access specified file.");
+			} catch (Exception e) {
+				Logger.log(e.getMessage());
 			}
+			
 			return sb.toString();
 		}
 
@@ -187,7 +199,7 @@ public class DocumentParser {
 				String url = text.substring(text.indexOf('{')+1, text.length()-1);
 				if (!includedFiles.contains(url)) {
 					includedFiles.add(url);
-					ParsedStatement child = parse(url, includedFiles);
+					ParsedStatement child = parse(url, includedFiles, true);
 					return new IncludeStatement(url, startIndex, new ArrayList<ParsedStatement>(Arrays.asList(child)));
 				}
 				return new IncludeStatement(url, startIndex);
