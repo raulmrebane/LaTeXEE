@@ -52,7 +52,7 @@ public class FormulaParser {
 	
 	private int parsedFormulas;
 	private int successfullyParsedFormulas;
-	private int parsedDeclarations; //TODO: või makrodele ja operaatoritele eraldi?
+	private int parsedDeclarations;
 	private int successfullyParsedDeclarations;
 
 	/**

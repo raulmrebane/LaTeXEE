@@ -75,13 +75,35 @@ public void GrammarGenerator() throws IOException{
      File expectedOutputFile = new File("src/test/openmath/grammar_generator.xml");
      assertTrue(FileUtils.contentEqualsIgnoreEOL(outputFile, expectedOutputFile, null));
 }
-     @Test
-     public void CommentTest() throws IOException{
-          ParsedStatement AST = DocumentParser.parse("src/test/antlr/grammar_comment.tex");
-          DeclarationParser.declarationFinder(AST);
-          fp.parse(AST);
-          File outputFile = new File("output.xml");
-          File expectedOutputFile = new File("src/test/openmath/grammar_generator.xml");
-          assertTrue(FileUtils.contentEqualsIgnoreEOL(outputFile, expectedOutputFile, null));
-     }
+
+ @Test
+ public void CommentTest() throws IOException{
+      ParsedStatement AST = DocumentParser.parse("src/test/antlr/grammar_comment.tex");
+      DeclarationParser.declarationFinder(AST);
+      fp.parse(AST);
+      File outputFile = new File("output.xml");
+      File expectedOutputFile = new File("src/test/openmath/grammar_generator.xml");
+      assertTrue(FileUtils.contentEqualsIgnoreEOL(outputFile, expectedOutputFile, null));
+ }
+ 
+ @Test
+ public void InlineTest1() throws IOException{
+      ParsedStatement AST = DocumentParser.parse("src/test/antlr/inlinetest1.tex");
+      DeclarationParser.declarationFinder(AST);
+      fp.parse(AST);
+      File outputFile = new File("output.xml");
+      File expectedOutputFile = new File("src/test/openmath/inlinetest1.xml");
+      assertTrue(FileUtils.contentEqualsIgnoreEOL(outputFile, expectedOutputFile, null));
+ }
+ 
+ @Test
+ public void InlineTest2() throws IOException{
+      ParsedStatement AST = DocumentParser.parse("src/test/antlr/inlinetest2.tex");
+      DeclarationParser.declarationFinder(AST);
+      fp.parse(AST);
+      File outputFile = new File("output.xml");
+      File expectedOutputFile = new File("src/test/openmath/inlinetest2.xml");
+      assertTrue(FileUtils.contentEqualsIgnoreEOL(outputFile, expectedOutputFile, null));
+ }
+ 
 }

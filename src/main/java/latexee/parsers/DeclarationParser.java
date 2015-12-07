@@ -1,7 +1,6 @@
 package main.java.latexee.parsers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -14,10 +13,7 @@ import main.java.antlrgen.DeclarationGrammarParser.SyntaxBracketContext;
 import main.java.latexee.declareast.MacroDeclaration;
 import main.java.latexee.declareast.OperatorDeclaration;
 import main.java.latexee.docast.DeclareStatement;
-import main.java.latexee.docast.FormulaStatement;
-import main.java.latexee.docast.LemmaStatement;
 import main.java.latexee.docast.ParsedStatement;
-import main.java.latexee.docast.TheoremStatement;
 import main.java.latexee.errorlisteners.DeclarationErrorListener;
 import main.java.latexee.exceptions.DeclarationInitialisationException;
 import main.java.latexee.logging.Logger;
