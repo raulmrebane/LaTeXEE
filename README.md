@@ -11,7 +11,8 @@ LaTeXEE is a command-line only application which parses a valid .tex document, w
 2. Run the compiled jar from terminal with command "java -jar LaTeXEE filename.tex"
 3. Output will be generated in the same folder where input is with name. Output is either OpenMath xml or Popcorn.
 
-Further guidelines can be found [here]. (https://github.com/Abercus/LaTeXEE/wiki/Jar-Readme)
+Further guidelines can be found [here](https://github.com/Abercus/LaTeXEE/wiki/Jar-Readme)
+
 
 ### Flags
 
