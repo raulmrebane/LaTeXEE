@@ -3,12 +3,23 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+
+%Declmath by Dominique Unruh contains the macro which is the basis of the declaration language
+%for macro operators. Use this if you want the macros to actually work
 \usepackage[define,symbolindex,ignore={meaning,syntax}]{declmath}
+
+%you have to add everykey apart from macro, argspec and code to ignore. 
+%this is because this is the macro that creates the macro
+%the current implementation complains about keys that it doesnt know about
+
 \begin{document}
 \declare{macro=\tuple, meaning=ecc.Tuple, argspec=[2], code={#1, \ldots, #2}}
+
 \declare{syntax={infix,101,"_",l},meaning={list2.list_selector(#_2, #_1)}}
 %note how the popcorn usage allows us to flip the operands
 $\tuple{a_1}{a_n}$
+
 \declare{syntax={infix,102,"+",l},meaning={#_1 + #_2}}
 $2+2$
+
 \end{document}
