@@ -26,7 +26,7 @@ LineCommentLiteral
   ;
 
 UnterminatedLineCommentLiteral
-  : '%' (~[\\n] | '\\' (. | EOF))*
+  : '%' (~[\\n] | '\\' (. | EOF))*?
   ;
 
 formula
