@@ -123,13 +123,18 @@ public class GrammarCompiler {
 			Logger.log("Parsing successful.\n");
 			tree = (ParseTree) rawObject;
 			
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
+		} catch (InstantiationException e) {
+			Logger.log("Could not initialize new instance.");
+		} catch (IllegalAccessException e) {
+			Logger.log("Illegal access.");
+		} catch (IllegalArgumentException e) {
+			Logger.log("Illegal argument.");
+		} catch (InvocationTargetException e) {
+			Logger.log("Error invoking the target.");
 		} catch (NoSuchMethodException e1) {
-			e1.printStackTrace();
+			Logger.log("Method was not found.");
 		} catch (SecurityException e1) {
-			e1.printStackTrace();
+			Logger.log("Security violation");
 		}
         
         return tree;
@@ -227,7 +232,7 @@ public class GrammarCompiler {
 			lexerClass = cl.loadClass(packageName+".RuntimeGrammarLexer");
 			parserClass = cl.loadClass(packageName+".RuntimeGrammarParser");
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			Logger.log("Class was not found.");
 		}
 		
 		try {
@@ -237,8 +242,10 @@ public class GrammarCompiler {
 			parserCtor = parserClass.getDeclaredConstructor(TokenStream.class);
 			parserCtor.setAccessible(true);
 			pair =  new ClassInfo(parserCtor, lexerCtor, parserClass);
-		} catch (NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			Logger.log("Method was not found.");
+		} catch (SecurityException e) {
+			Logger.log("Security violation.");
 		}
 		return pair;
 	}
