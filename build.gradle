@@ -56,7 +56,7 @@ task generateGrammarSource(dependsOn: antlrOutputDir, type: JavaExec) {
 }
 
 sourceSets {
-    main.java.srcDir 'src/main' 
+    main.java.srcDir 'src/main'
     test.java.srcDir 'src/test' 
 }
 
@@ -91,6 +91,10 @@ task run(type: JavaExec, dependsOn: classes) {
         args(runargs.split(' '))
     }
    
+}
+
+javadoc {
+  exclude "**/antlrgen/**"
 }
 
 compileJava {
