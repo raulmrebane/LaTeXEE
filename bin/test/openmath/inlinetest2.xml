@@ -1,0 +1,10 @@
+<OMOBJ>
+    <OMA>
+        <OMS cd="arith1" name="plus"/>
+        <OMI>9</OMI>
+        <OMI>2</OMI>
+    </OMA>
+</OMOBJ>
+<OMOBJ>
+    <OMI>7</OMI>
+</OMOBJ>
