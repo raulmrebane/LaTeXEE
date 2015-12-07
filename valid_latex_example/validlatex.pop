@@ -1,0 +1,2 @@
+(ecc.Tuple(list2.list_selector(1, $a), list2.list_selector($n, $a))){LaTeXEE.nonsemantic->code.'{#1, \ldots, #2}'}
+2 + 2

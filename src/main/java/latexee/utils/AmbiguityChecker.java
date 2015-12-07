@@ -60,7 +60,7 @@ public class AmbiguityChecker {
 	 * @param priority - a non-negative Integer if the checking is done with priorities, otherwise -1
 	 * @param sufixList - the resulting list where the operators are gathered
 	 * @param sufix - either "prefix" or "postfix"
-	 * @return - an ArrayList<String> with all gathered prefix or postfix operators
+	 * @return - an ArrayList of strings with all gathered prefix or postfix operators
 	 */
 	public static List<String> gatherSufixes(ParseTree formula, Map<String, DeclareNode> declarations, int priority, List<String> sufixList, String sufix) {
 		for (int i = 0; i < formula.getChildCount(); i++) {
@@ -123,7 +123,7 @@ public class AmbiguityChecker {
 	
 	/**
 	 * This method takes all declarations and returns a map where all OperatorDeclarations have been sorted by priority
-	 * @ declarations - all declarations declared for the formula
+	 * @param declarations - all declarations declared for the formula
 	 * @return - a HashMap with priorities of operators as keys
 	 */
 	public static Map<Integer, Map<String, DeclareNode>> createPriorityDeclarations(Map<String, DeclareNode> declarations) {
@@ -146,7 +146,7 @@ public class AmbiguityChecker {
 	
 	/**
 	 * This method takes a set of operators and returns the length of the longest one
-	 * @param usedOperators - a set of operators
+	 * @param usedOperations - a set of operators
 	 * @return - the length of the longest operator
 	 */
 	public static int getMaxLength(Set<OperatorDeclaration> usedOperations){
@@ -412,11 +412,12 @@ public class AmbiguityChecker {
 	}
 	
 	/**
-	 * This function returns the operator of a prefix or postfix child and an empty String if such is not found
+	 * This function returns the operator of a prefix or postfix child or an empty String if such is not found
 	 * @param formula - the current node of a prefix or postfix operator
 	 * @param declarations - all declarations declared for the formula
 	 * @param priority - a non-negative Integer if the checking is done with priorities, otherwise -1
 	 * @param sufix - either "prefix" or "postfix"
+     * @return operator of a prefix or postfix child or an empty string if was not found
 	 */
 	//the -+ case: - is postfix, + infix, returns a new infix operator -+
 	public static String getLongerInfix(ParseTree formula, Map<String, DeclareNode> declarations, int priority, String sufix) {	

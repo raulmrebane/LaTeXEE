@@ -1,0 +1,14 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[define,symbolindex,ignore={meaning,syntax}]{declmath}
+\begin{document}
+\declare{macro=\tuple, meaning=ecc.Tuple, argspec=[2], code={#1, \ldots, #2}}
+\declare{syntax={infix,101,"_",l},meaning={list2.list_selector(#_2, #_1)}}
+%note how the popcorn usage allows us to flip the operands
+$\tuple{a_1}{a_n}$
+\declare{syntax={infix,102,"+",l},meaning={#_1 + #_2}}
+$2+2$
+\end{document}
