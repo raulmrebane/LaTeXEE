@@ -117,7 +117,6 @@ public class GrammarCompiler {
 			Object rawObject = parsingMethod.invoke(parser);
 			
 			if(fel.foundErrors()){
-				//TODO: Make our own exception type for this purpose
 				Logger.log("Parsing finished with errors.\n");
 				return null;
 			}
@@ -126,13 +125,10 @@ public class GrammarCompiler {
 			
 		} catch (InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NoSuchMethodException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (SecurityException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
         
@@ -231,7 +227,6 @@ public class GrammarCompiler {
 			lexerClass = cl.loadClass(packageName+".RuntimeGrammarLexer");
 			parserClass = cl.loadClass(packageName+".RuntimeGrammarParser");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -243,7 +238,6 @@ public class GrammarCompiler {
 			parserCtor.setAccessible(true);
 			pair =  new ClassInfo(parserCtor, lexerCtor, parserClass);
 		} catch (NoSuchMethodException | SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return pair;

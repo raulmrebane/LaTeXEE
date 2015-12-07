@@ -112,7 +112,7 @@ public class OperatorDeclaration extends DeclareNode {
 			//Instead of 0-indexed like other tree nodes
 			
 			if (this.type != null || this.priority != null || this.operator != null) {
-				Logger.log("Multiple instances of syntax."); //TODO: mujal logida?
+				Logger.log("Multiple instances of syntax.");
 				throw new DeclarationInitialisationException();
 			}
 			

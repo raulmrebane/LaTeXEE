@@ -1,6 +1,5 @@
 package test.java.latexee.utils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -13,11 +12,9 @@ import main.java.latexee.parsers.DeclarationParser;
 import main.java.latexee.utils.*;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
 
 
 public class FormulaParserTest {

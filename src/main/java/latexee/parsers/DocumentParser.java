@@ -117,7 +117,7 @@ public class DocumentParser {
 					Scanner sc = new Scanner(file);
 					Logger.log("... OK");
 					while (sc.hasNextLine()) {
-						sb.append(sc.nextLine()); //TODO: add /r/n as well?
+						sb.append(sc.nextLine());
 					}
 					sc.close();
 				}
