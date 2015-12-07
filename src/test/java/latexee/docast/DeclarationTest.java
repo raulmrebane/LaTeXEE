@@ -38,7 +38,7 @@ public class DeclarationTest {
 		assertEquals("frac", md.getMacroName());
 		assertEquals("arith1", md.getContentDictionary());
 		assertEquals("divide", md.getMeaning());
-		assertEquals("false", ""+md.hasOptionalArgument());
+		assertFalse(md.hasOptionalArgument());
 		assertEquals("{code={...}}", ""+md.getMiscellaneous());
 	}
 	
@@ -49,8 +49,21 @@ public class DeclarationTest {
 		assertEquals("tuple", md.getMacroName());
 		assertEquals("ecc", md.getContentDictionary());
 		assertEquals("Tuple", md.getMeaning());
-		assertEquals("false", ""+md.hasOptionalArgument());
+		assertFalse(md.hasOptionalArgument());
 		assertEquals("{code={#1, \\ldots, #2}}", ""+md.getMiscellaneous());
 	}
-
+	
+	
+	@Test
+	public void test5() throws DeclarationInitialisationException {
+		ParseTree pt = DeclarationParser.parseDeclaration("{macro=\\frac, meaning=arith1.divide, argspec=[2][1], meaningOpt=arith1.plus, code={...}}");
+		MacroDeclaration md = new MacroDeclaration(pt,0);		
+		assertEquals("frac", md.getMacroName());
+		assertEquals("arith1", md.getContentDictionary());
+		assertEquals("divide", md.getMeaning());
+		assertTrue(md.hasOptionalArgument());
+		assertEquals("plus", md.getOptionalMeaning());
+		assertEquals("{code={...}}", ""+md.getMiscellaneous());
+	}
+	
 }
