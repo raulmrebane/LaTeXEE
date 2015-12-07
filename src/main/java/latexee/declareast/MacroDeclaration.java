@@ -7,8 +7,6 @@ import main.java.latexee.exceptions.DeclarationInitialisationException;
 import main.java.latexee.logging.Logger;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.symcomp.openmath.OpenMathBase;
-import org.symcomp.openmath.OpenMathException;
 
 /**
  * MacroDeclaration is a class, which inherits from DeclareNode.

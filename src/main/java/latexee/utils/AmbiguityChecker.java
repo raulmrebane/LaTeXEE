@@ -15,7 +15,7 @@ import main.java.latexee.declareast.DeclareNode;
 import main.java.latexee.declareast.OperatorDeclaration;
 import main.java.latexee.logging.Logger;
 
-/*
+/**
  * AmbiguityChekcer.java is a class for checking whether a formula is ambiguous or not (could be parsed in several ways).
  * The ParseTrees of every given formula with its declarations are checked to locate any ambiguity, then
  * all used operators are gathered and checked further by String comparison. 
@@ -23,7 +23,7 @@ import main.java.latexee.logging.Logger;
 
 public class AmbiguityChecker {
 	
-	/*
+	/**
 	 * This method checks recursively whether a prefix or postfix operator has a child that is an operator with the type infix. 
 	 * If such a child is found, its operator is returned, otherwise an empty String.
 	 * @param formula - the current node of a prefix or postfix operator
@@ -53,7 +53,7 @@ public class AmbiguityChecker {
 	}
 	
 	//
-	/*
+	/**
 	 * This method gathers all consecutive prefix or postfix operators starting from the current node into an ArrayList
 	 * @param formula - the current node of a prefix or postfix operator
 	 * @param declarations - all declarations declared for the formula
@@ -83,7 +83,7 @@ public class AmbiguityChecker {
 		return sufixList;
 	}
 	
-	/*
+	/**
 	 * This is the main method of the class where used operators are gathered and checking is called out, based on
 	 * whether the checking is done with or without priorities.
 	 * @param withPriority - a boolean value that determines if we are currently checking with priorities or not
@@ -121,7 +121,7 @@ public class AmbiguityChecker {
 		
 	}
 	
-	/*
+	/**
 	 * This method takes all declarations and returns a map where all OperatorDeclarations have been sorted by priority
 	 * @ declarations - all declarations declared for the formula
 	 * @return - a HashMap with priorities of operators as keys
@@ -144,7 +144,7 @@ public class AmbiguityChecker {
 		return priorityMap;
 	}
 	
-	/*
+	/**
 	 * This method takes a set of operators and returns the length of the longest one
 	 * @param usedOperators - a set of operators
 	 * @return - the length of the longest operator
@@ -161,7 +161,7 @@ public class AmbiguityChecker {
 	}
 	
 	
-	/*
+	/**
 	 * This method is responsible for checking ambiguity for most cases. If an ambiguous operaotr is found, it is reported.
 	 * @param formula - the current node of a prefix or postfix operator
 	 * @param declarations - all declarations declared for the formula
@@ -268,7 +268,7 @@ public class AmbiguityChecker {
 	}
 	
 
-	/*
+	/**
 	 * This method gathers all used operators from all declared operators and also performs some initial checking.
 	 * If an ambiguous operator is found, it is reported.
 	 * @param formula - the current node of a prefix or postfix operator
@@ -357,7 +357,7 @@ public class AmbiguityChecker {
 		return operations;
 	}
 	
-	/*
+	/**
 	 * This is a helper function to create a map of prefix/postfix strings.
 	 * @param operators - a list of operators which are going to be used for making combinations
 	 * @param combinations - the resulting map with combination lengths as keys and lists with combinations of that length as values
@@ -394,8 +394,7 @@ public class AmbiguityChecker {
 		}
 	}
 	
-	//adds OperatorDeclarations to map by priority
-	/*
+	/**
 	 * This function takes an OperatorDeclaration and a map of OperationDeclarations sorted by priorities and adds the 
 	 * OperationDeclaration to the map.
 	 * @param op - an OperatorDeclaration
@@ -412,7 +411,7 @@ public class AmbiguityChecker {
 		}
 	}
 	
-	/*
+	/**
 	 * This function returns the operator of a prefix or postfix child and an empty String if such is not found
 	 * @param formula - the current node of a prefix or postfix operator
 	 * @param declarations - all declarations declared for the formula
