@@ -17,6 +17,18 @@ lemma
 	:	'\\begin{lemma}' (formula | declaration | .)*? '\\end{lemma}'
 	;
 
+BLOCK_COMMENT
+	:	'\\begin{comment}' .*? '\\end{comment}' -> skip
+	;
+
+LineCommentLiteral
+  : UnterminatedLineCommentLiteral ('\r'|'\n')
+  ;
+
+UnterminatedLineCommentLiteral
+  : '%' (~[\\n] | '\\' (. | EOF))*?
+  ;
+
 formula
 	: FormulaLiteral
 	| MACROFORMULA
@@ -64,5 +76,8 @@ UnterminatedFormulaLiteral
 BugFixLiteral
   : '\\$'
   | '\\{' //the other brace is handled in UnterminatedBraceLiteral
+  | '\\n'
+  | '\\r'
+  | '\\%'
   ;
 OTHER : .->skip;

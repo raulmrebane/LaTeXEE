@@ -1,0 +1,4 @@
+(2*3){LaTeXEE.nonsemantic->thisis.nonsemanticdata,LaTeXEE.parenstype->LaTeXEE.parens}
+artih1.divide((sum(2, ($a*$b){LaTeXEE.parenstype->LaTeXEE.braces})){LaTeXEE.nonsemantic->thisis.nonsemanticdata}, 2)
+(sum(1, 1)){LaTeXEE.nonsemantic->thisis.nonsemanticdata}
+(sum(2, 2)){LaTeXEE.nonsemantic->thisis.nonsemanticdata}

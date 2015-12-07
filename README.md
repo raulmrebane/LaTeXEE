@@ -9,7 +9,10 @@ LaTeXEE is a command-line only application which parses a valid .tex document, w
 
 1. Compile the application using [the guidelines](https://github.com/Abercus/LaTeXEE/wiki/Building-project)
 2. Run the compiled jar from terminal with command "java -jar LaTeXEE filename.tex"
-3. Output will be generated in the same folder where input is with name: filename.txt
+3. Output will be generated in the same folder where input is with name. Output is either OpenMath xml or Popcorn.
+
+Further guidelines can be found [here](https://github.com/Abercus/LaTeXEE/wiki/Jar-Readme)
+
 
 ### Flags
 
@@ -18,7 +21,10 @@ The following flags are available:
 * "-o filename" change output filename
 * "-h" help
 * "-v" terminal output more verbose
-
+* "-p" popcorn output mode
+* "-a" check for ambiguities
+* "-A" check for ambiguities only within the same priority level
+* "-t" show the document tree in console
 
 ### The team  
 

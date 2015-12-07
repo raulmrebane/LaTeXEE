@@ -1,0 +1,28 @@
+<OMOBJ>
+    <OMATTR>
+        <OMATP>
+            <OMS cd="LaTeXEE" name="nonsemantic"/>
+            <OMS cd="code" name="{#1, \ldots, #2}"/>
+        </OMATP>
+        <OMA>
+            <OMS cd="ecc" name="Tuple"/>
+            <OMA>
+                <OMS cd="list2" name="list_selector"/>
+                <OMI>1</OMI>
+                <OMV name="a"/>
+            </OMA>
+            <OMA>
+                <OMS cd="list2" name="list_selector"/>
+                <OMV name="n"/>
+                <OMV name="a"/>
+            </OMA>
+        </OMA>
+    </OMATTR>
+</OMOBJ>
+<OMOBJ>
+    <OMA>
+        <OMS cd="arith1" name="plus"/>
+        <OMI>2</OMI>
+        <OMI>2</OMI>
+    </OMA>
+</OMOBJ>

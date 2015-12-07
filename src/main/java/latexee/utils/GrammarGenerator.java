@@ -12,11 +12,18 @@ import main.java.latexee.declareast.OperatorDeclaration;
 import main.java.latexee.docast.DeclareStatement;
 import main.java.latexee.docast.ParsedStatement;
 
+/**
+ * GrammarGenerator class contains method to generate grammar based on before-gathered operator and macro declaration rules.
+ * Generated grammar is later used to parse the formulas.
+ */
 public class GrammarGenerator {
-	//This assumes that DeclareStatements have their appropriate nodes attached. 
-	//If you're not sure, run your tree through DeclarationParser.declarationFinder(tree) first.
-	//This method serves only as a proof of concept, in later iterations of the project the list would be created during AST traversal.
-	//As of end of iteration 3, this method is not used in the main workflow and is only kept for possible testing purposes.
+	/**
+	 * This method is only used for testing purposes. Assumes that DeclareStatements have their appropriate nodes attached.
+	 * If you're not sure, run your tree through DeclarationParser.declarationFinder(tree) first.
+	 * @param tree statement tree where DeclareStatements have their appropriate nodes attached
+	 * @param existingRules existing macro and operator rules
+	 * @return returns an ArrayList of declaration nodes
+	 */
 	public static ArrayList<DeclareNode> getDeclareNodes(ParsedStatement tree, ArrayList<DeclareNode> existingRules){
 		
 		if(tree instanceof DeclareStatement){
@@ -28,7 +35,14 @@ public class GrammarGenerator {
 		}
 		return existingRules;
 	}
-	
+
+	/**
+	 * This method translates operator and macro declarations to ANTLR grammar, which can and is later used to parse formulas.
+	 * Chooses appropriate levels for each rule in the grammar.
+	 * StringBuilder object is used to put together grammar rule-by-rule.
+	 * @param nodes list of DeclareNode objects
+	 * @return string of ANTLR grammar
+	 */
 	public static String createGrammar(List<DeclareNode> nodes){
 		//Resulting grammar is built here.
 		StringBuilder sb = new StringBuilder();
@@ -103,7 +117,10 @@ public class GrammarGenerator {
 				if(priority==100){
 					sb.append("level"+priorityAsString+" "+"level"+nextPriorityAsString+" #INVISIBLETIMES\n|");
 				}
-				for(OperatorDeclaration opNode : operatorNodes.get(priorities.get(i))){
+				ArrayList<OperatorDeclaration> opNodes = operatorNodes.get(priorities.get(i));
+				Collections.sort(opNodes, new DeclarationComparator());
+
+				for(OperatorDeclaration opNode : opNodes){
 					
 					//Using the method which specifies which level the rule should point to
 					//For example if we have addition on level 5 and the next level is 7
@@ -125,6 +142,8 @@ public class GrammarGenerator {
 				sb.append("level"+priorityAsString+" level101"+" #INVISIBLETIMES\n|");
 			}
 			//Here opNode.toGrammarRule just points to a level that is 1 higher than the current one. 
+			ArrayList<OperatorDeclaration> opNodes = operatorNodes.get(lastPriority);
+			Collections.sort(opNodes, new DeclarationComparator());
 			for(DeclareNode opNode : operatorNodes.get(lastPriority)){
 				sb.append(opNode.toGrammarRule()+"|");
 			}
@@ -159,17 +178,7 @@ public class GrammarGenerator {
 		sb.append("LEXERRULE #DEFAULT"+Integer.toString(defaultCounter)+";\n");
 		defaultCounter++;
 		sb.append("LEXERRULE : [0-9]+ | [a-z];\n");
+
 		return sb.toString();
-	}
-	
-	//Old proof of concept method, will be deleted in final product.
-	//TODO: Delete me later on.
-	public static void exampleCase(){
-		ParsedStatement AST = DeclarationParser.giveMeTheTestCase();
-		DeclarationParser.declarationFinder(AST);
-		ArrayList<DeclareNode> grammarNodes = getDeclareNodes(AST, new ArrayList<DeclareNode>());
-		System.out.println(createGrammar(grammarNodes));
-	}
-	
-	
+	}	
 }

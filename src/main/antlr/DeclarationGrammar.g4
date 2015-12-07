@@ -5,11 +5,11 @@ declarationGrammar
 	;
 	
 keyValuePairs
-	:	(pair ',' )* pair 
+	:	(WS* pair WS* ',')* WS* pair WS*?
 	;
 
 syntaxBracket
-	: '{' TYPE ',' .*? ',' .*?  ',' ('l'|'r') '}'
+	: '{' WS* TYPE WS* ',' WS* NUMBERS WS* ',' WS* CHARACTERS  WS* (',' WS* ('l'|'r') WS*)? '}'
 	;
 	
 pair
@@ -20,20 +20,42 @@ pair
 importantPair
 	: 'syntax' '=' syntaxBracket
 	| 'macro' '=' '\\'NAME
-	| 'meaning' '=' NAME '.' NAME
+	| 'meaning' '=' (NAME '.' NAME|valueInBraces)
+	| 'meaningOpt' '=' (NAME '.' NAME|valueInBraces)
 	| 'argspec' '=' '['NUMBERS']'('['.*?']')?
 	;
 	
 miscPair
-	: .*? '=' .*?
+	: .*? '=' value
 	;
+	
+value
+	: NAME
+	| CHARACTERS
+	| valueInBraces
+	;
+	
+valueInBraces
+	: '{' (valueInBraces|.)*? '}'
+	;
+	
 TYPE
 	: 'infix'
 	| 'prefix'
 	| 'postfix'
 	;
 	
-
+NOTANOPENBRACE
+	: '\\{'
+	;
+	
+NOTACLOSINGBRACE
+	: '\\}'
+	;
+	
+NOTAQUOTATIONMARK
+	: '\\"'
+	;
 NUMBERS
 	: [1-9]|([1-9][0-9]*)
 	;
@@ -45,7 +67,11 @@ CHARACTERS
 	;
 
 NAME
-	: [a-zA-Z0-9]+
+	: [_a-zA-Z0-9]+
 	;
+	
+NONWS
+	: ~[ \t\n\r]
+	;
+WS : [ \t\n\r]; 
 
-WS : [ \t\n\r] -> skip; 

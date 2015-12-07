@@ -15,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -30,29 +32,60 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import main.java.latexee.errorlisteners.FormulaErrorListener;
 import main.java.latexee.logging.Logger;
 
+/**
+ * GrammarCompiler class methods are used to compile the grammar to class files which can later be loaded during runtime of the application.
+ * Takes ANTLR string, creates a temp location for the grammar to be stored and is then compiled.
+ * Compiled grammar is later used to parse the formulas in the document.
+ */
 public class GrammarCompiler {
 	private static JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-	private static int packageIncrement = 0;
-	public static boolean foundErrors;
-	public static ParseTree compile(String grammar, String formula) throws IOException{
-        ParseTree tree = null;
-        packageIncrement++;
-        
-        Path tempDir = Files.createTempDirectory("LaTeXEE", new FileAttribute[0]);
-        
-        //Writes the grammar string into a .g4 file in the temp directory.
-        //Calls out ANTLR in the same folder
-        createSource(tempDir,grammar); 
-        
-        //Compiles .java files in that folder
-        compileSourceFolder(tempDir);
+	private Map<String,ClassInfo> grammarMap;
+	private int packageIncrement;
+
+	/**
+	 * Constructor for GrammarCompiler. Initializes HashMap, which maps grammar to compiled classes.
+	 */
+	public GrammarCompiler(){
+		this.packageIncrement = 0;
+		this.grammarMap = new HashMap<String,ClassInfo>();
+	}
+
+	/**
+	 * This method takes input of grammar string which is generate by grammar generator and a string which is going to be parsed by the gramamr.
+	 * Creates new temporary directory to store the grammar files, creates .g4 files, generates ANTLR .java files and then compiles the
+	 * source folder where the ANTLR generated java files are.
+	 * @param grammar generated input grammar from grammar generator
+	 * @param formula formula which is parsed by the grammar
+	 * @return parse tree of the the parsed formula
+	 * @throws IOException usually thrown when not enough rights to create new folders or files
+	 */
+	public ParseTree compile(String grammar, String formula) throws IOException{
+		ClassInfo pair = null;
+		ParseTree tree = null;
+		pair = grammarMap.get(grammar);
 		
-        //Loads compiled classes into java, ClassInfo is just a container for stuff we need for reflection
-        //ClassInfo pair = loadClasses(tempDir);
-        ClassInfo pair = loadClasses(tempDir);
-        
+		if (pair==null) {
+	        packageIncrement++;
+	        
+	        Path tempDir = Files.createTempDirectory("LaTeXEE", new FileAttribute[0]);
+	        
+	        //Writes the grammar string into a .g4 file in the temp directory.
+	        //Calls out ANTLR in the same folder
+	        createSource(tempDir,grammar); 
+	        
+	        //Compiles .java files in that folder
+	        compileSourceFolder(tempDir);
+			
+	        //Loads compiled classes into java, ClassInfo is just a container for stuff we need for reflection
+	        //ClassInfo pair = loadClasses(tempDir);
+	        pair = loadClasses(tempDir);
+	        grammarMap.put(grammar, pair);
+	        markForDeletion(tempDir.toFile());
+		}
+		
         //Extracting values from wrapper class
         Constructor lexerCtor = pair.getLexer();
         Constructor parserCtor = pair.getParser();
@@ -69,52 +102,51 @@ public class GrammarCompiler {
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			parser = (Parser) parserCtor.newInstance(tokens);
 			
-			foundErrors = false;
-			FormulaErrorListener.locationData = new ArrayList<Object[]>();
-			
 			//This lets us handle any ANTLR errors that occur during parsing/lexing
 			parser.removeErrorListeners();
 			lexer.removeErrorListeners();
-			parser.addErrorListener(FormulaErrorListener.INSTANCE);
-			lexer.addErrorListener(FormulaErrorListener.INSTANCE);
+			FormulaErrorListener fel = new FormulaErrorListener();
+			parser.addErrorListener(fel);
+			lexer.addErrorListener(fel);
+			
+			Logger.log("Parsing formula " + formula);
 			
 			//The method we're invoking takes no parameters
 			Class[] params = {};
 			Method parsingMethod = parserClass.getMethod("highestLevel", params);
 			Object rawObject = parsingMethod.invoke(parser);
 			
-			if(foundErrors){
-				//TODO: Make our own exception type for this purpose
-				Logger.log("Error in formula: "+formula+"\n");
-				System.out.println("Error in formula: "+formula+":");
-				for (Object[] data : FormulaErrorListener.locationData) {
-					Integer charPositionInLine = (Integer) data[0];
-					String msg = (String) data[1];
-					System.out.println("Syntax error at character " + charPositionInLine + ": " + msg);
-					Logger.log("Syntax error at character " + charPositionInLine + ": " + msg);
-				}
+			if(fel.foundErrors()){
+				Logger.log("Parsing finished with errors.\n");
 				return null;
 			}
+			Logger.log("Parsing successful.\n");
 			tree = (ParseTree) rawObject;
 			
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (InstantiationException e) {
+			Logger.log("Could not initialize new instance.");
+		} catch (IllegalAccessException e) {
+			Logger.log("Illegal access.");
+		} catch (IllegalArgumentException e) {
+			Logger.log("Illegal argument.");
+		} catch (InvocationTargetException e) {
+			Logger.log("Error invoking the target.");
 		} catch (NoSuchMethodException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			Logger.log("Method was not found.");
 		} catch (SecurityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} finally {
-			markForDeletion(tempDir.toFile());
+			Logger.log("Security violation");
 		}
         
         return tree;
 	}
-	
-	private static void compileSourceFolder(Path path) throws IOException{
+
+	/**
+	 * This method compiles java files in the given path.
+	 * Checks if the file is java file, calls the compiler to compile them.
+	 * @param path location of the folder which is to be compiled.
+	 * @throws IOException
+	 */
+	private void compileSourceFolder(Path path) throws IOException{
 		
 		//Filtering files in folder by extension (that's what the regex does) and adding them to a list
 		ArrayList<File> sourceFiles = new ArrayList<File>();
@@ -135,8 +167,14 @@ public class GrammarCompiler {
         fileManager.close();
 		
 	}
-	
-	private static void createSource(Path path, String grammar) throws IOException{
+
+	/**
+	 * Writes ANTLR grammar to a temporary folder and generates java classes which are later compiled
+	 * @param path location of the temporary folder created in compile method.
+	 * @param grammar grammar which is saved as .g4 file and from which .java file is generated
+	 * @throws IOException usually thrown when not enough rights at the given location.
+	 */
+	private void createSource(Path path, String grammar) throws IOException{
 		String tempPath = path.toString();
 		
 		//Writing .g4 file to temp directory
@@ -153,7 +191,7 @@ public class GrammarCompiler {
 			writer.close();
 		}
         
-        Logger.log("Finished without errors");
+        Logger.log("Finished without errors.\n");
         
         //Add a package name to each class so we would not have issues with naming
         String packageString = "LaTeXEE"+Integer.toString(packageIncrement);
@@ -163,8 +201,15 @@ public class GrammarCompiler {
 		//Generate .java files
 		antlr.processGrammarsOnCommandLine();
 	}
-	
-	private static ClassInfo loadClasses(Path path) throws IOException{
+
+	/**
+	 * This method is used to load classes in runtime using Java class loader.
+	 * Loads the generated grammar classes, so they can be used to parse the formulas
+	 * @param path location of the class to be loaded
+	 * @return ClassInfo instance which contains all the required constructors to use them in runtime
+	 * @throws IOException usually thrown when the given class file does not exist or unable to load classes.
+	 */
+	private ClassInfo loadClasses(Path path) throws IOException{
 		String pathString = path.toString()+File.separator;
 		
 		//Specifying the source folder will allow java to just search for other missing classes it needs.
@@ -187,8 +232,7 @@ public class GrammarCompiler {
 			lexerClass = cl.loadClass(packageName+".RuntimeGrammarLexer");
 			parserClass = cl.loadClass(packageName+".RuntimeGrammarParser");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.log("Class was not found.");
 		}
 		
 		try {
@@ -198,13 +242,19 @@ public class GrammarCompiler {
 			parserCtor = parserClass.getDeclaredConstructor(TokenStream.class);
 			parserCtor.setAccessible(true);
 			pair =  new ClassInfo(parserCtor, lexerCtor, parserClass);
-		} catch (NoSuchMethodException | SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			Logger.log("Method was not found.");
+		} catch (SecurityException e) {
+			Logger.log("Security violation.");
 		}
 		return pair;
 	}
-	private static void markForDeletion(File file) {
+
+	/**
+	 * Method to mark which files are to be deleted after the JVM exits.
+	 * @param file filepath to be marked for deletion after the JVM exits.
+	 */
+	private void markForDeletion(File file) {
 		file.deleteOnExit();
 	    File[] contents = file.listFiles();
 	    if (contents != null) {
@@ -215,7 +265,9 @@ public class GrammarCompiler {
 	}
 }
 
-
+/**
+ * Class to hold constructors of the generated, compiled and loaded grammar source files
+ */
 class ClassInfo{
 	private Constructor parserCtor;
 	private Constructor lexerCtor;

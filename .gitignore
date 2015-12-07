@@ -12,3 +12,6 @@ LaTeXEE.iml
 /src/main/antlrgen
 *.txt
 *.xml
+/test-output
+*.pyc
+/scripttest/__pycache__
