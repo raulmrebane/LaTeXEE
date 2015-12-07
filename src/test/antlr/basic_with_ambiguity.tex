@@ -19,6 +19,11 @@ $(2##3)$ %ambigous only without taking priorities into account
 
 $(a-+b)$ %ambiguous: (a-)+b or a-(+b)
 
+\declare{syntax={prefix,108,"|"}, meaning=arith1.sth}
+\declare{syntax={infix,108,"|",l}, meaning=arith1.sth}
+
+$(a-|b)$ %ambiguous: (a-)|b or a-(|b)
+
 \declare{syntax={infix,108,"**",l}, meaning=arith1.double_times}
 \declare{syntax={postfix,108,"*"}, meaning=arith1.unary_times}
 \declare{syntax={infix,108,"*",l}, meaning=arith1.times}
@@ -28,13 +33,13 @@ $(5**)$
 $(9*9)$
 
 \declare{syntax={infix,108,"£",l}, meaning=arith1.sth}
-\declare{syntax={prefix,108,"€",l}, meaning=arith1.sth}
+\declare{syntax={prefix,108,"€"}, meaning=arith1.sth}
 \declare{syntax={infix,108,"£€",l}, meaning=arith1.sth}
 
 $(7£€8)$ %ambiguous: 7£€8 or 7£(€8)
 
 \declare{syntax={infix,108,"!",l}, meaning=arith1.sth}
-\declare{syntax={postfix,108,"~",l}, meaning=arith1.sth}
+\declare{syntax={postfix,108,"~"}, meaning=arith1.sth}
 \declare{syntax={infix,108,"~!",l}, meaning=arith1.sth}
 
 $(9~!10)$ %ambiguous: 9~!10 or (9~)!10
@@ -42,12 +47,32 @@ $(9~!10)$ %ambiguous: 9~!10 or (9~)!10
 \declare{syntax={infix,108,".",l}, meaning=arith1.sth}
 \declare{syntax={prefix,108,"."}, meaning=arith1.sth}
 
-$.a.b$ %ambiguous: (.a).b or .(a.b)
+$(.a.b)$ %ambiguous: (.a).b or .(a.b)
 
 \declare{syntax={infix,108,",",l}, meaning=arith1.sth}
 \declare{syntax={postfix,108,","}, meaning=arith1.sth}
 
-$a,b,$ %ambiguous: a,(b,) or (a,b),
+$(a,b,)$ %ambiguous: a,(b,) or (a,b),
+
+\declare{syntax={infix,108,"??",l}, meaning=arith1.sth}
+\declare{syntax={postfix,108,"?"}, meaning=arith1.sth}
+
+$(a??b??)$ %ambiguous: a??((b?)?) or ((a??b)?)?
+
+\declare{syntax={infix,108,"==;",l}, meaning=arith1.sth}
+\declare{syntax={postfix,108,"="}, meaning=arith1.sth}
+\declare{syntax={postfix,108,";"}, meaning=arith1.sth}
+
+$(a==;b==;)$ %ambiguous: (((a==;b)=)=); or a==;(((b=)=);)
+$a==;b$
+$a==;$
+$a====;b$
+
+\declare{syntax={infix,108,"@__",l}, meaning=arith1.sth}
+\declare{syntax={prefix,108,"_"}, meaning=arith1.sth}
+\declare{syntax={prefix,108,"@"}, meaning=arith1.sth}
+
+$(@__a@__b)$ %ambiguous: (@(_(_a)))@__b or @(_(_(a@__b)))
 
 \end{theorem}
 \end{document}

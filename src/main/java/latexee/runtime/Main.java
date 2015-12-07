@@ -35,7 +35,7 @@ public class Main {
         options.addOption("v", "add verbosity to output");
         options.addOption("h", "display this menu");
         options.addOption("a", "check for ambiguity");
-        options.addOption("b", "check for ambiguity with priorities");
+        options.addOption("A", "check for ambiguity with priorities");
         options.addOption("p", "output in Popcorn");
         
         return options;
@@ -72,12 +72,12 @@ public class Main {
                     	popcornOutput = true;
                     	System.out.println("Popcorn output mode is enabled.");
                     }
-                    if (cmd.hasOption("a") && !cmd.hasOption("b")) {
+                    if (cmd.hasOption("a") && !cmd.hasOption("A")) {
                         ambiguityChecking = true;
                         System.out.println("Ambiguity checking is enabled.");
                     }
                     
-                    if (cmd.hasOption("b")) {
+                    if (cmd.hasOption("A")) {
                     	ambiguityCheckingWithPriority = true;
                     	System.out.println("Ambiguity checking with priorities is enabled.");
                     }

@@ -8,10 +8,12 @@ import main.java.latexee.declareast.OperatorDeclaration;
 public class DeclarationComparator implements java.util.Comparator<OperatorDeclaration>{
 
 	/**
-	 * Override method which implements java.util.Comparator required to do sorting on operator declaratinos
+	 * Override method which implements java.util.Comparator required to do sorting on operator declarations
 	 * @param o1 first OperatorDeclaration instance
 	 * @param o2 second OperatorDeclaration instance
-	 * @return returns positive integer if the priority of o1 higher, 0 if same and negative integer o2's priority is higher.
+	 * @return returns 1 if the type of o2 is higher (infix the highest, postfix the lowest),
+	 *  -1 if o2's type is higher. In case of equal types a positive integer is returned when 
+	 *  the operator of o2 is longer, negative if shorter and 0 if they are of equal lengths.
 	 */
 	@Override
 	//sorts first by type (first infix, then prefix, then postfix), if types are equal, then by length (longer ones first).

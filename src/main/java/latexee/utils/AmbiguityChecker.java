@@ -2,6 +2,7 @@ package main.java.latexee.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,23 +17,79 @@ import main.java.latexee.logging.Logger;
 
 public class AmbiguityChecker {
 	
-	public static void checkAmbiguity(boolean withPriorities, ParseTree formula, Map<String,DeclareNode> declarations) {	
+	//gathers consecutive prefixes into an arraylist
+		public static String hasInfixChild(ParseTree formula, Map<String, DeclareNode> declarations, int priority) {
+			String s = "";
+			for (int i = 0; i < formula.getChildCount(); i++) {
+				ParseTree childNode = formula.getChild(i);
+				String treeName = childNode.getClass().getSimpleName();
+				if(treeName.contains("Context")){
+					String noContext = treeName.substring(0, treeName.length()-7);
+					DeclareNode declaration = declarations.get(noContext);
+					if(declaration!=null && declaration instanceof OperatorDeclaration){
+						OperatorDeclaration castDec = (OperatorDeclaration) declaration;
+						if (castDec.getType().equals("infix") && (castDec.getPriority() == priority || priority == -1)) {
+							s = castDec.getOperator();
+							break;
+						}
+					}
+				}
+				s += hasInfixChild(childNode, declarations, priority);
+			}
+			return s;
+		}
+	
+	//gathers consecutive prefixes/postfixes into an arraylist
+	public static List<String> gatherPrefixes(ParseTree formula, Map<String, DeclareNode> declarations, int priority, List<String> prefixList) {
+		for (int i = 0; i < formula.getChildCount(); i++) {
+			ParseTree childNode = formula.getChild(i);
+			String treeName = childNode.getClass().getSimpleName();
+			if(treeName.contains("Context")){
+				String noContext = treeName.substring(0, treeName.length()-7);
+				DeclareNode declaration = declarations.get(noContext);
+				if(declaration!=null && declaration instanceof OperatorDeclaration){
+					OperatorDeclaration castDec = (OperatorDeclaration) declaration;
+					if (castDec.getType().equals("prefix") && (castDec.getPriority() == priority || priority == -1)) {
+						prefixList = gatherPrefixes(childNode, declarations, priority, prefixList);
+						prefixList.add(castDec.getOperator());
+					}
+				}
+			}
+			List<String> tempList = new ArrayList<>();
+			prefixList.addAll(gatherPrefixes(childNode, declarations, priority, tempList));
+		}
+		return prefixList;
+	}
+	
+	//gathers consecutive prefixes into an arraylist
+		public static List<String> gatherPostfixes(ParseTree formula, Map<String, DeclareNode> declarations, int priority, List<String> postfixList) {
+			for (int i = 0; i < formula.getChildCount(); i++) {
+				ParseTree childNode = formula.getChild(i);
+				String treeName = childNode.getClass().getSimpleName();
+				if(treeName.contains("Context")){
+					String noContext = treeName.substring(0, treeName.length()-7);
+					DeclareNode declaration = declarations.get(noContext);
+					if(declaration!=null && declaration instanceof OperatorDeclaration){
+						OperatorDeclaration castDec = (OperatorDeclaration) declaration;
+						if (castDec.getType().equals("postfix") && (castDec.getPriority() == priority || priority == -1)) {
+							postfixList.add(castDec.getOperator());
+						}
+					}
+				}
+				List<String> tempList = new ArrayList<>();
+				postfixList.addAll(gatherPostfixes(childNode, declarations, priority, tempList));
+			}
+			return postfixList;
+		}
+	
+	public static void checkAmbiguity(boolean withPriority, ParseTree formula, Map<String,DeclareNode> declarations) {	
 		
 		//Find all used operators in the formula. 
 		//This lets us cap the max string length for when we find the combinations
 		//Which can greatly improve efficiency (for example if there was one unused operator with an absurd length)
-		Set<OperatorDeclaration> usedOperations = getUsedOperations(formula, declarations);
+		Set<OperatorDeclaration> usedOperations = getUsedOperations(formula, declarations, withPriority);
 		
-		/*System.out.println(declarations.size());
-		for (String k : declarations.keySet()) {
-			DeclareNode dn = declarations.get(k);
-			if (dn instanceof OperatorDeclaration) {
-				OperatorDeclaration c = (OperatorDeclaration) dn;
-				System.out.println(c.getOperator() + ", " + c.getType() + ", " + c.getPriority());
-			}
-		}*/
-		
-		if (withPriorities) {
+		if (withPriority) {
 			
 			Map<Integer, Set<OperatorDeclaration>> priorityMap = new HashMap<>();
 		
@@ -185,7 +242,7 @@ public class AmbiguityChecker {
 	}
 	
 
-	private static Set<OperatorDeclaration> getUsedOperations(ParseTree formula, Map<String,DeclareNode> declarations){
+	private static Set<OperatorDeclaration> getUsedOperations(ParseTree formula, Map<String,DeclareNode> declarations, boolean withPriority){
 		HashSet<OperatorDeclaration> operations = new HashSet<OperatorDeclaration>();	
 		//Take the context name, see if it matches an operator usage
 		String treeName = formula.getClass().getSimpleName();
@@ -199,18 +256,68 @@ public class AmbiguityChecker {
 				//Add it to result if it's an operator-type declaration
 				OperatorDeclaration castDec = (OperatorDeclaration) declaration;
 				operations.add(castDec);
-				
-				if (castDec.getType().equals("infix")) { //if infix, then checks if has any prefix children
-					String i = getLongerInfix(formula, declarations, castDec.getPriority());
+				switch (castDec.getType()) {
+				case "infix":
+					String i = "";
+					String i2 = "";
+					if (withPriority) {
+						i = getLongerInfix(formula, declarations, castDec.getPriority(), "postfix");
+						i2 = getLongerInfix(formula, declarations, castDec.getPriority(), "prefix");
+					}
+					else {
+						i = getLongerInfix(formula, declarations, -1, "postfix");
+						i2 = getLongerInfix(formula, declarations, -1, "prefix");
+					}
 					if (!i.equals(""))
 						operations.add(new OperatorDeclaration("", "infix", castDec.getPriority(), i + castDec.getOperator(), castDec.getAssociativity()));
+					//formality - in case it's possible to parse a-+b with an infix - and prefix + (with infix + & postfix - also available)
+					if (!i2.equals(""))
+						operations.add(new OperatorDeclaration("", "infix", castDec.getPriority(), castDec.getOperator() + i2, castDec.getAssociativity()));
+					break;
+				case "prefix":
+					int priority = -1;
+					if (withPriority)
+						priority = castDec.getPriority();
+					String infixChild = hasInfixChild(formula, declarations, priority);
+					if (!infixChild.equals("")) {
+						List<String> prefixOps = gatherPrefixes(formula, declarations, priority, new ArrayList<>());
+						prefixOps.add(0, castDec.getOperator());
+						StringBuilder sb = new StringBuilder("");
+						for (String o : prefixOps) {
+							sb.append(o);
+							if (sb.toString().equals(infixChild)) {
+								System.out.println("Operator \""+infixChild+"\" is ambiguous in formula "+formula.getText() + "\n");
+								//TODO: break it off.
+							}
+						}
+					}
+					break;
+				case "postfix":
+					int priority2 = -1;
+					if (withPriority)
+						priority2 = castDec.getPriority();
+					String infixChild2 = hasInfixChild(formula, declarations, priority2);
+					if (!infixChild2.equals("")) {
+						List<String> postfixOps = gatherPostfixes(formula, declarations, priority2, new ArrayList<>());
+						StringBuilder sb = new StringBuilder("");
+						Collections.reverse(postfixOps);
+						postfixOps.add(castDec.getOperator());
+						for (String o : postfixOps) {
+							sb.append(o);
+							if (sb.toString().equals(infixChild2)) {
+								System.out.println("Operator \""+infixChild2+"\" is ambiguous in formula "+formula.getText() + "\n");
+								//TODO: break it off
+							}
+						}
+					}
+					break;
 				}
 			}
 		}
 		//Find operators from children
 		for(int i=0;i<formula.getChildCount();i++){
 			ParseTree childNode = formula.getChild(i);
-			operations.addAll(getUsedOperations(childNode, declarations));
+			operations.addAll(getUsedOperations(childNode, declarations, withPriority));
 		}
 		
 		return operations;
@@ -258,8 +365,8 @@ public class AmbiguityChecker {
 		}
 	}
 	
-	//the -+ case: - is infix, + prefix, returns a new infix operator -+
-	public static String getLongerInfix(ParseTree formula, Map<String, DeclareNode> declarations, int priority) {	
+	//the -+ case: - is postfix, + infix, returns a new infix operator -+
+	public static String getLongerInfix(ParseTree formula, Map<String, DeclareNode> declarations, int priority, String sufix) {	
 		String s = "";
 		for (int i = 0; i < formula.getChildCount(); i++) {
 			ParseTree childNode = formula.getChild(i);
@@ -269,13 +376,12 @@ public class AmbiguityChecker {
 				DeclareNode declaration = declarations.get(noContext);
 				if(declaration!=null && declaration instanceof OperatorDeclaration){
 					OperatorDeclaration castDec = (OperatorDeclaration) declaration;
-					if (castDec.getType().equals("postfix") && castDec.getPriority() == priority)
+					if (castDec.getType().equals(sufix) && (castDec.getPriority() == priority || priority == -1))
 						return castDec.getOperator();
 				}
 			}
-			s += getLongerInfix(childNode, declarations, priority);
+			s += getLongerInfix(childNode, declarations, priority, sufix);
 		}
 		return s;
-	}
-	
+	}	
 }
