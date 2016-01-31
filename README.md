@@ -25,10 +25,3 @@ The following flags are available:
 * "-a" check for ambiguities
 * "-A" check for ambiguities only within the same priority level
 * "-t" show the document tree in console
-
-### The team  
-
-Joonas Puura  
-Raul-Martin Rebane  
-Kristine Leetberg  
-Hiie Vill  
